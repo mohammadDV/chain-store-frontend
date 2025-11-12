@@ -30,10 +30,10 @@ const buttonVariants = cva(
           "bg-information border-info text-on-info hover:bg-info/90",
       },
       size: {
-        medium: "px-5 py-[11px] font-semibold has-[>svg]:px-4",
+        medium: "px-5 py-[11px] has-[>svg]:px-4",
         small:
-          "text-xs font-semibold py-[11px] gap-1.5 px-4 has-[>svg]:px-3",
-        large: "text-lg font-normal py-[13px] px-6 has-[>svg]:px-5",
+          "text-xs py-[11px] gap-1.5 px-4 has-[>svg]:px-3",
+        large: "text-lg py-[13px] px-6 has-[>svg]:px-5",
       },
     },
     defaultVariants: {
