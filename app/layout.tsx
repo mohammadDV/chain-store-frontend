@@ -1,6 +1,7 @@
 import { estedadFont } from "@/constants/localfont";
 import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
+import "../assets/icons/solar.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
