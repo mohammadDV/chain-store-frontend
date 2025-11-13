@@ -40,7 +40,7 @@ export const Hero = () => {
                     delay: 5000,
                     disableOnInteraction: false,
                 }}
-                speed={700}
+                speed={1000}
                 loop={true}
                 className="h-full"
             >
