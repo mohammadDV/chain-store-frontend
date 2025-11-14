@@ -6,6 +6,7 @@ import hiking from "@/assets/images/hiking.jpg";
 import sneakers from "@/assets/images/sneakers.jpg";
 import smartwatch from "@/assets/images/smartwatch.jpg";
 import swim from "@/assets/images/swim.jpg";
+import { cn } from "@/lib/utils";
 
 type Card = {
   title: string;
@@ -52,9 +53,9 @@ export const BentoCategory = () => {
     <section className="container mx-auto mt-14" dir="rtl">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 auto-rows-[140px] md:auto-rows-[260px]">
         {cards.map((card, idx) => (
-          <article
+          <div
             key={idx}
-            className={`relative group overflow-hidden rounded-3xl shadow-lg transition-transform duration-300 hover:scale-[1.02] hover:z-10 ${card.spanClass}`}
+            className={cn("relative group overflow-hidden rounded-3xl shadow-lg transition-transform duration-300 hover:scale-[1.02] hover:z-10", card.spanClass)}
           >
             <Image
               src={card.image}
@@ -67,7 +68,7 @@ export const BentoCategory = () => {
               <h3 className="text-lg md:text-xl font-semibold drop-shadow-sm">{card.title}</h3>
               <p className="text-xs md:text-sm drop-shadow-sm mt-1">{card.caption}</p>
             </div>
-          </article>
+          </div>
         ))}
       </div>
     </section>

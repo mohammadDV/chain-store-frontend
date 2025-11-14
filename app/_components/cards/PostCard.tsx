@@ -20,15 +20,15 @@ export const PostCard = () => {
 
             <div className="absolute bottom-0 left-0 w-full h-full bg-linear-to-t from-title/90 to-transparent"></div>
 
-            <span className="absolute top-5 right-5 inline-block bg-secondary text-white text-xs px-3 py-1 rounded-md">
+            <span className="absolute top-3 lg:top-5 right-3 lg:right-5 inline-block bg-secondary text-white text-2xs lg:text-xs px-2 lg:px-3 py-0.5 lg:py-1 rounded-sm lg:rounded-md">
                 اخبار و مقالات
             </span>
 
-            <div className="absolute bottom-0 left-0 w-full p-4 lg:p-6 text-white">
-                <h3 className="mt-3 text-lg lg:text-xl font-semibold line-clamp-2 text-center">
+            <div className="absolute bottom-0 left-0 w-full p-3 lg:p-6 text-white">
+                <h3 className="mt-3 text-sm lg:text-xl font-semibold line-clamp-2 text-center">
                     چگونه استایل بهتری داشته باشم؟
                 </h3>
-                <p className="mt-3 text-sm text-center">
+                <p className="mt-1 lg:mt-3 text-2xs lg:text-sm text-center">
                     لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ...
                 </p>
             </div>

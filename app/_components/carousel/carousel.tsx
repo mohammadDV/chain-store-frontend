@@ -39,13 +39,13 @@ export const Carousel = ({
 
   return (
     <section className="pr-4 lg:px-0">
-      <div className="flex items-center justify-between mb-4 lg:mb-6 pl-4 lg:pl-0">
-        <div className="flex items-center gap-2.5 lg:gap-4">
-          <h2 className={cn("text-lg lg:text-2xl font-bold", titleColor || "text-title")}>{title}</h2>
+      <div className="flex items-center justify-between mb-3.5 lg:mb-6 pl-4 lg:pl-0">
+        <div className="flex items-center justify-between w-full lg:w-auto gap-2.5 lg:gap-4">
+          <h2 className={cn("lg:text-2xl font-bold", titleColor || "text-title")}>{title}</h2>
           {seeMoreLink && (
             <Link
               href={seeMoreLink}
-              className="text-secondary underline"
+              className="text-secondary underline text-xs lg:text-base"
             >
               مشاهده بیشتر
             </Link>
@@ -83,7 +83,7 @@ export const Carousel = ({
           swiperRef.current = swiper;
         }}
         modules={[Navigation]}
-        spaceBetween={16}
+        spaceBetween={14}
         slidesPerView={mobileSlidesPerView || 1.6}
         breakpoints={{
           640: {
