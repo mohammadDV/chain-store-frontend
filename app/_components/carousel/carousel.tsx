@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { Icon } from "@/ui/icon";
 import Link from "next/link";
 import { JSX, useRef } from "react";
@@ -14,6 +15,7 @@ interface CarouselProps {
   disableNavigation?: boolean;
   desktopSlidesPerView?: number;
   mobileSlidesPerView?: number;
+  titleColor?: string;
 }
 
 export const Carousel = ({
@@ -23,6 +25,7 @@ export const Carousel = ({
   seeMoreLink,
   desktopSlidesPerView,
   mobileSlidesPerView,
+  titleColor
 }: CarouselProps) => {
   const swiperRef = useRef<SwiperType>(null);
 
@@ -35,10 +38,10 @@ export const Carousel = ({
   };
 
   return (
-    <section className="mt-8 lg:mt-14 container mx-auto pr-4 lg:px-4">
+    <section className="pr-4 lg:px-0">
       <div className="flex items-center justify-between mb-4 lg:mb-6 pl-4 lg:pl-0">
         <div className="flex items-center gap-2.5 lg:gap-4">
-          <h2 className="text-lg lg:text-2xl font-bold text-title">{title}</h2>
+          <h2 className={cn("text-lg lg:text-2xl font-bold", titleColor || "text-title")}>{title}</h2>
           {seeMoreLink && (
             <Link
               href={seeMoreLink}
@@ -93,7 +96,7 @@ export const Carousel = ({
           },
           1024: {
             slidesPerView: desktopSlidesPerView || 4,
-            spaceBetween: 20,
+            spaceBetween: 32,
           },
         }}
         className="products-swiper"

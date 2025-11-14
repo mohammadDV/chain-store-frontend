@@ -34,17 +34,17 @@ export const estedadFont = localFont({
             style: 'normal',
         },
         {
-            path: '../assets/fonts/Estedad-FD-Regular.woff2',
+            path: '../assets/fonts/Estedad-FD-Light.woff2',
             weight: '300',
             style: 'normal',
         },
         {
-            path: '../assets/fonts/Estedad-FD-Thin.woff2',
+            path: '../assets/fonts/Estedad-FD-ExtraLight.woff2',
             weight: '200',
             style: 'normal',
         },
         {
-            path: '../assets/fonts/Estedad-FD-ExtraLight.woff2',
+            path: '../assets/fonts/Estedad-FD-Thin.woff2',
             weight: '100',
             style: 'normal',
         },

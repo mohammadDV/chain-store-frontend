@@ -1,3 +1,4 @@
+import { Footer } from "../_components/footer";
 import { Header } from "../_components/header";
 
 export default async function MainLayout({
@@ -9,6 +10,7 @@ export default async function MainLayout({
         <>
             <Header />
             {children}
+            <Footer />
         </>
     );
 }
