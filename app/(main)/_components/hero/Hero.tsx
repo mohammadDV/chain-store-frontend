@@ -31,7 +31,7 @@ export const Hero = ({ isMobile }: HeroProps) => {
     ];
 
     return (
-        <section className="container mx-auto relative w-full z-20 mt-6 lg:mt-9 h-[260px] lg:h-[460px] px-4 overflow-hidden">
+        <section className="container mx-auto relative w-full z-20 mt-6 lg:mt-9 h-[260px] lg:h-[460px] px-4 lg:px-0 overflow-hidden">
             <Swiper
                 modules={[Pagination, Autoplay]}
                 pagination={{

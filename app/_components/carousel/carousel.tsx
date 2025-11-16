@@ -83,7 +83,7 @@ export const Carousel = ({
           swiperRef.current = swiper;
         }}
         modules={[Navigation]}
-        spaceBetween={14}
+        spaceBetween={16}
         slidesPerView={mobileSlidesPerView || 1.6}
         breakpoints={{
           640: {
@@ -96,7 +96,7 @@ export const Carousel = ({
           },
           1024: {
             slidesPerView: desktopSlidesPerView || 4,
-            spaceBetween: 32,
+            spaceBetween: 28,
           },
         }}
         className="products-swiper"

@@ -51,7 +51,7 @@ const cards: Card[] = [
 export const BentoCategory = () => {
   return (
     <section className="container mx-auto mt-14" dir="rtl">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 auto-rows-[140px] md:auto-rows-[260px]">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 auto-rows-[140px] md:auto-rows-[260px]">
         {cards.map((card, idx) => (
           <div
             key={idx}
