@@ -83,7 +83,7 @@ export const Carousel = ({
           swiperRef.current = swiper;
         }}
         modules={[Navigation]}
-        spaceBetween={16}
+        spaceBetween={14}
         slidesPerView={mobileSlidesPerView || 1.6}
         breakpoints={{
           640: {

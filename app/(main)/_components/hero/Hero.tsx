@@ -62,7 +62,7 @@ export const Hero = ({ isMobile }: HeroProps) => {
                                 <div className="absolute inset-0 from-title/90 bg-linear-to-t lg:bg-linear-to-l lg:from-title/75"></div>
                             </div>
 
-                            <div className="relative container pb-4 lg:pb-0 px-4 lg:px-20 mx-auto z-10 h-full flex">
+                            <div className="relative container pb-4 lg:pb-0 px-4 lg:px-16 mx-auto z-10 h-full flex">
                                 <div className="flex flex-col justify-end lg:justify-center items-start lg:max-w-xl h-full text-white">
                                     <h1 className="text-lg lg:text-4xl leading-8 lg:leading-14 font-semibold lg:font-bold mb-1 lg:mb-5">
                                         {slide.title}
