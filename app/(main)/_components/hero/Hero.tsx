@@ -4,8 +4,6 @@ import heroImg from "@/assets/images/hero.jpg";
 import { Button } from "@/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import "swiper/css";
-import "swiper/css/pagination";
 import { Autoplay, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 

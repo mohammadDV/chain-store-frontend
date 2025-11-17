@@ -79,7 +79,6 @@ export default async function Shop() {
                                 </div>
                             ))}
                         </div>}
-
                 </div>
             </div>
             <div className="container mx-auto px-4 lg:px-0 mt-6 lg:mt-8 flex flex-col lg:flex-row justify-between gap-4 lg:gap-10">
