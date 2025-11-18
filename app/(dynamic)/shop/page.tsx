@@ -9,8 +9,6 @@ import ProductCard from "@/app/_components/cards/ProductCard";
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
 import { TopNavActions } from "../_components/topNavigation/TopNavActions";
 import { Carousel } from "@/app/_components/carousel";
-import "swiper/css";
-import "swiper/css/pagination";
 
 const categories = [
     {
