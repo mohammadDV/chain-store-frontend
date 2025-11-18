@@ -7,6 +7,7 @@ import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
 import { Carousel } from "@/app/_components/carousel";
 import Image from "next/image";
 import ProductCard from "@/app/_components/cards/ProductCard";
+import { BrandHeroGrid } from "../_components/brandHeroGrid";
 
 const categories = [
     {
@@ -41,7 +42,43 @@ export default async function Brand() {
 
     return (
         <>
-            <div className="container mx-auto mt-14">
+            <BrandHeroGrid
+                items={[
+                    {
+                        id: 1,
+                        image: hiking,
+                        title: "تجهیزات کمپینگ",
+                        description: "چادر، کوله و ابزار طبیعت‌گردی حرفه‌ای",
+                        button: "مشاهده محصولات",
+                        href: "/",
+                    },
+                    {
+                        id: 2,
+                        image: jacket,
+                        title: "انواع کاپشن",
+                        description: "برای هوای سرد و کوهستان با کیفیت عالی",
+                        button: "مشاهده محصولات",
+                        href: "/",
+                    },
+                    {
+                        id: 3,
+                        image: sneakers,
+                        title: "کفش ورزشی",
+                        description: "برای دوییدن و تمرین روزانه راحت و سبک",
+                        button: "مشاهده محصولات",
+                        href: "/",
+                    },
+                    {
+                        id: 4,
+                        image: smartwatch,
+                        title: "ساعت هوشمند",
+                        description: "همراه شما در پایش فعالیت و سلامت",
+                        button: "مشاهده محصولات",
+                        href: "/",
+                    },
+                ]}
+            />
+            <div className="container mx-auto mt-6 lg:mt-14">
                 {isMobile
                     ? <Carousel
                         slides={categories?.map(cat => (
