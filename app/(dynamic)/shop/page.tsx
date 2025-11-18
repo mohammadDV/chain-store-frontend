@@ -51,7 +51,7 @@ export default async function Shop() {
                     {!isMobile && <h1 className="text-2xl font-bold text-title text-center">
                         محصولات لوازم ورزشی
                     </h1>}
-                    <p className="lg:text-center text-xs lg:text-sm lg:mt-3 text-muted mr-3 lg:mr-0 m">
+                    <p className="lg:text-center text-xs lg:text-sm lg:mt-3 text-muted mr-3 lg:mr-0">
                         اسپورت ساید / فروشگاه /
                         <Link href={"/"} className="text-secondary mr-1">
                             لوازم ورزشی
