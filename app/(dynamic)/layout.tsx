@@ -1,8 +1,9 @@
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import { Footer } from "../_components/footer";
 import { Header } from "../_components/header";
-import "swiper/css";
-import "swiper/css/pagination";
 
 export default async function DynamicLayout({
     children,
