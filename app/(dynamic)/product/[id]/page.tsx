@@ -10,6 +10,7 @@ import truckIcon from "@/assets/images/truck.svg";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/ui/accordion";
 import { Button } from "@/ui/button";
 import { Icon } from "@/ui/icon";
+import { Progress } from "@/ui/progress";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -308,7 +309,7 @@ export default async function Product() {
                     <h3 className="text-xl font-bold mb-5">
                         نظرات کاربران درباره این محصول
                     </h3>
-                    <div className="flex justify-between gap-10">
+                    <div className="flex justify-between gap-12">
                         <div className="lg:w-2/3 flex flex-col gap-4">
                             {Array.from({ length: 3 }, (_, i) => (
                                 <div key={i} className="p-4 bg-surface rounded-2xl">
@@ -334,7 +335,61 @@ export default async function Product() {
                                 </div>
                             ))}
                         </div>
-                        <div className="lg:w-1/3"></div>
+                        <div className="lg:w-1/3">
+                            <p className="text-title mb-4">
+                                نظر شما برای ما بسیار ارزشمند است!
+                            </p>
+                            <div className="flex items-center justify-between gap-8">
+                                <div className="flex flex-col gap-2 flex-1">
+                                    <div className="flex items-center justify-between gap-3 flex-1">
+                                        <p className="text-title">
+                                            5
+                                        </p>
+                                        <Progress value={75} />
+                                    </div>
+                                    <div className="flex items-center justify-between gap-3 flex-1">
+                                        <p className="text-title">
+                                            4
+                                        </p>
+                                        <Progress value={50} />
+                                    </div>
+                                    <div className="flex items-center justify-between gap-3 flex-1">
+                                        <p className="text-title">
+                                            3
+                                        </p>
+                                        <Progress value={25} />
+                                    </div>
+                                    <div className="flex items-center justify-between gap-3 flex-1">
+                                        <p className="text-title">
+                                            2
+                                        </p>
+                                        <Progress value={10} />
+                                    </div>
+                                    <div className="flex items-center justify-between gap-3 flex-1">
+                                        <p className="text-title">
+                                            2
+                                        </p>
+                                        <Progress value={25} />
+                                    </div>
+                                </div>
+                                <div className="flex flex-col items-center justify-center gap-2">
+                                    <p className="text-3xl text-secondary font-bold">
+                                        4.75
+                                    </p>
+                                    <div className="flex items-center gap-0.5">
+                                        {Array.from({ length: 5 }, (_, index) => (
+                                            <Icon key={index} icon="solar--star-bold" sizeClass="size-5" className="text-warning" />
+                                        ))}
+                                    </div>
+                                    <p className="text-sm text-description">
+                                        از 26 نظر
+                                    </p>
+                                </div>
+                            </div>
+                            <Button variant={"outline"} size={"medium"} className="w-full mt-8">
+                                نظر خود را بنویسید
+                            </Button>
+                        </div>
                     </div>
                 </div>
                 <div className="mt-12">
