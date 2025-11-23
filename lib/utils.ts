@@ -18,3 +18,12 @@ export const isEmpty = (value: any): boolean => {
 export const putCommas = (value: number): string => {
   return new Intl.NumberFormat().format(Math.trunc(value));
 };
+
+export const convertPersianToEnglish = (str: string): string => {
+  const persianDigits = "۰۱۲۳۴۵۶۷۸۹";
+  const englishDigits = "0123456789";
+
+  return str.replace(/[۰-۹]/g, (char) => {
+    return englishDigits[persianDigits.indexOf(char)];
+  });
+};
