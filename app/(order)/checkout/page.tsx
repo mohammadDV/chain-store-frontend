@@ -1,8 +1,8 @@
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
-import { OrderNavigation } from "../_components/orderNavigation";
-import { OrderHeader } from "../_components/orderHeader";
 import { Button } from "@/ui/button";
-import { RHFInput } from "@/app/_components/hookForm/RHFInput";
+import { OrderHeader } from "../_components/orderHeader";
+import { OrderNavigation } from "../_components/orderNavigation";
+import { CheckoutForm } from "./_components/CheckoutForm";
 
 export default async function Cart() {
     const isMobile = await isMobileDevice();
@@ -19,9 +19,7 @@ export default async function Cart() {
                 </div>}
             <div className="flex flex-col lg:flex-row justify-between gap-5 lg:gap-10 mt-4 lg:mt-12 container mx-auto px-4 lg:px-0">
                 <div className="lg:w-2/3">
-                    <div className="border border-border p-2 lg:p-6 rounded-2xl lg:rounded-3xl">
-
-                    </div>
+                    <CheckoutForm />
                 </div>
                 <div className="lg:w-1/3">
                     <div className="bg-surface p-4 lg:p-6 rounded-2xl lg:rounded-3xl sticky top-6">
