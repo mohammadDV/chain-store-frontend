@@ -72,7 +72,7 @@ export default async function Home() {
           ))}
           desktopSlidesPerView={4.5}
           mobileSlidesPerView={2.5}
-          seeMoreLink="مشاهده همه"
+          seeMoreLink="/shop"
           title="محبوب ترین های این هفته" />
       </div>
       <div className="container lg:mx-auto mt-6 lg:mt-14 pt-4 lg:pt-8 lg:px-8 relative">
@@ -83,7 +83,7 @@ export default async function Home() {
           ))}
           desktopSlidesPerView={4}
           mobileSlidesPerView={2.5}
-          seeMoreLink="مشاهده همه"
+          seeMoreLink="/shop"
           titleColor="text-white"
           title="پیشنهادات شگفت انگیز" />
       </div>
@@ -99,7 +99,7 @@ export default async function Home() {
           ))}
           desktopSlidesPerView={4.5}
           mobileSlidesPerView={2.5}
-          seeMoreLink="مشاهده همه"
+          seeMoreLink="/shop"
           title="جدید ترین محصولات ما" />
       </div>
       <div className="mt-6 lg:mt-14 container mx-auto">
@@ -107,7 +107,7 @@ export default async function Home() {
           slides={Array.from({ length: 6 }, (_, i) => <PostCard key={i} />)}
           desktopSlidesPerView={3}
           mobileSlidesPerView={1.5}
-          seeMoreLink="مشاهده همه"
+          seeMoreLink="/blog"
           title="از وبلاگ و مقالات ما بخوانید" />
       </div>
     </>
