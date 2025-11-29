@@ -1,3 +1,4 @@
+import { FILE_URL } from "@/configs/global";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -27,3 +28,5 @@ export const convertPersianToEnglish = (str: string): string => {
     return englishDigits[persianDigits.indexOf(char)];
   });
 };
+
+export const createFileUrl = (url: string) => `${FILE_URL}/${url}`;

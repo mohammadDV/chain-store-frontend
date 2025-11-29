@@ -1,41 +1,65 @@
-import { BrandSlider } from "./_components/brandSlider";
-import { BentoCategory } from "./_components/bentoCategory";
-import { Hero } from "./_components/hero";
-import { Carousel } from "../_components/carousel";
-import ProductCard from "../_components/cards/ProductCard";
 import instagramBanner from "@/assets/images/instagram-banner.png";
 import mobileInstagramBanner from "@/assets/images/mobile-instagram-banner.png";
-import Image from "next/image";
-import { PostCard } from "../_components/cards/PostCard";
+import { getFetch, postFetch } from "@/core/publicService";
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
-import jacket from "@/assets/images/jacket.jpg";
+import { Brand } from "@/types/brand.type";
+import Image from "next/image";
+import Link from "next/link";
+import { PostCard } from "../_components/cards/PostCard";
+import ProductCard from "../_components/cards/ProductCard";
+import { Carousel } from "../_components/carousel";
+import { BentoCategory, categoriesCards } from "./_components/bentoCategory";
+import { BrandSlider } from "./_components/brandSlider";
+import { Hero } from "./_components/hero";
+import { FeaturedProducts, ProductColumnType } from "@/types/product";
+
+async function getBrands(): Promise<Brand[]> {
+  return await getFetch<Brand[]>("/brands");
+}
+
+async function getFeaturedProducts(column: ProductColumnType): Promise<FeaturedProducts> {
+  return await postFetch<FeaturedProducts>("/products/featured", { column });
+}
 
 export default async function Home() {
   const isMobile = await isMobileDevice();
 
+  const [
+    brandsData,
+    orderProductsData,
+    discountProductsData,
+    viewProductsData,
+  ] = await Promise.all([
+    getBrands(),
+    getFeaturedProducts("order"),
+    getFeaturedProducts("discount"),
+    getFeaturedProducts("view"),
+  ])
+
   return (
     <>
       <Hero isMobile={isMobile} />
-      <BrandSlider />
+      <BrandSlider brandsData={brandsData} isMobile={isMobile} />
       {isMobile ?
         <div className="mt-2">
           <Carousel
-            slides={Array.from({ length: 5 }, (_, i) => (
-              <div
-                key={i}
-                className="relative group overflow-hidden rounded-xl aspect-square">
+            slides={categoriesCards.map((category) => (
+              <Link
+                href={`/shop/${category.id}`}
+                key={category.id}
+                className="relative group block overflow-hidden rounded-xl aspect-square">
                 <Image
-                  src={jacket}
-                  alt={""}
+                  src={category.image}
+                  alt={category.title}
                   fill
                   className="object-cover object-center"
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/30 to-transparent opacity-90" />
                 <div className="absolute bottom-3 right-3 text-white">
-                  <h3 className="text-sm font-semibold">توپ بسکتبال</h3>
-                  <p className="text-2xs mt-1">+200 محصول</p>
+                  <h3 className="text-sm font-semibold">{category.title}</h3>
+                  <p className="text-2xs mt-1">{category.caption}</p>
                 </div>
-              </div>
+              </Link>
             ))}
             desktopSlidesPerView={4}
             mobileSlidesPerView={2.5} />
@@ -43,7 +67,9 @@ export default async function Home() {
         : <BentoCategory />}
       <div className="mt-6 lg:mt-14 container mx-auto">
         <Carousel
-          slides={Array.from({ length: 6 }, (_, i) => <ProductCard key={i} />)}
+          slides={orderProductsData.data.map((product) => (
+            <ProductCard key={product.id} data={product} />
+          ))}
           desktopSlidesPerView={4.5}
           mobileSlidesPerView={2.5}
           seeMoreLink="مشاهده همه"
@@ -52,7 +78,9 @@ export default async function Home() {
       <div className="container lg:mx-auto mt-6 lg:mt-14 pt-4 lg:pt-8 lg:px-8 relative">
         <div className="bg-primary h-40 lg:h-80 rounded-xl lg:rounded-3xl absolute top-0 left-0 right-0 -z-10"></div>
         <Carousel
-          slides={Array.from({ length: 6 }, (_, i) => <ProductCard key={i} />)}
+          slides={discountProductsData.data.map((product) => (
+            <ProductCard key={product.id} data={product} />
+          ))}
           desktopSlidesPerView={4}
           mobileSlidesPerView={2.5}
           seeMoreLink="مشاهده همه"
@@ -66,7 +94,9 @@ export default async function Home() {
       </div>
       <div className="mt-6 lg:mt-14 container mx-auto">
         <Carousel
-          slides={Array.from({ length: 6 }, (_, i) => <ProductCard key={i} />)}
+          slides={viewProductsData.data.map((product) => (
+            <ProductCard key={product.id} data={product} />
+          ))}
           desktopSlidesPerView={4.5}
           mobileSlidesPerView={2.5}
           seeMoreLink="مشاهده همه"
