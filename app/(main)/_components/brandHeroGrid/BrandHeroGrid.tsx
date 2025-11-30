@@ -1,31 +1,23 @@
 "use client";
 
-import Image, { type StaticImageData } from "next/image";
-import Link from "next/link";
+import { cn, createFileUrl } from "@/lib/utils";
+import { BrandBanner } from "@/types/brand.type";
 import { Button } from "@/ui/button";
+import Image from "next/image";
+import Link from "next/link";
 import * as React from "react";
-import { cn } from "@/lib/utils";
-
-type BrandHeroItem = {
-    id: number;
-    image: StaticImageData;
-    title: string;
-    description: string;
-    button: string;
-    href: string;
-};
 
 interface BrandHeroGridProps {
-    items: BrandHeroItem[];
+    data: BrandBanner[];
 }
 
-export const BrandHeroGrid: React.FC<BrandHeroGridProps> = ({ items }) => {
+export const BrandHeroGrid: React.FC<BrandHeroGridProps> = ({ data }) => {
     const [activeIndex, setActiveIndex] = React.useState(0);
 
     return (
         <section className="container mx-auto relative w-full z-20 mt-6 lg:mt-8 h-[260px] lg:h-[460px] px-4 lg:px-0 overflow-hidden">
             <div className={cn("flex h-full gap-2 lg:gap-3 overflow-x-auto md:overflow-visible snap-x snap-mandatory")}>
-                {items.slice(0, 4).map((item, idx) => {
+                {data.map((item, idx) => {
                     const isActive = idx === activeIndex;
                     return (
                         <article
@@ -38,7 +30,7 @@ export const BrandHeroGrid: React.FC<BrandHeroGridProps> = ({ items }) => {
                             aria-current={isActive}
                         >
                             <Image
-                                src={item.image}
+                                src={createFileUrl(item.image || "")}
                                 alt={item.title}
                                 quality={100}
                                 fill
@@ -60,17 +52,14 @@ export const BrandHeroGrid: React.FC<BrandHeroGridProps> = ({ items }) => {
                             <div className="relative z-10 h-full">
                                 <div className={cn("container h-full mx-auto px-4 lg:px-8 flex items-end pb-4 lg:pb-8")}>
                                     <div className={cn("text-white transition-opacity duration-500", isActive ? "opacity-100" : "opacity-0")}>
-                                        <h1 className="text-lg lg:text-4xl leading-8 lg:leading-14 font-semibold lg:font-bold mb-1 lg:mb-4">
+                                        <h1 className="text-lg lg:text-3xl leading-8 lg:leading-14 font-semibold lg:font-bold mb-1 lg:mb-4">
                                             {item.title}
                                         </h1>
-                                        <p className="font-light text-xs lg:text-lg lg:mb-6 mb-4">
-                                            {item.description}
-                                        </p>
-                                        <Link href={item.href}>
+                                        {item.link && <Link href={item.link}>
                                             <Button variant="secondary" size={"medium"}>
-                                                {item.button}
+                                                مشاهده بیشتر
                                             </Button>
-                                        </Link>
+                                        </Link>}
                                     </div>
                                 </div>
                             </div>

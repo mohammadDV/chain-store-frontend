@@ -6,3 +6,10 @@ export interface Brand {
     banners: any[];
     colors: any[];
 }
+
+export interface BrandBanner {
+    id: number;
+    title: string;
+    link: string | null;
+    image: string | null
+}
