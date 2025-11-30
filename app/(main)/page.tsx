@@ -12,6 +12,7 @@ import { BentoCategory, categoriesCards } from "./_components/bentoCategory";
 import { BrandSlider } from "./_components/brandSlider";
 import { Hero } from "./_components/hero";
 import { FeaturedProducts, ProductColumnType } from "@/types/product";
+import { PostsResponse } from "@/types/post.type";
 
 async function getBrands(): Promise<Brand[]> {
   return await getFetch<Brand[]>("/brands");
@@ -19,6 +20,10 @@ async function getBrands(): Promise<Brand[]> {
 
 async function getFeaturedProducts(column: ProductColumnType): Promise<FeaturedProducts> {
   return await postFetch<FeaturedProducts>("/products/featured", { column });
+}
+
+async function getLatestPosts(): Promise<PostsResponse> {
+  return await getFetch<PostsResponse>("/posts/latest");
 }
 
 export default async function Home() {
@@ -29,11 +34,13 @@ export default async function Home() {
     orderProductsData,
     discountProductsData,
     viewProductsData,
+    latestPostsData
   ] = await Promise.all([
     getBrands(),
     getFeaturedProducts("order"),
     getFeaturedProducts("discount"),
     getFeaturedProducts("view"),
+    getLatestPosts()
   ])
 
   return (
@@ -104,7 +111,9 @@ export default async function Home() {
       </div>
       <div className="mt-6 lg:mt-14 container mx-auto">
         <Carousel
-          slides={Array.from({ length: 6 }, (_, i) => <PostCard key={i} />)}
+          slides={latestPostsData.data?.map(post => (
+            <PostCard key={post.id} data={post} />
+          ))}
           desktopSlidesPerView={3}
           mobileSlidesPerView={1.5}
           seeMoreLink="/blog"
