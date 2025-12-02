@@ -19,7 +19,7 @@ interface GetProductsParams {
 export async function getProducts({
     query,
     page = 1,
-    count = 9,
+    count = 12,
     categories,
     colors,
     brands,

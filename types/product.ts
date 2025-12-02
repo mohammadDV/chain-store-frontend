@@ -1,3 +1,4 @@
+import { PaginationLink } from "@/app/_components/pagination";
 import { StatusCode } from "@/constants/enums";
 
 export type ProductColumnType = "rate" | "order" | "view" | "discount" | "reviews" | "amount"
@@ -23,7 +24,7 @@ export interface ProductSearchResponse {
     from: number;
     last_page: number;
     last_page_url: string;
-    links: any;
+    links: PaginationLink[];
     next_page_url: string | null;
     path: string;
     per_page: number;

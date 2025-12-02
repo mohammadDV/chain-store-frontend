@@ -1,3 +1,5 @@
+import { PaginationLink } from "@/app/_components/pagination";
+
 export interface Post {
     id: number;
     pre_title: string;
@@ -20,7 +22,7 @@ export interface PostsResponse {
     from: number;
     last_page: number;
     last_page_url: string;
-    links: any[];
+    links: PaginationLink[];
     next_page_url: string | null;
     path: string;
     per_page: number;

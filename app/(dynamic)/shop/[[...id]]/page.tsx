@@ -9,6 +9,8 @@ import Link from "next/link";
 import { TopNavActions } from "../../_components/topNavigation/TopNavActions";
 import { getCategory, getCategoryChildren, getParentCategories } from "../api/categoriesServices";
 import { getProducts, SortType } from "../api/getProducts";
+import { ProductsFilters } from "../_components/filters/Filters";
+import { Pagination } from "@/app/_components/pagination";
 
 interface ShopPageProps {
     params: Promise<{
@@ -63,6 +65,7 @@ export default async function Shop({ params, searchParams }: ShopPageProps) {
         colors,
         column: resolvedSearchParams?.column as ProductColumnType,
         start_amount: resolvedSearchParams?.start_amount,
+        end_amount: resolvedSearchParams?.end_amount,
         sort: resolvedSearchParams?.sort as SortType
     })
 
@@ -140,21 +143,25 @@ export default async function Shop({ params, searchParams }: ShopPageProps) {
             </div>
             <div className="container mx-auto px-4 lg:px-0 mt-6 lg:mt-8 flex flex-col lg:flex-row justify-between gap-4 lg:gap-10">
                 <div className="w-80">
-                    <div className="flex items-center justify-between">
-                        <h4 className="text-lg text-title font-medium">
-                            فیلتر محصولات
-                        </h4>
-                        <div className="text-sm text-secondary">
-                            حذف فیلتر ها
-                        </div>
-                    </div>
+                    <ProductsFilters />
                 </div>
                 <div className="flex-1">
-                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+                    <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 lg:gap-6">
                         {productsData.data.map(product => (
                             <ProductCard key={product.id} data={product} />
                         ))}
                     </div>
+                    {productsData.data && productsData.total > 12 && (
+                        <div className="mt-10">
+                            <Pagination
+                                currentPage={productsData.current_page}
+                                lastPage={productsData.last_page}
+                                links={productsData.links}
+                                total={productsData.total}
+                                routeUrl="/shop"
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
         </>
