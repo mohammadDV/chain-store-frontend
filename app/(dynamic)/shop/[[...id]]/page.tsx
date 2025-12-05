@@ -11,6 +11,7 @@ import { getCategory, getCategoryChildren, getParentCategories } from "../api/ca
 import { getProducts, SortType } from "../api/getProducts";
 import { ProductsFilters } from "../_components/filters/Filters";
 import { Pagination } from "@/app/_components/pagination";
+import { SortProducts } from "../_components/sort";
 
 interface ShopPageProps {
     params: Promise<{
@@ -146,6 +147,10 @@ export default async function Shop({ params, searchParams }: ShopPageProps) {
                     <ProductsFilters />
                 </div>
                 <div className="flex-1">
+                    <div className="flex items-center flex-wrap lg:justify-between gap-2 mb-4 lg:mb-6">
+                        <SortProducts />
+                        <h2 className="text-description text-sm font-medium">{productsData?.total} محصول پیدا شد</h2>
+                    </div>
                     <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 lg:gap-6">
                         {productsData.data.map(product => (
                             <ProductCard key={product.id} data={product} />

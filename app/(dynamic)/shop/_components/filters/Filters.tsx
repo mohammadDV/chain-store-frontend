@@ -1,4 +1,5 @@
 import { BrandsFilter } from "./BrandsFilter"
+import { ColorFilter } from "./ColorFilter"
 import { QueryFilter } from "./QueryFilter"
 import { RemoveFilters } from "./RemoveFilters"
 import { PriceRange } from "./PriceRange"
@@ -20,6 +21,11 @@ export const ProductsFilters = () => {
             <div>
                 <h3 className="text-title mb-3">انتخاب برند ها</h3>
                 <BrandsFilter />
+            </div>
+            <hr className="border-t border-border mb-5 lg:my-5" />
+            <div>
+                <h3 className="text-title mb-3">انتخاب رنگ ها</h3>
+                <ColorFilter />
             </div>
             <hr className="border-t border-border mb-5 lg:my-5" />
             <div>
