@@ -2,13 +2,13 @@
 
 import * as React from "react";
 import Image, { type StaticImageData } from "next/image";
-import { cn } from "@/lib/utils";
+import { cn, createFileUrl } from "@/lib/utils";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import { Icon } from "@/ui/icon";
 
 interface ProductGalleryProps {
-    images: StaticImageData[];
+    images: string[];
 }
 
 export const ProductGallery: React.FC<ProductGalleryProps> = ({ images }) => {
@@ -25,7 +25,7 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({ images }) => {
                     >
                         {slides.map((img, idx) => (
                             <SwiperSlide key={idx} className="flex items-center justify-center">
-                                <Image src={img} width={460} height={460} alt="product" className="object-contain mx-auto" />
+                                <Image src={createFileUrl(img)} width={460} height={460} alt="product" className="object-contain mx-auto" />
                             </SwiperSlide>
                         ))}
                     </Swiper>
@@ -47,7 +47,7 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({ images }) => {
             <div className={cn("lg:grid-cols-3 gap-6 mt-6 hidden lg:grid")}>
                 {slides.slice(0, 3).map((img, idx) => (
                     <div key={idx} className="aspect-square p-4 lg:p-6 flex items-center justify-center rounded-xl lg:rounded-2xl bg-surface">
-                        <Image src={img} width={160} height={160} alt="product" />
+                        <Image src={createFileUrl(img)} width={160} height={160} alt="product" />
                     </div>
                 ))}
             </div>
