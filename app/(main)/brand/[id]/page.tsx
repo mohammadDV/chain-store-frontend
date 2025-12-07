@@ -109,7 +109,7 @@ export default async function Brand({ params }: BrandPageParams) {
                     desktopSlidesPerView={4.5}
                     mobileSlidesPerView={2.5}
                     seeMoreLink="/shop"
-                    title="جدید ترین محصولات ما" />
+                    title="داغ ترین محصولات ما" />
             </div>
         </>
     )

@@ -2,7 +2,7 @@ import instagramBanner from "@/assets/images/instagram-banner.png";
 import mobileInstagramBanner from "@/assets/images/mobile-instagram-banner.png";
 import { getFetch, postFetch } from "@/core/publicService";
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
-import { Brand } from "@/types/brand.type";
+import { Brand, BrandBanner } from "@/types/brand.type";
 import Image from "next/image";
 import Link from "next/link";
 import { PostCard } from "../_components/cards/PostCard";
@@ -13,6 +13,10 @@ import { BrandSlider } from "./_components/brandSlider";
 import { Hero } from "./_components/hero";
 import { FeaturedProducts, ProductColumnType } from "@/types/product";
 import { PostsResponse } from "@/types/post.type";
+
+async function getBanners(): Promise<BrandBanner[]> {
+  return await postFetch<BrandBanner[]>("/banners", {});
+}
 
 async function getBrands(): Promise<Brand[]> {
   return await getFetch<Brand[]>("/brands");
@@ -30,12 +34,14 @@ export default async function Home() {
   const isMobile = await isMobileDevice();
 
   const [
+    bannersData,
     brandsData,
     orderProductsData,
     discountProductsData,
     viewProductsData,
     latestPostsData
   ] = await Promise.all([
+    getBanners(),
     getBrands(),
     getFeaturedProducts("order"),
     getFeaturedProducts("discount"),
@@ -45,7 +51,7 @@ export default async function Home() {
 
   return (
     <>
-      <Hero isMobile={isMobile} />
+      <Hero isMobile={isMobile} bannersData={bannersData} />
       <BrandSlider brandsData={brandsData} isMobile={isMobile} />
       {isMobile ?
         <div className="mt-2">
@@ -107,7 +113,7 @@ export default async function Home() {
           desktopSlidesPerView={4.5}
           mobileSlidesPerView={2.5}
           seeMoreLink="/shop"
-          title="جدید ترین محصولات ما" />
+          title="داغ ترین محصولات ما" />
       </div>
       <div className="mt-6 lg:mt-14 container mx-auto">
         <Carousel

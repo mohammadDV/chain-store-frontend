@@ -1,4 +1,5 @@
 import { FILE_URL } from "@/configs/global";
+import { regex } from "@/constants/regex";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -30,3 +31,11 @@ export const convertPersianToEnglish = (str: string): string => {
 };
 
 export const createFileUrl = (url: string) => `${FILE_URL}/${url}`;
+
+export const formatWebsiteUrl = (url: string) => {
+  if (!url) return '';
+  if (!regex.website.test(url)) {
+    return `https://${url}`;
+  }
+  return url;
+}

@@ -30,10 +30,10 @@ export const PostCard = ({ data }: PostCardProps) => {
             </span>
 
             <div className="absolute bottom-0 left-0 w-full p-3 lg:p-6 text-white">
-                <h3 className="mt-3 text-sm lg:text-xl font-semibold line-clamp-2 text-center">
+                <h3 className="mt-3 text-sm lg:text-xl font-semibold line-clamp-2">
                     {data.title}
                 </h3>
-                <p className="mt-1 lg:mt-2 text-2xs lg:text-sm text-center line-clamp-1 leading-6">
+                <p className="mt-1 lg:mt-2 text-2xs lg:text-sm line-clamp-1 leading-6">
                     {data.summary}
                 </p>
             </div>
