@@ -1,14 +1,22 @@
 import { PaginationLink } from "@/app/_components/pagination";
 import { StatusCode } from "@/constants/enums";
+import { Brand } from "./brand.type";
 import { Category } from "./category.type";
-import { Review } from "./review.type";
+import { File } from "./file.type";
+import { ReviewStatistic } from "./review.type";
 
 export type ProductColumnType = "rate" | "order" | "view" | "discount" | "reviews" | "amount";
 
-export type File = {
+export type Attribute = {
     id: number;
-    path: string;
-    type: "image" | "video"
+    title: string;
+    value: string;
+}
+
+export type Size = {
+    id: number;
+    title: string;
+    stock: number;
 }
 
 export type ProductSummary = {
@@ -25,19 +33,23 @@ export interface Product {
         id: number;
         title: string;
         color_id: number;
-        brand_id: number;
+        brand: Brand;
         amount: number;
         discount: number;
         status: string;
-        description: string;
+        description: string | null;
+        details: string | null;
         vip: boolean;
         image: string;
         rate: number;
         reviews_count: number;
         files: File[];
         categories: Category[];
+        attributes: Attribute[];
+        sizes: Size[];
+        is_favorite: boolean;
     };
-    reviews: Review[];
+    reviews: ReviewStatistic[];
     related_products: ProductSummary[];
 }
 

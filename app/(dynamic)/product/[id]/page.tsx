@@ -8,12 +8,12 @@ import boxIcon from "@/assets/images/box.svg";
 import checkIcon from "@/assets/images/check-box.svg";
 import truckIcon from "@/assets/images/truck.svg";
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
-import { putCommas } from "@/lib/utils";
+import { createFileUrl, putCommas } from "@/lib/utils";
 import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
 } from "@/ui/accordion";
 import { Button } from "@/ui/button";
 import { Icon } from "@/ui/icon";
@@ -22,6 +22,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { TopNavActions } from "../../_components/topNavigation/TopNavActions";
 import { getProduct } from "../_api/getProduct";
+import { getReviews } from "../_api/getReviews";
 
 interface ProductPageProps {
   params: Promise<{
@@ -34,6 +35,7 @@ export default async function Product({ params }: ProductPageProps) {
   const resolvedParams = await params;
 
   const productData = await getProduct(resolvedParams.id);
+  const reviewsData = await getReviews(resolvedParams.id);
 
   const productImages = [
     productData.product.image,
@@ -85,10 +87,10 @@ export default async function Product({ params }: ProductPageProps) {
                 <p className="text-description text-sm">
                   برند:
                   <Link
-                    href={`/shop/${productData.product.brand_id}`}
+                    href={`/brand/${productData.product.brand.id}`}
                     className="text-secondary mr-1"
                   >
-                    {productData.product.brand_id}
+                    {productData.product.brand.title}
                   </Link>
                 </p>
               </div>
@@ -156,14 +158,14 @@ export default async function Product({ params }: ProductPageProps) {
             <div className="mt-6 lg:mt-8">
               <p className="text-title font-medium mb-3">ویژگی های این محصول</p>
               <div className="flex gap-3 overflow-x-auto px-1 sm:grid sm:grid-cols-4 sm:overflow-visible">
-                {Array.from({ length: 4 }, (_, i) => (
+                {productData.product.attributes?.map(item => (
                   <div
-                    key={i}
+                    key={item.id}
                     className="min-w-[140px] p-2.5 rounded-lg bg-surface shrink-0"
                   >
-                    <p className="text-xs text-muted">رنگبندی ها</p>
+                    <p className="text-xs text-muted">{item.title}</p>
                     <p className="text-title text-xs font-medium mt-1">
-                      طوسی، سفید، مشکی
+                      {item.value}
                     </p>
                   </div>
                 ))}
@@ -172,38 +174,17 @@ export default async function Product({ params }: ProductPageProps) {
             <div className="mt-6 lg:mt-8">
               <p className="text-title text-sm font-medium mb-2">انتخاب سایز</p>
               <div className="flex items-center gap-2 flex-wrap">
-                <div className="size-9 flex items-center justify-center rounded-md bg-surface text-secondary">
-                  S
-                </div>
-                <div className="size-9 flex items-center justify-center rounded-md bg-surface text-secondary">
-                  M
-                </div>
-                <div className="size-9 flex items-center justify-center rounded-md bg-secondary text-white">
-                  L
-                </div>
-                <div className="size-9 flex items-center justify-center rounded-md bg-surface text-secondary">
-                  XL
-                </div>
+                {productData.product.sizes?.map(item => (
+                  <div
+                    key={item.id}
+                    className="size-9 flex items-center justify-center rounded-md bg-surface text-secondary"
+                  >
+                    {item.title}
+                  </div>
+                ))}
               </div>
             </div>
-            <div className="mt-4 lg:mt-5">
-              <p className="text-title text-sm font-medium mb-2">انتخاب رنگ</p>
-              <div className="flex items-center gap-2 flex-wrap">
-                <div className="size-9 flex items-center justify-center p-1 rounded-md bg-surface text-secondary">
-                  <div className="bg-white h-full w-full rounded-sm"></div>
-                </div>
-                <div className="size-9 flex items-center justify-center p-1 rounded-md bg-surface text-secondary">
-                  <div className="bg-[#DBDADA] h-full w-full rounded-sm"></div>
-                </div>
-                <div className="size-9 flex items-center justify-center p-1 rounded-md bg-surface text-secondary">
-                  <div className="bg-primary h-full w-full rounded-sm"></div>
-                </div>
-                <div className="size-9 flex items-center justify-center p-1 rounded-md bg-surface text-secondary">
-                  <div className="bg-[#D9C492] h-full w-full rounded-sm"></div>
-                </div>
-              </div>
-            </div>
-            <div className="lg:mt-6 fixed lg:static left-4 right-4 z-20 bottom-2 flex items-center justify-between gap-2 lg:gap-5">
+            <div className="lg:mt-8 fixed lg:static left-4 right-4 z-20 bottom-2 flex items-center justify-between gap-2 lg:gap-5">
               <Button variant={"primary"} size={"large"} className="flex-1">
                 افزودن به سبد خرید
               </Button>
@@ -259,37 +240,18 @@ export default async function Product({ params }: ProductPageProps) {
                 <AccordionItem value="description">
                   <AccordionTrigger>توضیحات محصول</AccordionTrigger>
                   <AccordionContent>
-                    <p className="text-sm text-description leading-6">
-                      {productData.product.description}
-                    </p>
+                    <div
+                      className="text-sm text-description leading-6"
+                      dangerouslySetInnerHTML={{ __html: productData.product.description || "" }}>
+                    </div>
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="specs">
                   <AccordionTrigger>مشخصات کالا</AccordionTrigger>
                   <AccordionContent>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <p className="text-xs text-muted">جنس</p>
-                        <p className="text-xs text-title font-medium">
-                          پلی‌استر
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted">وزن</p>
-                        <p className="text-xs text-title font-medium">
-                          450 گرم
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted">کشور سازنده</p>
-                        <p className="text-xs text-title font-medium">ایران</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted">گارانتی</p>
-                        <p className="text-xs text-title font-medium">
-                          یک‌ساله
-                        </p>
-                      </div>
+                    <div
+                      className="text-sm text-description leading-6"
+                      dangerouslySetInnerHTML={{ __html: productData.product.details || "" }}>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -354,16 +316,16 @@ export default async function Product({ params }: ProductPageProps) {
           </h3>
           <div className="flex justify-between gap-12">
             <div className="flex gap-4 overflow-x-auto pb-2 lg:w-2/3 lg:flex-col lg:overflow-visible">
-              {productData.reviews.map((review, index) => (
+              {reviewsData.data.map((review) => (
                 <div
-                  key={index}
+                  key={review.id}
                   className="max-w-[260px] lg:max-w-full p-3 lg:p-4 bg-surface rounded-2xl shrink-0"
                 >
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2">
                     <div className="flex items-center gap-2.5">
-                      <Image src={avatar} alt="avatar" width={42} height={42} />
+                      <Image src={createFileUrl(review.user.profile_photo_path || "")} alt="avatar" width={42} height={42} className="size-11 object-cover rounded-full" />
                       <p className="text-xs lg:text-sm text-title">
-                        کاربر بوف استور
+                        {review.user.nickname}
                       </p>
                       <div className="flex items-center gap-0.5">
                         {Array.from({ length: 5 }, (_, i) => (
@@ -380,11 +342,13 @@ export default async function Product({ params }: ProductPageProps) {
                         ))}
                       </div>
                     </div>
-                    <p className="text-xs text-description">12 مهر 1404</p>
+                    <p className="text-xs text-description">
+                      {review.created_at}
+                    </p>
                   </div>
 
                   <p className="text-sm text-description mt-3 leading-6">
-                    {review.title}
+                    {review.comment}
                   </p>
                 </div>
               ))}
@@ -396,40 +360,26 @@ export default async function Product({ params }: ProductPageProps) {
               </p>
               <div className="flex items-center justify-between gap-8">
                 <div className="flex flex-col gap-2 flex-1">
-                  <div className="flex items-center justify-between gap-3 flex-1">
-                    <p className="text-title">5</p>
-                    <Progress value={75} />
-                  </div>
-                  <div className="flex items-center justify-between gap-3 flex-1">
-                    <p className="text-title">4</p>
-                    <Progress value={50} />
-                  </div>
-                  <div className="flex items-center justify-between gap-3 flex-1">
-                    <p className="text-title">3</p>
-                    <Progress value={25} />
-                  </div>
-                  <div className="flex items-center justify-between gap-3 flex-1">
-                    <p className="text-title">2</p>
-                    <Progress value={10} />
-                  </div>
-                  <div className="flex items-center justify-between gap-3 flex-1">
-                    <p className="text-title">2</p>
-                    <Progress value={25} />
-                  </div>
+                  {productData.reviews?.map((stat) => (
+                    <div key={stat.rate} className="flex items-center justify-between gap-3 flex-1">
+                      <p className="text-title">{stat.rate}</p>
+                      <Progress value={stat.percentage} />
+                    </div>
+                  ))}
                 </div>
                 <div className="flex flex-col items-center justify-center gap-2">
-                  <p className="text-3xl text-secondary font-bold">4.75</p>
+                  <p className="text-3xl text-secondary font-bold">{productData.product.rate}</p>
                   <div className="flex items-center gap-0.5">
                     {Array.from({ length: 5 }, (_, index) => (
                       <Icon
                         key={index}
-                        icon="solar--star-bold"
+                        icon={index < productData.product.rate ? "solar--star-bold" : "solar--star-outline"}
                         sizeClass="size-5"
                         className="text-warning"
                       />
                     ))}
                   </div>
-                  <p className="text-sm text-description">از 26 نظر</p>
+                  <p className="text-sm text-description">از {productData.product.reviews_count} نظر</p>
                 </div>
               </div>
               <Button
@@ -449,7 +399,7 @@ export default async function Product({ params }: ProductPageProps) {
             ))}
             desktopSlidesPerView={4}
             mobileSlidesPerView={2.5}
-            title="پیشنهادات شگفت انگیز"
+            title="محصولات مرتبط"
           />
         </div>
       </div>
