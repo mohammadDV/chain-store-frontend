@@ -167,3 +167,23 @@ body {
 .brand-slider:hover .animate-marquee {
   animation-play-state: paused;
 }
+
+.toaster {
+  font-family: var(--font-estedad) !important;
+}
+
+.toaster [data-sonner-toast][data-type="success"] svg {
+  color: var(--success);
+}
+
+.toaster [data-sonner-toast][data-type="error"] svg {
+  color: var(--error);
+}
+
+.toaster [data-sonner-toast][data-type="warning"] svg {
+  color: var(--warning);
+}
+
+.toaster [data-sonner-toast][data-type="info"] svg {
+  color: var(--info);
+}
