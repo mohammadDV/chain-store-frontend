@@ -14,7 +14,7 @@ export default async function AuthLayout({
 
     return (
         <>
-            <div className="min-h-svh flex flex-col lg:flex-row lg:justify-between lg:gap-20">
+            <div className="min-h-svh flex flex-col lg:flex-row lg:justify-between 2xl:gap-20">
                 {isMobile && <Link href={"/"} className="m-2">
                     <Button variant={"link"} size={"small"} className="px-2">
                         <Icon icon="solar--alt-arrow-right-outline" sizeClass="size-4" />
@@ -34,7 +34,7 @@ export default async function AuthLayout({
                             className="object-cover w-full h-full"
                         />
                         <div className="absolute bottom-0 left-0 w-full h-full bg-primary/20"></div>
-                        <h2 className="absolute bottom-16 left-1/2 -translate-x-1/2 text-3xl text-white font-bold z-10">
+                        <h2 className="absolute w-full text-center bottom-16 left-1/2 -translate-x-1/2 text-3xl text-white font-bold z-10">
                             احساس قدرت، لمس کیفیت...
                         </h2>
                         <Link href={"/"} className="absolute right-6 top-6">
