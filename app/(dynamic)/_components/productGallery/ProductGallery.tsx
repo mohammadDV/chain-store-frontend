@@ -16,7 +16,7 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({ images }) => {
 
     return (
         <div className="lg:w-1/2">
-            <div className={cn("relative aspect-auto p-4 lg:p-12 flex items-center justify-center rounded-2xl lg:rounded-3xl bg-surface")}>
+            <div className={cn("relative aspect-auto")}>
                 <div className="w-full">
                     <Swiper
                         modules={[Navigation]}
@@ -45,9 +45,9 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({ images }) => {
             </div>
 
             <div className={cn("lg:grid-cols-4 gap-6 mt-6 hidden lg:grid")}>
-                {slides.slice(0, 3).map((img, idx) => (
-                    <div key={idx} className="aspect-square p-4 lg:p-6 flex items-center justify-center rounded-xl lg:rounded-2xl bg-surface">
-                        <Image src={createFileUrl(img)} width={160} height={160} alt="product" />
+                {slides.map((img, idx) => (
+                    <div key={idx} className="aspect-square">
+                        <Image src={createFileUrl(img)} width={160} height={160} alt="product" className="rounded-xl w-full" />
                     </div>
                 ))}
             </div>

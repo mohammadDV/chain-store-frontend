@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "boofstore.s3.ir-thr-at1.arvanstorage.ir",
+        hostname: "*",
         port: "",
         pathname: "/**",
       },

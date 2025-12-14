@@ -18,9 +18,12 @@ const ProductCard = ({ data }: ProductCardProps) => {
             <div className="hidden lg:block absolute left-4 top-4">
                 <Icon icon="solar--heart-linear" sizeClass="size-6" className="stroke-primary" />
             </div>
-            <div className="aspect-square p-4 lg:p-8 flex items-center justify-center rounded-xl lg:rounded-2xl bg-surface">
-                <Image src={createFileUrl(data.image || "")} width={275} height={275} alt={data.title} />
-            </div>
+            <Image
+                src={createFileUrl(data.image || "")}
+                width={275}
+                height={275}
+                alt={data.title}
+                className="rounded-xl lg:rounded-2xl w-full aspect-square" />
             <h1 className="text-title text-xs lg:text-lg font-semibold lg:font-bold line-clamp-1 mt-2 lg:mt-4">
                 {data.title}
             </h1>

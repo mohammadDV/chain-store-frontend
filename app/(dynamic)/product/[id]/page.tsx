@@ -177,7 +177,8 @@ export default async function Product({ params }: ProductPageProps) {
                 {productData.product.sizes?.map(item => (
                   <div
                     key={item.id}
-                    className="size-9 flex items-center justify-center rounded-md bg-surface text-secondary"
+                    dir="ltr"
+                    className="size-12 flex items-center justify-center text-sm rounded-md bg-surface text-secondary"
                   >
                     {item.title}
                   </div>
