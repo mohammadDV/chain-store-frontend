@@ -30,7 +30,12 @@ export const convertPersianToEnglish = (str: string): string => {
   });
 };
 
-export const createFileUrl = (url: string) => `${FILE_URL}/${url}`;
+export const createFileUrl = (url: string) => {
+  if (!regex.website.test(url)) {
+    return `${FILE_URL}/${url}`
+  }
+  return url
+};
 
 export const formatWebsiteUrl = (url: string) => {
   if (!url) return '';

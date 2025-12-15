@@ -36,10 +36,7 @@ export const Header = () => {
         <header className="container mx-auto mt-7">
             <div className="flex items-center justify-between">
                 <Link href={"/"} className="text-2xl font-extrabold text-title">
-                    بوف استور
-                    <span className="text-secondary mr-1">
-                        (لوگو)
-                    </span>
+                    <img src={"/images/logo.png"} alt="logo" width={156} height={32} />
                 </Link>
                 <div className="relative w-md">
                     <Input placeholder="دنبال چه محصولی میگردی؟" className="w-full" />
