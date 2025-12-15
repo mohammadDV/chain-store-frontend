@@ -8,7 +8,7 @@ import boxIcon from "@/assets/images/box.svg";
 import checkIcon from "@/assets/images/check-box.svg";
 import truckIcon from "@/assets/images/truck.svg";
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
-import { createFileUrl, putCommas } from "@/lib/utils";
+import { createFileUrl, isEmpty, putCommas } from "@/lib/utils";
 import {
   Accordion,
   AccordionContent,
@@ -23,6 +23,7 @@ import Link from "next/link";
 import { TopNavActions } from "../../_components/topNavigation/TopNavActions";
 import { getProduct } from "../_api/getProduct";
 import { getReviews } from "../_api/getReviews";
+import { AddToCart } from "./_components/AddToCart";
 
 interface ProductPageProps {
   params: Promise<{
@@ -112,11 +113,11 @@ export default async function Product({ params }: ProductPageProps) {
                 />
               </div>
             </div>
-            <div className="flex items-center justify-between mt-2.5 lg:mt-4">
+            <div className="flex justify-between items-start mt-2.5 lg:mt-4 gap-4">
               <h1 className="text-lg lg:text-2xl font-bold text-title">
                 {productData.product.title}
               </h1>
-              <div className="flex items-center justify-center bg-success rounded-full py-1 px-3 text-xs text-white">
+              <div className="flex items-center justify-center bg-success rounded-full py-1 px-3 text-xs min-w-max text-white">
                 ضمانت اصل بودن کالا
               </div>
             </div>
@@ -155,7 +156,7 @@ export default async function Product({ params }: ProductPageProps) {
                 {putCommas(finalAmount)} تومان
               </p>
             </div>
-            <div className="mt-6 lg:mt-8">
+            {!isEmpty(productData.product.attributes) && <div className="mt-6 lg:mt-8">
               <p className="text-title font-medium mb-3">ویژگی های این محصول</p>
               <div className="flex gap-3 overflow-x-auto px-1 sm:grid sm:grid-cols-4 sm:overflow-visible">
                 {productData.product.attributes?.map(item => (
@@ -170,43 +171,15 @@ export default async function Product({ params }: ProductPageProps) {
                   </div>
                 ))}
               </div>
-            </div>
-            <div className="mt-6 lg:mt-8">
-              <p className="text-title text-sm font-medium mb-2">انتخاب سایز</p>
-              <div className="flex items-center gap-2 flex-wrap">
-                {productData.product.sizes?.map(item => (
-                  <div
-                    key={item.id}
-                    dir="ltr"
-                    className="size-12 flex items-center justify-center text-sm rounded-md bg-surface text-secondary"
-                  >
-                    {item.title}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="lg:mt-8 fixed lg:static left-4 right-4 z-20 bottom-2 flex items-center justify-between gap-2 lg:gap-5">
-              <Button variant={"primary"} size={"large"} className="flex-1">
-                افزودن به سبد خرید
-              </Button>
-              <div className="bg-surface rounded-full p-1.5 flex items-center justify-between gap-4 lg:gap-10">
-                <div className="size-11 bg-white rounded-full flex items-center justify-center">
-                  <Icon
-                    icon="lucide--plus"
-                    sizeClass="size-5"
-                    className="text-secondary"
-                  />
-                </div>
-                <p className="text-xl font-medium text-title">1</p>
-                <div className="size-11 bg-white rounded-full flex items-center justify-center">
-                  <Icon
-                    icon="lucide--minus"
-                    sizeClass="size-5"
-                    className="text-secondary"
-                  />
-                </div>
-              </div>
-            </div>
+            </div>}
+            <AddToCart
+              productId={productData.product.id}
+              sizes={productData.product.sizes}
+              amount={productData.product.amount}
+              discount={productData.product.discount}
+              image={productData.product.image}
+              title={productData.product.title}
+            />
             <div className="hidden mt-8 lg:flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <p className="text-sm text-description">افزودن به علاقه مندی</p>
