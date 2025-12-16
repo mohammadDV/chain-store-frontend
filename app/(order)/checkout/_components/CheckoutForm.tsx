@@ -1,38 +1,48 @@
 "use client"
 
 import { RHFInput } from "@/app/_components/hookForm/RHFInput";
+import { RHFTextarea } from "@/app/_components/hookForm/RHFTextarea";
 import { useZodForm } from "@/hooks/useZodForm";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { FormProvider } from "react-hook-form";
 import z from "zod";
 
-export const CheckoutForm = () => {
+type Props = {
+    onValuesChange?: (values: any) => void;
+};
+
+export const CheckoutForm = ({ onValuesChange }: Props) => {
     const [isPending, startTransition] = useTransition();
 
     const checkoutSchema = z.object({
-        firstName: z.string()
+        fullname: z.string()
             .min(1, { message: "وارد کردن نام اجباری است" }),
-        lastName: z.string()
-            .min(1, { message: "وارد کردن نام خانوادگی اجباری است" }),
-        phone: z.string()
-            .min(1, { message: "وارد کردن شماره موبایل اجباری است" }),
-        postalCode: z.string()
+        postal_code: z.string()
             .min(1, { message: "وارد کردن کد پستی اجباری است" }),
         address: z.string()
-            .min(1, { message: "وارد کردن آدرس اجباری است" })
+            .min(1, { message: "وارد کردن آدرس اجباری است" }),
+        description: z.string().optional()
     });
 
     type CheckoutFormData = z.infer<typeof checkoutSchema>;
 
     const form = useZodForm(checkoutSchema, {
         defaultValues: {
-            firstName: '',
-            lastName: '',
-            phone: '',
-            postalCode: '',
-            address: ''
+            fullname: '',
+            postal_code: '',
+            address: '',
+            description: ''
         }
     });
+
+    useEffect(() => {
+        const subscription = form.watch((values) => {
+            if (onValuesChange) {
+                onValuesChange(values as CheckoutFormData);
+            }
+        });
+        return () => subscription.unsubscribe();
+    }, [form.watch, onValuesChange]);
 
     const onSubmit = async (data: CheckoutFormData) => {
         form.clearErrors();
@@ -48,28 +58,20 @@ export const CheckoutForm = () => {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
                     <div className="grid lg:grid-cols-2 gap-6">
                         <RHFInput
-                            name="firstName"
+                            name="fullname"
                             label="نام"
                             type="text" />
                         <RHFInput
-                            name="lastName"
-                            label="نام خانوادگی"
-                            type="text" />
-                    </div>
-                    <div className="grid lg:grid-cols-2 gap-6">
-                        <RHFInput
-                            name="phone"
-                            label="نام"
-                            type="text" />
-                        <RHFInput
-                            name="postalCode"
+                            name="postal_code"
                             label="کد پستی"
                             type="text" />
                     </div>
-                    <RHFInput
+                    <RHFTextarea
                         name="address"
-                        label="آدرس"
-                        type="text" />
+                        label="آدرس" />
+                    <RHFTextarea
+                        name="description"
+                        label="توضیحات" />
                 </form>
             </FormProvider>
         </div>

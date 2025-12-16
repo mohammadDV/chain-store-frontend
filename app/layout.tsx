@@ -20,7 +20,7 @@ export default function RootLayout({
       <body className={estedadFont.className}>
         <NextTopLoader color="#FF385C" />
         {children}
-        <Toaster position="top-right" />
+        <Toaster position="top-center" />
       </body>
     </html>
   );
