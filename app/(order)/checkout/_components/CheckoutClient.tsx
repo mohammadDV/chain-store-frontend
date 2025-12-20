@@ -20,6 +20,7 @@ type FormValues = {
 export const CheckoutClient = ({ order }: Props) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [currentOrder, setCurrentOrder] = useState<Order>(order);
   const [formValues, setFormValues] = useState<FormValues>({
     fullname: "",
     postal_code: "",
@@ -27,6 +28,7 @@ export const CheckoutClient = ({ order }: Props) => {
     description: "",
   });
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("bank");
+  const [appliedDiscountCode, setAppliedDiscountCode] = useState<string | null>(null);
 
   const onSubmit = () => {
     if (!formValues.fullname || !formValues.postal_code || !formValues.address) {
@@ -37,6 +39,7 @@ export const CheckoutClient = ({ order }: Props) => {
       try {
         const res = await payOrderAction(order.id, {
           payment_method: paymentMethod,
+          discount_code: appliedDiscountCode || undefined,
           description: formValues.description,
           address: formValues.address,
           fullname: formValues.fullname,
@@ -60,14 +63,24 @@ export const CheckoutClient = ({ order }: Props) => {
       </div>
       <div className="lg:w-1/3">
         <CheckoutInvoice
-          order={order}
+          order={currentOrder}
           paymentMethod={paymentMethod}
           setPaymentMethod={setPaymentMethod}
           onSubmit={onSubmit}
           isLoading={isPending}
+          appliedDiscountCode={appliedDiscountCode}
+          onDiscountApplied={(payload) => {
+            setAppliedDiscountCode(payload.discount_code);
+            setCurrentOrder((prev) => ({
+              ...prev,
+              amount: payload.amount,
+              total_amount: payload.total_amount,
+              discount_amount: payload.discount_amount,
+              delivery_amount: payload.delivery_amount,
+            }));
+          }}
         />
       </div>
     </div>
   );
 };
-

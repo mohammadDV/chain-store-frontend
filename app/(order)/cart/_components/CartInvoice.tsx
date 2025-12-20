@@ -14,15 +14,28 @@ export const CartInvoice = () => {
   const [isPending, startTransition] = useTransition();
   const items = useCartStore((s) => s.items);
 
-  const itemsAmount = useMemo(
-    () => items.reduce((sum, it) => sum + Number(it.amount || 0) * Number(it.count || 0), 0),
+  const originalAmount = useMemo(
+    () =>
+      items.reduce((sum, it) => {
+        const amount = Number(it.amount || 0);
+        const count = Number(it.count || 0);
+        return sum + amount * count;
+      }, 0),
     [items]
   );
-  const deliveryAmount = 0;
-  const payableAmount = useMemo(
-    () => itemsAmount + deliveryAmount,
-    [itemsAmount]
+  const itemsAmount = useMemo(
+    () =>
+      items.reduce((sum, it) => {
+        const amount = Number(it.amount || 0);
+        const discount = Number(it.discount || 0);
+        const count = Number(it.count || 0);
+        const finalAmount = Math.round(amount * (1 - discount / 100));
+        return sum + finalAmount * count;
+      }, 0),
+    [items]
   );
+  const discountAmount = Math.max(0, originalAmount - itemsAmount);
+  const payableAmount = itemsAmount;
 
   const onSubmit = () => {
     if (!items || items.length === 0) {
@@ -55,15 +68,17 @@ export const CartInvoice = () => {
         <div className="flex items-center justify-between">
           <p className="text-muted">قیمت کالا ها</p>
           <p className="text-title font-medium">
-            {putCommas(itemsAmount)} تومان
+            {putCommas(originalAmount)} تومان
           </p>
         </div>
-        <div className="flex items-center justify-between">
-          <p className="text-muted">هزینه ارسال</p>
-          <p className="text-title font-medium">
-            {putCommas(deliveryAmount)} تومان
-          </p>
-        </div>
+        {discountAmount > 0 && (
+          <div className="flex items-center justify-between">
+            <p className="text-muted">تخفیف کالاها</p>
+            <p className="text-title font-medium">
+              {putCommas(discountAmount)} تومان
+            </p>
+          </div>
+        )}
       </div>
       <hr className="border-t border-border my-5" />
       <div className="flex items-center justify-between">
@@ -85,4 +100,3 @@ export const CartInvoice = () => {
     </div>
   );
 };
-

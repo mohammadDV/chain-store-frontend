@@ -5,6 +5,10 @@ import { Order } from "@/types/Order.type";
 import { Button } from "@/ui/button";
 import { Label } from "@/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/ui/radio-group";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
+import { StatusCode } from "@/constants/enums";
+import { checkDiscountAction } from "../_api/checkDiscountAction";
 import { PaymentMethod } from "../_api/payOrderAction";
 
 type Props = {
@@ -13,13 +17,60 @@ type Props = {
   setPaymentMethod: (m: PaymentMethod) => void;
   onSubmit: () => void;
   isLoading?: boolean;
+  appliedDiscountCode?: string | null;
+  onDiscountApplied: (payload: {
+    discount_code: string;
+    amount: string;
+    total_amount: string;
+    discount_amount: string;
+    delivery_amount: string;
+  }) => void;
 };
 
-export const CheckoutInvoice = ({ order, paymentMethod, setPaymentMethod, onSubmit, isLoading }: Props) => {
+export const CheckoutInvoice = ({
+  order,
+  paymentMethod,
+  setPaymentMethod,
+  onSubmit,
+  isLoading,
+  appliedDiscountCode,
+  onDiscountApplied,
+}: Props) => {
   const totalAmount = Number(order.total_amount || 0);
   const discountAmount = Number(order.discount_amount || 0);
   const deliveryAmount = Number(order.delivery_amount || 0);
-  const payableAmount = Number(order.amount || 0);
+  const productsAmount = Number(order.amount || 0);
+
+  const [discountCode, setDiscountCode] = useState(appliedDiscountCode ?? "");
+  const [isCheckingDiscount, startCheckingDiscount] = useTransition();
+
+  const handleCheckDiscount = () => {
+    const code = discountCode.trim();
+    if (!code) {
+      toast.error("کد تخفیف را وارد کنید");
+      return;
+    }
+
+    startCheckingDiscount(async () => {
+      try {
+        const res = await checkDiscountAction(order.id, { discount_code: code });
+        if (res.status === StatusCode.Success) {
+          onDiscountApplied({
+            discount_code: code,
+            amount: String(res.amount ?? order.amount ?? 0),
+            total_amount: String(res.total_amount ?? order.total_amount ?? 0),
+            discount_amount: String(res.discount_amount ?? order.discount_amount ?? 0),
+            delivery_amount: String(res.delivery_amount ?? order.delivery_amount ?? 0),
+          });
+          toast.success(res.message || "کد تخفیف اعمال شد");
+        } else {
+          toast.error(res.message || "کد تخفیف معتبر نیست");
+        }
+      } catch {
+        toast.error("مشکل در بررسی کد تخفیف");
+      }
+    });
+  };
 
   return (
     <div className="bg-surface p-4 lg:p-6 rounded-2xl lg:rounded-3xl sticky top-6">
@@ -28,11 +79,11 @@ export const CheckoutInvoice = ({ order, paymentMethod, setPaymentMethod, onSubm
         <div className="flex items-center justify-between">
           <p className="text-muted">قیمت کالا ها</p>
           <p className="text-title font-medium">
-            {putCommas(totalAmount)} تومان
+            {putCommas(productsAmount)} تومان
           </p>
         </div>
         <div className="flex items-center justify-between">
-          <p className="text-muted">کد تخفیف (20%)</p>
+          <p className="text-muted">کد تخفیف</p>
           <p className="text-title font-medium">
             {putCommas(discountAmount)} تومان
           </p>
@@ -48,15 +99,28 @@ export const CheckoutInvoice = ({ order, paymentMethod, setPaymentMethod, onSubm
       <div className="flex items-center justify-between">
         <p className="text-title font-medium">مبلغ قابل پرداخت</p>
         <p className="text-title font-bold">
-          {putCommas(payableAmount)} تومان
+          {putCommas(totalAmount)} تومان
         </p>
       </div>
       <div className="flex items-center justify-between gap-3 mt-6">
         <input
           className="h-12 bg-white rounded-full text-sm placeholder:text-disabled outline-none px-4 flex-1"
           placeholder="کد تخفیف دارید؟"
+          value={discountCode}
+          onChange={(e) => setDiscountCode(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleCheckDiscount();
+            }
+          }}
         />
-        <Button variant={"outline"}>
+        <Button
+          variant={"outline"}
+          onClick={handleCheckDiscount}
+          isLoading={isCheckingDiscount}
+          disabled={!discountCode.trim()}
+        >
           ثبت کد
         </Button>
       </div>

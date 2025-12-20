@@ -59,16 +59,16 @@ export const CheckoutForm = ({ onValuesChange }: Props) => {
                     <div className="grid lg:grid-cols-2 gap-6">
                         <RHFInput
                             name="fullname"
-                            label="نام"
+                            label="نام *"
                             type="text" />
                         <RHFInput
                             name="postal_code"
-                            label="کد پستی"
+                            label="کد پستی *"
                             type="text" />
                     </div>
                     <RHFTextarea
                         name="address"
-                        label="آدرس" />
+                        label="آدرس *" />
                     <RHFTextarea
                         name="description"
                         label="توضیحات" />

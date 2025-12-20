@@ -7,6 +7,7 @@ export type PaymentMethod = "bank" | "wallet";
 
 export interface PayOrderPayload {
   payment_method: PaymentMethod;
+  discount_code?: string;
   description?: string;
   address: string;
   fullname: string;
@@ -29,4 +30,3 @@ export const payOrderAction = async (
     throw new Error("مشکل در دریافت اطلاعات");
   }
 };
-
