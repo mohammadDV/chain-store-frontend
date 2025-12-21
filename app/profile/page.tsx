@@ -3,16 +3,18 @@ import { Icon } from "@/ui/icon";
 import Link from "next/link";
 import { MobileHeader } from "../_components/header/MobileHeader";
 import { ProfileSidebar } from "./_components/sidebar";
+import { getUserData } from "@/lib/getUserDataFromHeaders";
 
 export default async function ProfilePage() {
     const isMobile = await isMobileDevice();
+    const userData = await getUserData();
 
     return (
         <>
             {isMobile && (
                 <>
                     <MobileHeader />
-                    <ProfileSidebar />
+                    <ProfileSidebar userData={userData} />
                 </>
             )}
             <div className="p-2 border border-border rounded-xl mx-4 lg:mx-0 mt-3 lg:mt-0">

@@ -1,13 +1,19 @@
 "use client"
 
 import avatar from "@/assets/images/avatar.svg";
-import { cn } from "@/lib/utils";
+import { cn, createFileUrl } from "@/lib/utils";
+import { UserData } from "@/types/user.type";
 import { Icon } from "@/ui/icon";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LogoutButton } from "../logout";
 
-export const ProfileSidebar = () => {
+interface ProfileSidebarProps {
+    userData?: UserData | null;
+}
+
+export const ProfileSidebar = ({ userData }: ProfileSidebarProps) => {
     const pathname = usePathname();
 
     const menuItems = [
@@ -37,13 +43,18 @@ export const ProfileSidebar = () => {
         <div className="lg:w-sm lg:shrink-0 px-4 lg:px-0 mt-4 lg:mt-0">
             <div className="bg-surface p-5 rounded-2xl flex items-center justify-between">
                 <div className="flex items-center gap-3.5">
-                    <Image src={avatar} alt="avatar" className="size-16 rounded-full" />
+                    <Image
+                        src={createFileUrl(userData?.user.profile_photo_path || "") || avatar}
+                        alt="avatar"
+                        width={64}
+                        height={64}
+                        className="size-16 rounded-full object-cover" />
                     <div className="flex flex-col gap-1.5">
                         <p className="text-title text-sm font-medium">
-                            سید بامداد لعلی
+                            {userData?.user.nickname}
                         </p>
                         <p className="text-muted text-xs">
-                            09395836018
+                            {userData?.customer_number}
                         </p>
                     </div>
                 </div>
@@ -62,15 +73,7 @@ export const ProfileSidebar = () => {
                         {pathname === item.url && <div className="w-0.5 rounded-full bg-secondary h-5 absolute -right-5"></div>}
                     </Link>
                 ))}
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                        <Icon icon="solar--logout-outline" sizeClass="size-6" className="text-secondary" />
-                        <p className="text-sm text-title font-medium">
-                            خروج از حساب کاربری
-                        </p>
-                    </div>
-                    <Icon icon="solar--alt-arrow-left-outline" className="text-disabled" sizeClass="size-6" />
-                </div>
+                <LogoutButton />
             </div>
         </div>
     )
