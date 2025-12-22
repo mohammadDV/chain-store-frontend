@@ -31,7 +31,7 @@ export default async function OrdersPage({
     const ordersData = await getMyOrders({ page });
     const orders = ordersData.data ?? [];
 
-    const gridCols = "grid-cols-[140px_160px_180px_220px_180px_1fr]";
+    const gridCols = "grid-cols-[140px_160px_220px_220px_180px_1fr]";
 
     return (
         <>
