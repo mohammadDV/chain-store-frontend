@@ -4,7 +4,7 @@ export type IconProps = {
     icon: string;
     sizeClass?: string;
     className?: string;
-    onClick?: () => void;
+    onClick?: (e?: any) => void;
 }
 
 export const Icon: React.FC<IconProps> = ({

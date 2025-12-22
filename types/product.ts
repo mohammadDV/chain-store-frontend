@@ -26,6 +26,7 @@ export type ProductSummary = {
     discount: number;
     image: string | null;
     rate: number;
+    is_favorite?: boolean;
 }
 
 export interface Product {

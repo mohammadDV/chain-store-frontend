@@ -8,6 +8,7 @@ import boxIcon from "@/assets/images/box.svg";
 import checkIcon from "@/assets/images/check-box.svg";
 import truckIcon from "@/assets/images/truck.svg";
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
+import { getUserData } from "@/lib/getUserDataFromHeaders";
 import { createFileUrl, isEmpty, putCommas } from "@/lib/utils";
 import {
   Accordion,
@@ -23,7 +24,8 @@ import Link from "next/link";
 import { TopNavActions } from "../../_components/topNavigation/TopNavActions";
 import { getProduct } from "../_api/getProduct";
 import { getReviews } from "../_api/getReviews";
-import { AddToCart } from "./_components/AddToCart";
+import { AddToCart } from "../_components/AddToCart";
+import { AddToFavorites } from "../_components/AddToFavorites";
 
 interface ProductPageProps {
   params: Promise<{
@@ -34,6 +36,8 @@ interface ProductPageProps {
 export default async function Product({ params }: ProductPageProps) {
   const isMobile = await isMobileDevice();
   const resolvedParams = await params;
+
+  const userData = await getUserData();
 
   const productData = await getProduct(resolvedParams.id);
   const reviewsData = await getReviews(resolvedParams.id);
@@ -181,14 +185,11 @@ export default async function Product({ params }: ProductPageProps) {
               title={productData.product.title}
             />
             <div className="hidden mt-8 lg:flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <p className="text-sm text-description">افزودن به علاقه مندی</p>
-                <Icon
-                  icon="solar--heart-linear"
-                  sizeClass="size-4"
-                  className="text-description"
-                />
-              </div>
+              <AddToFavorites
+                id={productData.product.id}
+                userData={userData}
+                isFavorite={productData.product.is_favorite}
+              />
               <div className="w-px h-4 block bg-border"></div>
               <div className="flex items-center gap-2">
                 <p className="text-sm text-description">اشتراک گذاری</p>
