@@ -1,11 +1,10 @@
+import { OrderHeader } from "@/app/(order)/_components/orderHeader";
+import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
+import { cn, putCommas } from "@/lib/utils";
 import { Button } from "@/ui/button";
 import { Icon } from "@/ui/icon";
 import Link from "next/link";
 import { getPaymentResult } from "../_api/getPaymentResult";
-import { cn, putCommas } from "@/lib/utils";
-import { formatToShamsiWithYear } from "@/lib/dateUtils";
-import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
-import { OrderHeader } from "@/app/(order)/_components/orderHeader";
 
 export interface PaymentResultResponse {
     bank_transaction_id: string;
@@ -27,14 +26,6 @@ export default async function PaymentResultPage({ params }: PaymentResultPagePro
     const resolvedParams = await params;
 
     const paymentResultData: PaymentResultResponse = await getPaymentResult({ id: resolvedParams.transactionId })
-
-    const paymentDate = new Date(paymentResultData?.date?.replace(' ', 'T'));
-    const formattedDate = formatToShamsiWithYear(paymentDate);
-    const formattedTime = paymentDate.toLocaleTimeString('fa-IR', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-    });
 
     return (
         <div className="mt-5 lg:mt-16">
@@ -94,7 +85,7 @@ export default async function PaymentResultPage({ params }: PaymentResultPagePro
                                 تاریخ پرداخت
                             </p>
                             <p className="text-text text-sm font-medium">
-                                {formattedDate}
+                                {paymentResultData?.date.split(" ")?.[0]}
                             </p>
                         </div>
                         <div className="flex items-center justify-between">
@@ -102,7 +93,7 @@ export default async function PaymentResultPage({ params }: PaymentResultPagePro
                                 زمان
                             </p>
                             <p className="text-text text-sm font-medium">
-                                {formattedTime}
+                                {paymentResultData?.date.split(" ")?.[1]}
                             </p>
                         </div>
                     </div>

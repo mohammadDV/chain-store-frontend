@@ -1,3 +1,5 @@
+import { PaginationLink } from "@/app/_components/pagination";
+
 export type OrderStatus = "pending" | "completed" | "cancelled";
 
 export interface Order {
@@ -27,4 +29,20 @@ export interface OrderProduct {
     status: OrderStatus;
     color_id: number;
     size_id: number;
+}
+
+export interface OrdersResponse {
+    current_page: number;
+    data: Order[];
+    first_page_url: string;
+    from: number;
+    last_page: number;
+    last_page_url: string;
+    links: PaginationLink[];
+    next_page_url: string | null;
+    path: string;
+    per_page: number;
+    prev_page_url: string | null;
+    to: number;
+    total: number;
 }
