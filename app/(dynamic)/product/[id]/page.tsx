@@ -2,7 +2,6 @@ import { ProductGallery } from "@/app/(dynamic)/_components/productGallery";
 import ProductCard from "@/app/_components/cards/ProductCard";
 import { Carousel } from "@/app/_components/carousel";
 import seven24Icon from "@/assets/images/724.svg";
-import avatar from "@/assets/images/avatar.svg";
 import barcodeIcon from "@/assets/images/barcode.svg";
 import boxIcon from "@/assets/images/box.svg";
 import checkIcon from "@/assets/images/check-box.svg";
@@ -16,7 +15,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/ui/accordion";
-import { Button } from "@/ui/button";
 import { Icon } from "@/ui/icon";
 import { Progress } from "@/ui/progress";
 import Image from "next/image";
@@ -26,6 +24,7 @@ import { getProduct } from "../_api/getProduct";
 import { getReviews } from "../_api/getReviews";
 import { AddToCart } from "../_components/AddToCart";
 import { AddToFavorites } from "../_components/AddToFavorites";
+import { AddReviewModal } from "../_components/AddReviewModal";
 
 interface ProductPageProps {
   params: Promise<{
@@ -291,7 +290,7 @@ export default async function Product({ params }: ProductPageProps) {
           </h3>
           <div className="flex justify-between gap-12">
             <div className="flex gap-4 overflow-x-auto pb-2 lg:w-2/3 lg:flex-col lg:overflow-visible">
-              {reviewsData.data.map((review) => (
+              {reviewsData?.data?.length > 0 ? reviewsData.data.map((review) => (
                 <div
                   key={review.id}
                   className="max-w-[260px] lg:max-w-full p-3 lg:p-4 bg-surface rounded-2xl shrink-0"
@@ -326,7 +325,8 @@ export default async function Product({ params }: ProductPageProps) {
                     {review.comment}
                   </p>
                 </div>
-              ))}
+              ))
+                : <p className="text-description text-lg">هنوز نظری برای این محصول ثبت نشده است.</p>}
             </div>
 
             <div className="hidden lg:block lg:w-1/3">
@@ -357,13 +357,10 @@ export default async function Product({ params }: ProductPageProps) {
                   <p className="text-sm text-description">از {productData.product.reviews_count} نظر</p>
                 </div>
               </div>
-              <Button
-                variant={"outline"}
-                size={"medium"}
-                className="w-full mt-8"
-              >
-                نظر خود را بنویسید
-              </Button>
+              <AddReviewModal
+                productId={productData.product.id}
+                userData={userData}
+              />
             </div>
           </div>
         </div>
