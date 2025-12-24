@@ -57,10 +57,12 @@ export const Header = ({ userData }: HeaderProps) => {
                         className="text-disabled absolute left-3 top-3" />
                 </div>
                 <div className="flex items-center justify-end gap-4">
-                    <Icon
-                        icon="solar--heart-linear"
-                        sizeClass="size-6"
-                        className="text-primary" />
+                    <Link href={"/profile/favorites"}>
+                        <Icon
+                            icon="solar--heart-linear"
+                            sizeClass="size-6"
+                            className="text-primary" />
+                    </Link>
                     <Link href={"/cart"} className="relative">
                         <span className="bg-secondary size-4 flex items-center justify-center absolute -top-1.5 -right-1.5 rounded-full z-20 text-xs text-white">
                             {cart.length}
