@@ -28,6 +28,11 @@ export const ProfileSidebar = ({ userData }: ProfileSidebarProps) => {
             url: "/profile/orders",
         },
         {
+            icon: "solar--wallet-outline",
+            title: "کیف پول",
+            url: "/profile/wallet",
+        },
+        {
             icon: "solar--heart-linear",
             title: "علاقه مندی ها",
             url: "/profile/favorites",
