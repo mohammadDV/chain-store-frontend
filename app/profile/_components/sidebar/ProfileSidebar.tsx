@@ -42,11 +42,18 @@ export const ProfileSidebar = ({ userData }: ProfileSidebarProps) => {
             title: "نظرات من",
             url: "/profile/reviews",
         },
+        {
+            icon: "solar--lock-password-outline",
+            title: "تغییر رمز عبور",
+            url: "/profile/change-password",
+        },
     ]
 
     return (
         <div className="lg:w-sm lg:shrink-0 px-4 lg:px-0 mt-4 lg:mt-0">
-            <div className="bg-surface p-5 rounded-2xl flex items-center justify-between">
+            <Link
+                href={"/profile/account"}
+                className="bg-surface p-5 rounded-2xl flex items-center justify-between">
                 <div className="flex items-center gap-3.5">
                     <Image
                         src={createFileUrl(userData?.user.profile_photo_path || "") || avatar}
@@ -64,7 +71,7 @@ export const ProfileSidebar = ({ userData }: ProfileSidebarProps) => {
                     </div>
                 </div>
                 <Icon icon="solar--alt-arrow-left-outline" className="text-disabled" sizeClass="size-6" />
-            </div>
+            </Link>
             <div className="mt-3 lg:mt-4 bg-surface p-5 rounded-2xl flex flex-col gap-5 divide-y divide-border">
                 {menuItems.map(item => (
                     <Link href={item.url} key={item.url} className="flex items-center justify-between pb-5 relative">
