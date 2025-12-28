@@ -5,6 +5,12 @@ import { MobileHeader } from "../_components/header/MobileHeader";
 import { ProfileSidebar } from "./_components/sidebar";
 import { getUserData } from "@/lib/getUserDataFromHeaders";
 import { getFetchAuth } from "@/core/privateService";
+import { FeaturedProducts, ProductColumnType } from "@/types/product";
+import { postFetch } from "@/core/publicService";
+import { Carousel } from "../_components/carousel";
+import ProductCard from "../_components/cards/ProductCard";
+import "swiper/css";
+import "swiper/css/pagination";
 
 interface DashboardInfoResponse {
     order_in_progress_count: number;
@@ -16,10 +22,15 @@ async function getDashboardInfo(): Promise<DashboardInfoResponse> {
     return await getFetchAuth<DashboardInfoResponse>("/profile/dashboard-info");
 }
 
+async function getFeaturedProducts(column: ProductColumnType): Promise<FeaturedProducts> {
+    return await postFetch<FeaturedProducts>("/products/featured", { column });
+}
+
 export default async function ProfilePage() {
     const isMobile = await isMobileDevice();
     const userData = await getUserData();
     const dashboardInfo = await getDashboardInfo();
+    const featuredProducts = await getFeaturedProducts("random");
 
     return (
         <>
@@ -90,9 +101,16 @@ export default async function ProfilePage() {
                         مشاهده همه
                     </Link>
                 </div>
-                <p className="my-5 text-center text-description">
+                {featuredProducts.data.length > 0 ? (
+                    <div className="mt-3">
+                        <Carousel
+                            slides={featuredProducts.data.map(item => <ProductCard key={item.id} data={item} />)}
+                            disableNavigation
+                        />
+                    </div>
+                ) : <p className="my-5 text-center text-description">
                     موردی جهت نمایش وجود ندارد.
-                </p>
+                </p>}
             </div>
         </>
     )
