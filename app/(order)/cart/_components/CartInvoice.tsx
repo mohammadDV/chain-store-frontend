@@ -18,8 +18,12 @@ export const CartInvoice = () => {
     () =>
       items.reduce((sum, it) => {
         const amount = Number(it.amount || 0);
+        const discount = Number(it.discount || 0);
         const count = Number(it.count || 0);
-        return sum + amount * count;
+        const originalUnitAmount = discount > 0
+          ? Math.round(amount / Math.max(1e-9, 1 - discount / 100))
+          : amount;
+        return sum + originalUnitAmount * count;
       }, 0),
     [items]
   );
@@ -27,10 +31,8 @@ export const CartInvoice = () => {
     () =>
       items.reduce((sum, it) => {
         const amount = Number(it.amount || 0);
-        const discount = Number(it.discount || 0);
         const count = Number(it.count || 0);
-        const finalAmount = Math.round(amount * (1 - discount / 100));
-        return sum + finalAmount * count;
+        return sum + amount * count;
       }, 0),
     [items]
   );

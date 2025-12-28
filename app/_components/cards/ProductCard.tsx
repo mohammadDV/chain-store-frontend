@@ -68,6 +68,8 @@ const ProductCard = ({ data }: ProductCardProps) => {
         }
     };
 
+    const isFree = data.amount === 0;
+
     return (
         <Link href={`/product/${data.id}`} className="relative">
             {data.discount > 0 && (
@@ -91,17 +93,21 @@ const ProductCard = ({ data }: ProductCardProps) => {
                 {data.title}
             </h1>
             <div className="flex items-center gap-1.5 lg:gap-3 mt-2">
-                {data.discount > 0 && (
+                {!isFree && data.discount > 0 && (
                     <del className="text-2xs lg:text-sm text-disabled">
-                        {putCommas(data.amount)}
+                        {putCommas(
+                            Math.round(
+                                data.amount / Math.max(1e-9, 1 - (data.discount || 0) / 100)
+                            )
+                        )}
                     </del>
                 )}
                 <p className="text-title text-xs lg:text-base">
-                    {putCommas(Math.round(data.amount * (1 - (data.discount || 0) / 100)))} تومان
+                    {isFree ? "رایگان" : `${putCommas(data.amount)} تومان`}
                 </p>
             </div>
         </Link>
     )
 }
 
-export default ProductCard
+export default ProductCard;

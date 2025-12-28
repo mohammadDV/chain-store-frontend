@@ -42,13 +42,15 @@ export default async function Product({ params }: ProductPageProps) {
   const reviewsData = await getReviews(resolvedParams.id);
 
   const productImages = [
-    productData.product.image,
+    productData?.product.image,
     ...productData.product.files.map((file) => file.path),
   ];
 
   const hasDiscount = (productData.product.discount || 0) > 0;
-  const finalAmount = Math.round(
-    productData.product.amount * (1 - (productData.product.discount || 0) / 100)
+  const isFree = productData.product.amount === 0;
+  const originalAmount = Math.round(
+    productData.product.amount /
+    Math.max(1e-9, 1 - (productData.product.discount || 0) / 100)
   );
 
   return (
@@ -145,10 +147,10 @@ export default async function Product({ params }: ProductPageProps) {
               </p>
             </div>
             <div className="mt-6 lg:mt-8">
-              {hasDiscount && (
+              {!isFree && hasDiscount && (
                 <div className="flex items-center gap-2.5">
                   <del className="text-disabled lg:text-lg">
-                    {putCommas(productData.product.amount)}
+                    {putCommas(originalAmount)}
                   </del>
                   <div className="bg-secondary py-0.5 px-3 rounded-sm text-white text-sm flex items-center justify-center">
                     {productData.product.discount} %
@@ -156,7 +158,7 @@ export default async function Product({ params }: ProductPageProps) {
                 </div>
               )}
               <p className="text-secondary text-xl lg:text-2xl font-bold mt-2">
-                {putCommas(finalAmount)} تومان
+                {isFree ? "رایگان" : `${putCommas(productData.product.amount)} تومان`}
               </p>
             </div>
             {!isEmpty(productData.product.attributes) && <div className="mt-6 lg:mt-8">
