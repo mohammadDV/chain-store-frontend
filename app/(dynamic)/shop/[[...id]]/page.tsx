@@ -163,7 +163,7 @@ export default async function Shop({ params, searchParams }: ShopPageProps) {
                                 lastPage={productsData.last_page}
                                 links={productsData.links}
                                 total={productsData.total}
-                                routeUrl="/shop"
+                                routeUrl={`/shop/${resolvedParams.id || ""}`}
                             />
                         </div>
                     )}
