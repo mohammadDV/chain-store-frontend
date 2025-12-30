@@ -64,7 +64,7 @@ export const SortProducts = () => {
 
   return (
     <div className="flex items-center gap-2 lg:gap-4 bg-white lg:bg-transparent lg:p-0 pl-1.5 py-1 rounded-full">
-      <div className="flex items-center gap-2 lg:gap-3">
+      <div className="hidden lg:flex items-center gap-2 lg:gap-3">
         <Icon icon="solar--sort-outline" sizeClass="size-4.5 lg:size-6" className="text-primary" />
         <p className="hidden lg:block text-description">مرتب سازی</p>
       </div>
