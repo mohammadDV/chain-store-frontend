@@ -1,10 +1,19 @@
+"use client";
+
 import { Icon } from "@/ui/icon"
+import { useState } from "react";
+import { MobileHeaderSearch } from "./MobileHeaderSearch";
 
 export const MobileHeader = () => {
+    const [openSearch, setOpenSearch] = useState(false);
+
     return (
         <header className="mt-4 mx-4">
             <div className="flex items-center gap-2.5">
-                <div className="flex-1 bg-surface flex gap-2 items-center h-10 rounded-md p-2.5">
+                <div 
+                    className="flex-1 bg-surface flex gap-2 items-center h-10 rounded-md p-2.5 cursor-pointer"
+                    onClick={() => setOpenSearch(true)}
+                >
                     <Icon
                         icon="solar--magnifer-outline"
                         sizeClass="size-5"
@@ -23,6 +32,7 @@ export const MobileHeader = () => {
                         className="text-title" />
                 </div>
             </div>
+            {openSearch && <MobileHeaderSearch onClose={() => setOpenSearch(false)} />}
         </header>
     )
 }
