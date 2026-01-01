@@ -89,7 +89,7 @@ const ProductCard = ({ data }: ProductCardProps) => {
                 height={275}
                 alt={data.title}
                 className="rounded-xl lg:rounded-2xl w-full aspect-square" />
-            <h1 className="text-title text-xs lg:text-lg font-semibold lg:font-bold line-clamp-1 mt-2 lg:mt-4">
+            <h1 className="text-title text-xs lg:text-base font-semibold lg:font-bold line-clamp-1 mt-2 lg:mt-4">
                 {data.title}
             </h1>
             <div className="flex items-center gap-1.5 lg:gap-3 mt-2">

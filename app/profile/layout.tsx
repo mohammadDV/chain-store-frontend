@@ -3,6 +3,7 @@ import { getUserData } from "@/lib/getUserDataFromHeaders";
 import { Footer } from "../_components/footer";
 import { Header } from "../_components/header";
 import { ProfileSidebar } from "./_components/sidebar";
+import { BottomNavigation } from "../_components/bottomNavigation";
 
 export default async function ProfileLayout({
     children,
@@ -22,6 +23,7 @@ export default async function ProfileLayout({
                 </div>
             </div>
             {!isMobile && <Footer />}
+            {isMobile && <BottomNavigation />}
         </>
     )
 }

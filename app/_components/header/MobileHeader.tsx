@@ -18,7 +18,7 @@ export const MobileHeader = () => {
                 </div>
                 <div className="size-10 bg-surface rounded-md flex items-center justify-center">
                     <Icon
-                        icon="solar--box-minimalistic-outline"
+                        icon="solar--user-rounded-outline"
                         sizeClass="size-6"
                         className="text-title" />
                 </div>

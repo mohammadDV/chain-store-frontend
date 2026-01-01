@@ -54,7 +54,7 @@ export default async function Home() {
       <Hero isMobile={isMobile} bannersData={bannersData} />
       <BrandSlider brandsData={brandsData} isMobile={isMobile} />
       {isMobile ?
-        <div className="mt-2">
+        <div className="mt-6">
           <Carousel
             slides={categoriesCards.map((category) => (
               <Link
