@@ -16,8 +16,8 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({ images }) => {
 
     return (
         <div className="lg:w-1/2">
-            <div className={cn("relative aspect-auto")}>
-                <div className="w-full">
+            <div className={"relative aspect-auto"}>
+                <div className="w-full bg-surface rounded-3xl">
                     <Swiper
                         modules={[Navigation]}
                         navigation={{ nextEl: ".gallery-next", prevEl: ".gallery-prev" }}

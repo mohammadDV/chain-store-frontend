@@ -39,7 +39,7 @@ export const Carousel = ({
 
   return (
     <section className="pr-4 lg:px-0">
-      <div className="flex items-center justify-between mb-3.5 lg:mb-6 pl-4 lg:pl-0">
+      {title && <div className="flex items-center justify-between mb-3.5 lg:mb-6 pl-4 lg:pl-0">
         <div className="flex items-center justify-between w-full lg:w-auto gap-2.5 lg:gap-4">
           <h2 className={cn("lg:text-2xl font-bold", titleColor || "text-title")}>{title}</h2>
           {seeMoreLink && (
@@ -77,7 +77,7 @@ export const Carousel = ({
             </div>
           )}
         </div>
-      </div>
+      </div>}
       <Swiper
         onBeforeInit={(swiper) => {
           swiperRef.current = swiper;

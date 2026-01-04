@@ -86,7 +86,7 @@ export const Footer = () => {
                     <h4 className="mb-2.5 lg:mb-3.5 text-xs lg:text-lg font-semibold lg:font-bold text-white">
                         نماد های اعتماد
                     </h4>
-                    <Image src={enamad} alt="" width={149} height={149} className="mt-5" />
+                    {/* <Image src={enamad} alt="" width={149} height={149} className="mt-5" /> */}
                 </div>
             </div>
             <div className="container mx-auto">

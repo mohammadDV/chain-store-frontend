@@ -10,6 +10,7 @@ import { TopNavActions } from "../../_components/topNavigation/TopNavActions";
 import { getCategory, getCategoryChildren, getParentCategories } from "../_api/categoriesServices";
 import { getProducts, SortType } from "../_api/getProducts";
 import { ProductsFilters } from "../_components/filters/Filters";
+import { MobileFilters } from "../_components/filters/MobileFilters";
 import { Pagination } from "@/app/_components/pagination";
 import { SortProducts } from "../_components/sort";
 
@@ -142,13 +143,24 @@ export default async function Shop({ params, searchParams }: ShopPageProps) {
                         </div>)}
                 </div>
             </div>
-            <div className="container mx-auto px-4 lg:px-0 mt-6 lg:mt-8 flex flex-col lg:flex-row justify-between gap-4 lg:gap-10">
-                <div className="w-80">
+            <div className="container mx-auto px-4 lg:px-0 mt-5 lg:mt-8 flex flex-col lg:flex-row justify-between gap-4 lg:gap-10">
+                {!isMobile && <div className="w-80">
                     <ProductsFilters />
-                </div>
+                </div>}
                 <div className="flex-1">
-                    <div className="flex items-center flex-wrap lg:justify-between gap-2 mb-4 lg:mb-6">
-                        <SortProducts />
+                    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between mb-4 lg:mb-6">
+                        {isMobile ? (
+                            <div className="flex items-center gap-3">
+                                <MobileFilters />
+                                <div className="flex-1 overflow-x-auto">
+                                    <div className="min-w-max">
+                                        <SortProducts />
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <SortProducts />
+                        )}
                         <h2 className="text-description text-sm font-medium">{productsData?.total} محصول پیدا شد</h2>
                     </div>
                     <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 lg:gap-6">
@@ -163,7 +175,7 @@ export default async function Shop({ params, searchParams }: ShopPageProps) {
                                 lastPage={productsData.last_page}
                                 links={productsData.links}
                                 total={productsData.total}
-                                routeUrl="/shop"
+                                routeUrl={`/shop/${resolvedParams.id || ""}`}
                             />
                         </div>
                     )}

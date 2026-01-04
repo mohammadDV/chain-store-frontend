@@ -5,7 +5,7 @@ import { Category } from "./category.type";
 import { File } from "./file.type";
 import { ReviewStatistic } from "./review.type";
 
-export type ProductColumnType = "rate" | "order" | "view" | "discount" | "reviews" | "amount";
+export type ProductColumnType = "rate" | "order" | "view" | "discount" | "reviews" | "amount" | "random";
 
 export type Attribute = {
     id: number;
@@ -26,6 +26,7 @@ export type ProductSummary = {
     discount: number;
     image: string | null;
     rate: number;
+    is_favorite?: boolean;
 }
 
 export interface Product {

@@ -2,7 +2,7 @@ import { PaginationLink } from "@/app/_components/pagination";
 
 export interface Post {
     id: number;
-    pre_title: string;
+    pre_title: string | null;
     title: string;
     slug: string;
     summary: string;

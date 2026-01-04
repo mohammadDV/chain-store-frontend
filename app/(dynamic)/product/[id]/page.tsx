@@ -2,20 +2,20 @@ import { ProductGallery } from "@/app/(dynamic)/_components/productGallery";
 import ProductCard from "@/app/_components/cards/ProductCard";
 import { Carousel } from "@/app/_components/carousel";
 import seven24Icon from "@/assets/images/724.svg";
-import avatar from "@/assets/images/avatar.svg";
 import barcodeIcon from "@/assets/images/barcode.svg";
 import boxIcon from "@/assets/images/box.svg";
 import checkIcon from "@/assets/images/check-box.svg";
 import truckIcon from "@/assets/images/truck.svg";
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
-import { createFileUrl, putCommas } from "@/lib/utils";
+import { getUserData } from "@/lib/getUserDataFromHeaders";
+import { createFileUrl, isEmpty, putCommas } from "@/lib/utils";
+import { ProductSummary } from "@/types/product";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/ui/accordion";
-import { Button } from "@/ui/button";
 import { Icon } from "@/ui/icon";
 import { Progress } from "@/ui/progress";
 import Image from "next/image";
@@ -23,6 +23,10 @@ import Link from "next/link";
 import { TopNavActions } from "../../_components/topNavigation/TopNavActions";
 import { getProduct } from "../_api/getProduct";
 import { getReviews } from "../_api/getReviews";
+import { getSimilarProducts } from "../_api/getSimilarProducts";
+import { AddReviewModal } from "../_components/AddReviewModal";
+import { AddToCart } from "../_components/AddToCart";
+import { AddToFavorites } from "../_components/AddToFavorites";
 
 interface ProductPageProps {
   params: Promise<{
@@ -34,22 +38,27 @@ export default async function Product({ params }: ProductPageProps) {
   const isMobile = await isMobileDevice();
   const resolvedParams = await params;
 
+  const userData = await getUserData();
+
   const productData = await getProduct(resolvedParams.id);
   const reviewsData = await getReviews(resolvedParams.id);
+  const similarProductsData = await getSimilarProducts(resolvedParams.id);
 
   const productImages = [
-    productData.product.image,
+    productData?.product.image,
     ...productData.product.files.map((file) => file.path),
   ];
 
   const hasDiscount = (productData.product.discount || 0) > 0;
-  const finalAmount = Math.round(
-    productData.product.amount * (1 - (productData.product.discount || 0) / 100)
+  const isFree = productData.product.amount === 0;
+  const originalAmount = Math.round(
+    productData.product.amount /
+    Math.max(1e-9, 1 - (productData.product.discount || 0) / 100)
   );
 
   return (
     <>
-      {isMobile && <TopNavActions title={productData.product.title} />}
+      {isMobile && <TopNavActions title={"محصولات"} />}
       <div className="container mx-auto px-4 lg:px-0 mt-6 lg:mt-8">
         <p className="text-xs lg:text-sm text-muted">
           <Link href="/" className="text-secondary mr-1">بوف استور</Link>
@@ -112,11 +121,11 @@ export default async function Product({ params }: ProductPageProps) {
                 />
               </div>
             </div>
-            <div className="flex items-center justify-between mt-2.5 lg:mt-4">
+            <div className="flex justify-between items-start mt-2.5 lg:mt-4 gap-2 lg:gap-4">
               <h1 className="text-lg lg:text-2xl font-bold text-title">
                 {productData.product.title}
               </h1>
-              <div className="flex items-center justify-center bg-success rounded-full py-1 px-3 text-xs text-white">
+              <div className="flex items-center justify-center bg-success rounded-full py-1 px-3 text-xs min-w-max text-white">
                 ضمانت اصل بودن کالا
               </div>
             </div>
@@ -141,10 +150,10 @@ export default async function Product({ params }: ProductPageProps) {
               </p>
             </div>
             <div className="mt-6 lg:mt-8">
-              {hasDiscount && (
+              {!isFree && hasDiscount && (
                 <div className="flex items-center gap-2.5">
                   <del className="text-disabled lg:text-lg">
-                    {putCommas(productData.product.amount)}
+                    {putCommas(originalAmount)}
                   </del>
                   <div className="bg-secondary py-0.5 px-3 rounded-sm text-white text-sm flex items-center justify-center">
                     {productData.product.discount} %
@@ -152,10 +161,10 @@ export default async function Product({ params }: ProductPageProps) {
                 </div>
               )}
               <p className="text-secondary text-xl lg:text-2xl font-bold mt-2">
-                {putCommas(finalAmount)} تومان
+                {isFree ? "رایگان" : `${putCommas(productData.product.amount)} تومان`}
               </p>
             </div>
-            <div className="mt-6 lg:mt-8">
+            {!isEmpty(productData.product.attributes) && <div className="mt-6 lg:mt-8">
               <p className="text-title font-medium mb-3">ویژگی های این محصول</p>
               <div className="flex gap-3 overflow-x-auto px-1 sm:grid sm:grid-cols-4 sm:overflow-visible">
                 {productData.product.attributes?.map(item => (
@@ -170,52 +179,31 @@ export default async function Product({ params }: ProductPageProps) {
                   </div>
                 ))}
               </div>
-            </div>
-            <div className="mt-6 lg:mt-8">
-              <p className="text-title text-sm font-medium mb-2">انتخاب سایز</p>
-              <div className="flex items-center gap-2 flex-wrap">
-                {productData.product.sizes?.map(item => (
-                  <div
-                    key={item.id}
-                    dir="ltr"
-                    className="size-12 flex items-center justify-center text-sm rounded-md bg-surface text-secondary"
-                  >
-                    {item.title}
-                  </div>
+            </div>}
+            {productData?.related_products?.length > 0 && <div className="mt-6 lg:mt-8">
+              <p className="text-title text-sm font-medium mb-2.5">محصولات مرتبط</p>
+              <div className="flex items-center gap-3 flex-wrap">
+                {productData?.related_products?.map(item => (
+                  <Link key={item.id} href={`/product/${item.id}`} target="_blank">
+                    <img src={createFileUrl(item.image || "")} alt="" width={90} height={90} className="object-cover rounded-lg" />
+                  </Link>
                 ))}
               </div>
-            </div>
-            <div className="lg:mt-8 fixed lg:static left-4 right-4 z-20 bottom-2 flex items-center justify-between gap-2 lg:gap-5">
-              <Button variant={"primary"} size={"large"} className="flex-1">
-                افزودن به سبد خرید
-              </Button>
-              <div className="bg-surface rounded-full p-1.5 flex items-center justify-between gap-4 lg:gap-10">
-                <div className="size-11 bg-white rounded-full flex items-center justify-center">
-                  <Icon
-                    icon="lucide--plus"
-                    sizeClass="size-5"
-                    className="text-secondary"
-                  />
-                </div>
-                <p className="text-xl font-medium text-title">1</p>
-                <div className="size-11 bg-white rounded-full flex items-center justify-center">
-                  <Icon
-                    icon="lucide--minus"
-                    sizeClass="size-5"
-                    className="text-secondary"
-                  />
-                </div>
-              </div>
-            </div>
+            </div>}
+            <AddToCart
+              productId={productData.product.id}
+              sizes={productData.product.sizes}
+              amount={productData.product.amount}
+              discount={productData.product.discount}
+              image={productData.product.image}
+              title={productData.product.title}
+            />
             <div className="hidden mt-8 lg:flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <p className="text-sm text-description">افزودن به علاقه مندی</p>
-                <Icon
-                  icon="solar--heart-linear"
-                  sizeClass="size-4"
-                  className="text-description"
-                />
-              </div>
+              <AddToFavorites
+                id={productData.product.id}
+                userData={userData}
+                isFavorite={productData.product.is_favorite}
+              />
               <div className="w-px h-4 block bg-border"></div>
               <div className="flex items-center gap-2">
                 <p className="text-sm text-description">اشتراک گذاری</p>
@@ -317,7 +305,7 @@ export default async function Product({ params }: ProductPageProps) {
           </h3>
           <div className="flex justify-between gap-12">
             <div className="flex gap-4 overflow-x-auto pb-2 lg:w-2/3 lg:flex-col lg:overflow-visible">
-              {reviewsData.data.map((review) => (
+              {reviewsData?.data?.length > 0 ? reviewsData.data.map((review) => (
                 <div
                   key={review.id}
                   className="max-w-[260px] lg:max-w-full p-3 lg:p-4 bg-surface rounded-2xl shrink-0"
@@ -352,7 +340,8 @@ export default async function Product({ params }: ProductPageProps) {
                     {review.comment}
                   </p>
                 </div>
-              ))}
+              ))
+                : <p className="text-description text-lg">هنوز نظری برای این محصول ثبت نشده است.</p>}
             </div>
 
             <div className="hidden lg:block lg:w-1/3">
@@ -383,19 +372,22 @@ export default async function Product({ params }: ProductPageProps) {
                   <p className="text-sm text-description">از {productData.product.reviews_count} نظر</p>
                 </div>
               </div>
-              <Button
-                variant={"outline"}
-                size={"medium"}
-                className="w-full mt-8"
-              >
-                نظر خود را بنویسید
-              </Button>
+              <AddReviewModal
+                productId={productData.product.id}
+                userData={userData}
+              />
             </div>
+          </div>
+          <div className="block lg:hidden">
+            <AddReviewModal
+              productId={productData.product.id}
+              userData={userData}
+            />
           </div>
         </div>
         <div className="mt-4 lg:mt-12 -mr-4 lg:mr-0">
           <Carousel
-            slides={productData.related_products.map((product) => (
+            slides={similarProductsData?.map((product: ProductSummary) => (
               <ProductCard key={product.id} data={product} />
             ))}
             desktopSlidesPerView={4}

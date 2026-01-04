@@ -1,0 +1,117 @@
+import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
+import { Icon } from "@/ui/icon";
+import Link from "next/link";
+import { MobileHeader } from "../_components/header/MobileHeader";
+import { ProfileSidebar } from "./_components/sidebar";
+import { getUserData } from "@/lib/getUserDataFromHeaders";
+import { getFetchAuth } from "@/core/privateService";
+import { FeaturedProducts, ProductColumnType } from "@/types/product";
+import { postFetch } from "@/core/publicService";
+import { Carousel } from "../_components/carousel";
+import ProductCard from "../_components/cards/ProductCard";
+import "swiper/css";
+import "swiper/css/pagination";
+
+interface DashboardInfoResponse {
+    order_in_progress_count: number;
+    order_cancelled_count: number;
+    order_delivered_amount: number;
+}
+
+async function getDashboardInfo(): Promise<DashboardInfoResponse> {
+    return await getFetchAuth<DashboardInfoResponse>("/profile/dashboard-info");
+}
+
+async function getFeaturedProducts(column: ProductColumnType): Promise<FeaturedProducts> {
+    return await postFetch<FeaturedProducts>("/products/featured", { column });
+}
+
+export default async function ProfilePage() {
+    const isMobile = await isMobileDevice();
+    const userData = await getUserData();
+    const dashboardInfo = await getDashboardInfo();
+    const featuredProducts = await getFeaturedProducts("random");
+
+    return (
+        <>
+            {isMobile && (
+                <>
+                    <MobileHeader />
+                    <ProfileSidebar userData={userData} />
+                </>
+            )}
+            <div className="p-2 border border-border rounded-xl mx-4 lg:mx-0 mt-3 lg:mt-0">
+                <div className="bg-surface px-3 py-2 rounded-lg flex items-center justify-between">
+                    <p className="text-title font-medium">
+                        سفارش های من
+                    </p>
+                    <Link href={"/profile/orders"} className="underline text-sm text-secondary">
+                        مشاهده همه
+                    </Link>
+                </div>
+                <div className="py-5 flex items-center justify-between lg:justify-around flex-wrap gap-4 px-4 lg:px-0">
+                    <div className="flex items-center gap-3 lg:gap-4">
+                        <div className="size-11 lg:size-14 rounded-lg lg:rounded-xl bg-info/20 flex items-center justify-center">
+                            <Icon icon="solar--clock-square-bold" sizeClass="size-5 lg:size-8" className="text-info" />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <p className="text-title text-sm font-medium">
+                                {dashboardInfo.order_in_progress_count} سفارش
+                            </p>
+                            <p className="text-xs text-description">
+                                در انتظار
+                            </p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3 lg:gap-4">
+                        <div className="size-11 lg:size-14 rounded-lg lg:rounded-xl bg-success/20 flex items-center justify-center">
+                            <Icon icon="solar--delivery-bold" sizeClass="size-5 lg:size-8" className="text-success" />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <p className="text-title text-sm font-medium">
+                                {dashboardInfo.order_delivered_amount} سفارش
+                            </p>
+                            <p className="text-xs text-description">
+                                تحویل شده
+                            </p>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-3 lg:gap-4">
+                        <div className="size-11 lg:size-14 rounded-lg lg:rounded-xl bg-error/20 flex items-center justify-center">
+                            <Icon icon="solar--close-circle-bold" sizeClass="size-5 lg:size-8" className="text-error" />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <p className="text-title text-sm font-medium">
+                                {dashboardInfo.order_cancelled_count} سفارش
+                            </p>
+                            <p className="text-xs text-description">
+                                لغو شده
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="p-2 border border-border rounded-xl mt-3 lg:mt-5 mx-4 lg:mx-0 mb-5">
+                <div className="bg-surface px-3 py-2 rounded-lg flex items-center justify-between">
+                    <p className="text-title font-medium">
+                        سفارش‌های پرتکرار
+                    </p>
+                    <Link href={"/profile/orders"} className="underline text-sm text-secondary">
+                        مشاهده همه
+                    </Link>
+                </div>
+                {featuredProducts.data.length > 0 ? (
+                    <div className="mt-3">
+                        <Carousel
+                            slides={featuredProducts.data.map(item => <ProductCard key={item.id} data={item} />)}
+                            disableNavigation
+                        />
+                    </div>
+                ) : <p className="my-5 text-center text-description">
+                    موردی جهت نمایش وجود ندارد.
+                </p>}
+            </div>
+        </>
+    )
+}
