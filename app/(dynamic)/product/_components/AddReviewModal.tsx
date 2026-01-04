@@ -93,7 +93,7 @@ export const AddReviewModal = ({ productId, userData }: AddReviewModalProps) => 
       <Button
         variant={"outline"}
         size={"medium"}
-        className="w-full mt-8"
+        className="w-full mt-2 lg:mt-8"
         onClick={handleOpen}
         type="button"
       >

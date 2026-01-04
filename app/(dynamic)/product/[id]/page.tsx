@@ -9,6 +9,7 @@ import truckIcon from "@/assets/images/truck.svg";
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
 import { getUserData } from "@/lib/getUserDataFromHeaders";
 import { createFileUrl, isEmpty, putCommas } from "@/lib/utils";
+import { ProductSummary } from "@/types/product";
 import {
   Accordion,
   AccordionContent,
@@ -22,9 +23,10 @@ import Link from "next/link";
 import { TopNavActions } from "../../_components/topNavigation/TopNavActions";
 import { getProduct } from "../_api/getProduct";
 import { getReviews } from "../_api/getReviews";
+import { getSimilarProducts } from "../_api/getSimilarProducts";
+import { AddReviewModal } from "../_components/AddReviewModal";
 import { AddToCart } from "../_components/AddToCart";
 import { AddToFavorites } from "../_components/AddToFavorites";
-import { AddReviewModal } from "../_components/AddReviewModal";
 
 interface ProductPageProps {
   params: Promise<{
@@ -40,6 +42,7 @@ export default async function Product({ params }: ProductPageProps) {
 
   const productData = await getProduct(resolvedParams.id);
   const reviewsData = await getReviews(resolvedParams.id);
+  const similarProductsData = await getSimilarProducts(resolvedParams.id);
 
   const productImages = [
     productData?.product.image,
@@ -55,7 +58,7 @@ export default async function Product({ params }: ProductPageProps) {
 
   return (
     <>
-      {isMobile && <TopNavActions title={productData.product.title} />}
+      {isMobile && <TopNavActions title={"محصولات"} />}
       <div className="container mx-auto px-4 lg:px-0 mt-6 lg:mt-8">
         <p className="text-xs lg:text-sm text-muted">
           <Link href="/" className="text-secondary mr-1">بوف استور</Link>
@@ -118,7 +121,7 @@ export default async function Product({ params }: ProductPageProps) {
                 />
               </div>
             </div>
-            <div className="flex justify-between items-start mt-2.5 lg:mt-4 gap-4">
+            <div className="flex justify-between items-start mt-2.5 lg:mt-4 gap-2 lg:gap-4">
               <h1 className="text-lg lg:text-2xl font-bold text-title">
                 {productData.product.title}
               </h1>
@@ -174,6 +177,16 @@ export default async function Product({ params }: ProductPageProps) {
                       {item.value}
                     </p>
                   </div>
+                ))}
+              </div>
+            </div>}
+            {productData?.related_products?.length > 0 && <div className="mt-6 lg:mt-8">
+              <p className="text-title text-sm font-medium mb-2.5">محصولات مرتبط</p>
+              <div className="flex items-center gap-3 flex-wrap">
+                {productData?.related_products?.map(item => (
+                  <Link key={item.id} href={`/product/${item.id}`} target="_blank">
+                    <img src={createFileUrl(item.image || "")} alt="" width={90} height={90} className="object-cover rounded-lg" />
+                  </Link>
                 ))}
               </div>
             </div>}
@@ -365,10 +378,16 @@ export default async function Product({ params }: ProductPageProps) {
               />
             </div>
           </div>
+          <div className="block lg:hidden">
+            <AddReviewModal
+              productId={productData.product.id}
+              userData={userData}
+            />
+          </div>
         </div>
         <div className="mt-4 lg:mt-12 -mr-4 lg:mr-0">
           <Carousel
-            slides={productData.related_products.map((product) => (
+            slides={similarProductsData?.map((product: ProductSummary) => (
               <ProductCard key={product.id} data={product} />
             ))}
             desktopSlidesPerView={4}
