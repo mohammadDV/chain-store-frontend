@@ -29,6 +29,8 @@ import { AddToCart } from "../_components/AddToCart";
 import { AddToFavorites } from "../_components/AddToFavorites";
 import { Pagination } from "@/app/_components/pagination";
 import { ReviewsSort } from "../_components/ReviewsSort";
+import { ShareButton } from "../_components/ShareButton";
+import { CopyButton } from "../_components/CopyButton";
 
 interface ProductPageProps {
   params: Promise<{
@@ -117,16 +119,20 @@ export default async function Product({ params, searchParams }: ProductPageProps
                   sizeClass="size-4.5"
                   className="text-description"
                 />
-                <Icon
-                  icon="solar--share-circle-outline"
-                  sizeClass="size-4.5"
-                  className="text-description"
-                />
-                <Icon
-                  icon="solar--copy-outline"
-                  sizeClass="size-4.5"
-                  className="text-description"
-                />
+                <ShareButton title={productData.product.title}>
+                  <Icon
+                    icon="solar--share-circle-outline"
+                    sizeClass="size-4.5"
+                    className="text-description"
+                  />
+                </ShareButton>
+                <CopyButton>
+                  <Icon
+                    icon="solar--copy-outline"
+                    sizeClass="size-4.5"
+                    className="text-description"
+                  />
+                </CopyButton>
               </div>
             </div>
             <div className="flex justify-between items-start mt-2.5 lg:mt-4 gap-2 lg:gap-4">
@@ -213,23 +219,23 @@ export default async function Product({ params, searchParams }: ProductPageProps
                 isFavorite={productData.product.is_favorite}
               />
               <div className="w-px h-4 block bg-border"></div>
-              <div className="flex items-center gap-2">
+              <ShareButton title={productData.product.title} className="flex items-center gap-2">
                 <p className="text-sm text-description">اشتراک گذاری</p>
                 <Icon
                   icon="solar--share-circle-outline"
                   sizeClass="size-4"
                   className="text-description"
                 />
-              </div>
+              </ShareButton>
               <div className="w-px h-4 block bg-border"></div>
-              <div className="flex items-center gap-2">
+              <CopyButton className="flex items-center gap-2">
                 <p className="text-sm text-description">کپی شناسه محصول</p>
                 <Icon
                   icon="solar--copy-outline"
                   sizeClass="size-4"
                   className="text-description"
                 />
-              </div>
+              </CopyButton>
             </div>
 
             <div className="mt-6 lg:mt-8">
