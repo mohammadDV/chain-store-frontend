@@ -51,7 +51,7 @@ export const AccountForm = ({ accountData }: AccountFormProps) => {
         if (!!formState && formState.status === StatusCode.Failed) {
             toast.error(!!formState?.errors
                 ? "اطلاعات واردشده معتبر نیست! لطفاً دوباره بررسی کنید."
-                : "مشکل در دریافت اطلاعات");
+                : formState?.message || "مشکل در دریافت اطلاعات");
 
             if (formState.errors) {
                 Object.entries(formState.errors).forEach(([fieldName, fieldErrors]) => {

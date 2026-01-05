@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { Loading } from "./loading";
 
 const buttonVariants = cva(
-  "inline-flex items-center border justify-center gap-1.5 whitespace-nowrap rounded-full cursor-pointer text-base transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-5 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-primary aria-invalid:border-destructive",
+  "inline-flex items-center border justify-center gap-1.5 whitespace-nowrap rounded-full cursor-pointer text-base transition-all disabled:pointer-events-none disabled:opacity-60 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-5 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-primary aria-invalid:border-destructive",
   {
     variants: {
       variant: {

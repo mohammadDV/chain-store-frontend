@@ -27,21 +27,29 @@ import { getSimilarProducts } from "../_api/getSimilarProducts";
 import { AddReviewModal } from "../_components/AddReviewModal";
 import { AddToCart } from "../_components/AddToCart";
 import { AddToFavorites } from "../_components/AddToFavorites";
+import { Pagination } from "@/app/_components/pagination";
+import { ReviewsSort } from "../_components/ReviewsSort";
 
 interface ProductPageProps {
   params: Promise<{
     id: string;
   }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function Product({ params }: ProductPageProps) {
+export default async function Product({ params, searchParams }: ProductPageProps) {
   const isMobile = await isMobileDevice();
   const resolvedParams = await params;
+  const resolvedSearchParams = await searchParams;
 
   const userData = await getUserData();
 
   const productData = await getProduct(resolvedParams.id);
-  const reviewsData = await getReviews(resolvedParams.id);
+  const reviewsData = await getReviews(resolvedParams.id, {
+    page: Array.isArray(resolvedSearchParams.page) ? resolvedSearchParams.page[0] : resolvedSearchParams.page,
+    query: Array.isArray(resolvedSearchParams.query) ? resolvedSearchParams.query[0] : resolvedSearchParams.query,
+    column: Array.isArray(resolvedSearchParams.column) ? resolvedSearchParams.column[0] : resolvedSearchParams.column,
+  });
   const similarProductsData = await getSimilarProducts(resolvedParams.id);
 
   const productImages = [
@@ -300,82 +308,96 @@ export default async function Product({ params }: ProductPageProps) {
           </div>
         </div>
         <div className="mt-6 lg:mt-12">
-          <h3 className="text-lg lg:text-xl font-bold mb-3 lg:mb-5">
-            نظرات کاربران درباره این محصول
-          </h3>
+          <div className="flex items-center gap-4 mb-3 lg:mb-5">
+            <h3 className="text-lg lg:text-xl font-bold">
+              نظرات کاربران درباره این محصول
+            </h3>
+            <ReviewsSort />
+          </div>
           <div className="flex justify-between gap-12">
-            <div className="flex gap-4 overflow-x-auto pb-2 lg:w-2/3 lg:flex-col lg:overflow-visible">
-              {reviewsData?.data?.length > 0 ? reviewsData.data.map((review) => (
-                <div
-                  key={review.id}
-                  className="max-w-[260px] lg:max-w-full p-3 lg:p-4 bg-surface rounded-2xl shrink-0"
-                >
-                  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2">
-                    <div className="flex items-center gap-2.5">
-                      <Image src={createFileUrl(review.user.profile_photo_path || "")} alt="avatar" width={42} height={42} className="size-11 object-cover rounded-full" />
-                      <p className="text-xs lg:text-sm text-title">
-                        {review.user.nickname}
-                      </p>
-                      <div className="flex items-center gap-0.5">
-                        {Array.from({ length: 5 }, (_, i) => (
-                          <Icon
-                            key={i}
-                            icon={
-                              i < review.rate
-                                ? "solar--star-bold"
-                                : "solar--star-outline"
-                            }
-                            sizeClass="size-4"
-                            className="text-warning"
-                          />
-                        ))}
+            <div className="flex flex-col gap-4 lg:gap-6 w-full lg:w-2/3">
+              <div className="flex gap-4 overflow-x-auto pb-2 flex-col lg:overflow-visible">
+                {reviewsData?.data?.length > 0 ? reviewsData.data.map((review) => (
+                  <div
+                    key={review.id}
+                    className=" p-3 lg:p-4 bg-surface rounded-2xl shrink-0"
+                  >
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-2">
+                      <div className="flex items-center gap-2.5">
+                        <Image src={createFileUrl(review.user.profile_photo_path || "")} alt="avatar" width={42} height={42} className="size-11 object-cover rounded-full" />
+                        <p className="text-xs lg:text-sm text-title">
+                          {review.user.nickname}
+                        </p>
+                        <div className="flex items-center gap-0.5">
+                          {Array.from({ length: 5 }, (_, i) => (
+                            <Icon
+                              key={i}
+                              icon={
+                                i < review.rate
+                                  ? "solar--star-bold"
+                                  : "solar--star-outline"
+                              }
+                              sizeClass="size-4"
+                              className="text-warning"
+                            />
+                          ))}
+                        </div>
                       </div>
+                      <p className="text-xs text-description">
+                        {review.created_at}
+                      </p>
                     </div>
-                    <p className="text-xs text-description">
-                      {review.created_at}
+
+                    <p className="text-sm text-description mt-3 leading-6">
+                      {review.comment}
                     </p>
                   </div>
-
-                  <p className="text-sm text-description mt-3 leading-6">
-                    {review.comment}
-                  </p>
-                </div>
-              ))
-                : <p className="text-description text-lg">هنوز نظری برای این محصول ثبت نشده است.</p>}
+                ))
+                  : <p className="text-description text-lg">هنوز نظری برای این محصول ثبت نشده است.</p>}
+              </div>
+              <Pagination
+                currentPage={reviewsData.current_page}
+                lastPage={reviewsData.last_page}
+                links={reviewsData.links}
+                total={reviewsData.total}
+                routeUrl={`/product/${resolvedParams.id}`}
+              />
             </div>
 
             <div className="hidden lg:block lg:w-1/3">
-              <p className="text-title mb-4">
-                نظر شما برای ما بسیار ارزشمند است!
-              </p>
-              <div className="flex items-center justify-between gap-8">
-                <div className="flex flex-col gap-2 flex-1">
-                  {productData.reviews?.map((stat) => (
-                    <div key={stat.rate} className="flex items-center justify-between gap-3 flex-1">
-                      <p className="text-title">{stat.rate}</p>
-                      <Progress value={stat.percentage} />
-                    </div>
-                  ))}
-                </div>
-                <div className="flex flex-col items-center justify-center gap-2">
-                  <p className="text-3xl text-secondary font-bold">{productData.product.rate}</p>
-                  <div className="flex items-center gap-0.5">
-                    {Array.from({ length: 5 }, (_, index) => (
-                      <Icon
-                        key={index}
-                        icon={index < productData.product.rate ? "solar--star-bold" : "solar--star-outline"}
-                        sizeClass="size-5"
-                        className="text-warning"
-                      />
+              <div className="sticky top-5">
+                <p className="text-title mb-4">
+                  نظر شما برای ما بسیار ارزشمند است!
+                </p>
+                <div className="flex items-center justify-between gap-8">
+                  <div className="flex flex-col gap-2 flex-1">
+                    {productData.reviews?.map((stat) => (
+                      <div key={stat.rate} className="flex items-center justify-between gap-3 flex-1">
+                        <p className="text-title">{stat.rate}</p>
+                        <Progress value={stat.percentage} />
+                      </div>
                     ))}
                   </div>
-                  <p className="text-sm text-description">از {productData.product.reviews_count} نظر</p>
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <p className="text-3xl text-secondary font-bold">{productData.product.rate}</p>
+                    <div className="flex items-center gap-0.5">
+                      {Array.from({ length: 5 }, (_, index) => (
+                        <Icon
+                          key={index}
+                          icon={index < productData.product.rate ? "solar--star-bold" : "solar--star-outline"}
+                          sizeClass="size-5"
+                          className="text-warning"
+                        />
+                      ))}
+                    </div>
+                    <p className="text-sm text-description">از {productData.product.reviews_count} نظر</p>
+                  </div>
                 </div>
+                <AddReviewModal
+                  productId={productData.product.id}
+                  userData={userData}
+                />
               </div>
-              <AddReviewModal
-                productId={productData.product.id}
-                userData={userData}
-              />
             </div>
           </div>
           <div className="block lg:hidden">

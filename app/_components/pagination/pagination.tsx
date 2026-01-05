@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/ui/button";
 import { Icon } from "@/ui/icon";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export interface PaginationLink {
     url: string | null;
@@ -23,6 +23,14 @@ interface PaginationProps {
 export const Pagination = ({ currentPage, links, routeUrl }: PaginationProps) => {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const update = () => setIsMobile(window.innerWidth < 1024);
+        update();
+        window.addEventListener("resize", update);
+        return () => window.removeEventListener("resize", update);
+    }, []);
 
     const createQueryString = useCallback(
         (name: string, value: string) => {
@@ -39,7 +47,7 @@ export const Pagination = ({ currentPage, links, routeUrl }: PaginationProps) =>
 
     const renderPageButton = (link: PaginationLink, index: number) => {
         if (!link.url && link.label === "...") {
-            return (
+            return isMobile ? null : (
                 <span key={index} className="px-3 py-2 text-text">
                     ...
                 </span>
@@ -80,6 +88,13 @@ export const Pagination = ({ currentPage, links, routeUrl }: PaginationProps) =>
 
         const pageNumber = parseInt(link.label);
         if (!isNaN(pageNumber)) {
+            if (isMobile) {
+                const isNeighbour =
+                    pageNumber === currentPage ||
+                    pageNumber === currentPage - 1 ||
+                    pageNumber === currentPage + 1;
+                if (!isNeighbour) return null;
+            }
             return (
                 <Button
                     key={index}
