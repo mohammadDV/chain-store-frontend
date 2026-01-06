@@ -361,13 +361,15 @@ export default async function Product({ params, searchParams }: ProductPageProps
                 ))
                   : <p className="text-description text-lg">هنوز نظری برای این محصول ثبت نشده است.</p>}
               </div>
-              <Pagination
-                currentPage={reviewsData.current_page}
-                lastPage={reviewsData.last_page}
-                links={reviewsData.links}
-                total={reviewsData.total}
-                routeUrl={`/product/${resolvedParams.id}`}
-              />
+              {reviewsData?.total > 0 && (
+                <Pagination
+                  currentPage={reviewsData.current_page}
+                  lastPage={reviewsData.last_page}
+                  links={reviewsData.links}
+                  total={reviewsData.total}
+                  routeUrl={`/product/${resolvedParams.id}`}
+                />
+              )}
             </div>
 
             <div className="hidden lg:block lg:w-1/3">
