@@ -10,12 +10,14 @@ import { OrderProductsModal } from "./_components/OrderProductsModal";
 
 function getStatusLabel(status: OrderStatus) {
     if (status === "pending") return "جاری";
+    if (status === "paid") return "پرداخت شده";
     if (status === "completed") return "تحویل شده";
     return "لغو شده";
 }
 
 function getStatusVariant(status: OrderStatus): ComponentProps<typeof Badge>["variant"] {
     if (status === "pending") return "warning";
+    if (status === "paid") return "success";
     if (status === "completed") return "success";
     return "error";
 }
