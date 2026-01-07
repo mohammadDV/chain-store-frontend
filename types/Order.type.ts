@@ -1,6 +1,6 @@
 import { PaginationLink } from "@/app/_components/pagination";
 
-export type OrderStatus = "pending" | "completed" | "cancelled";
+export type OrderStatus = "pending" | "paid" | "completed" | "cancelled";
 
 export interface Order {
     id: number;

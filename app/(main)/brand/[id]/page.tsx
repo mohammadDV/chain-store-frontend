@@ -55,7 +55,7 @@ export default async function Brand({ params }: BrandPageParams) {
                         slides={brandCategoriesData?.map(category => (
                             <Link
                                 key={category.id}
-                                href={`/shop/${category.id}`}
+                                href={`/shop/${category.id}?brands=${resolvedParams.id}`}
                                 className="flex flex-col gap-2 items-center w-20">
                                 <Image src={createFileUrl(category.image || "")} alt="" width={84} height={84} className="rounded-full object-cover size-20" />
                                 <h3 className="text-center text-title text-xs">
@@ -69,7 +69,7 @@ export default async function Brand({ params }: BrandPageParams) {
                         {brandCategoriesData?.map(category => (
                             <Link
                                 key={category.id}
-                                href={`/shop/${category.id}`}
+                                href={`/shop/${category.id}?brands=${resolvedParams.id}`}
                                 className="flex flex-col gap-2 items-center max-w-24">
                                 <Image src={createFileUrl(category.image || "")} alt="" width={84} height={84} className="rounded-full object-cover size-20" />
                                 <h3 className="text-center text-title text-sm ">

@@ -1,12 +1,12 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react";
-import { Button } from "@/ui/button";
-import { Icon } from "@/ui/icon";
+import { cn, isEmpty } from "@/lib/utils";
 import { useCartStore } from "@/stores/cart";
 import { Size } from "@/types/product";
+import { Button } from "@/ui/button";
+import { Icon } from "@/ui/icon";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { cn, isEmpty } from "@/lib/utils";
 
 type Props = {
   productId: number;
@@ -21,6 +21,7 @@ export const AddToCart = ({ productId, sizes, amount, discount, image, title }: 
   const [selectedSizeId, setSelectedSizeId] = useState<string | null>(null);
   const [count, setCount] = useState<number>(1);
   const [isAdding, setIsAdding] = useState<boolean>(false);
+
   const items = useCartStore((s) => s.items);
   const addOrUpdateItem = useCartStore((s) => s.addOrUpdateItem);
   const hasSizes = useMemo(() => Array.isArray(sizes) && sizes.length > 0, [sizes]);

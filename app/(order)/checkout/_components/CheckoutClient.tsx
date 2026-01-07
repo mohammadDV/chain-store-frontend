@@ -7,6 +7,8 @@ import { Order } from "@/types/Order.type";
 import { CheckoutForm } from "./CheckoutForm";
 import { CheckoutInvoice } from "./CheckoutInvoice";
 import { payOrderAction, PaymentMethod } from "../_api/payOrderAction";
+import { StatusCode } from "@/constants/enums";
+import { useCartStore } from "@/stores/cart";
 
 type Props = { order: Order };
 
@@ -19,6 +21,8 @@ type FormValues = {
 
 export const CheckoutClient = ({ order }: Props) => {
   const router = useRouter();
+  const clearCart = useCartStore((s) => s.clear);
+
   const [isPending, startTransition] = useTransition();
   const [currentOrder, setCurrentOrder] = useState<Order>(order);
   const [formValues, setFormValues] = useState<FormValues>({
@@ -45,8 +49,14 @@ export const CheckoutClient = ({ order }: Props) => {
           fullname: formValues.fullname,
           postal_code: formValues.postal_code,
         });
-        if (res.status === 1 && res.url) {
-          router.replace(res.url);
+        if (res.status === StatusCode.Success) {
+          if (res.url) {
+            router.replace(res.url);
+          } else {
+            toast.error(res?.message || "سفارش با موفقیت ثبت شد!");
+            router.replace("/profile/orders");
+          }
+          clearCart();
         } else {
           toast.error(res?.message || "خطای ناشناخته رخ داده است");
         }

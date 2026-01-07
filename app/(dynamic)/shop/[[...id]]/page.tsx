@@ -163,11 +163,17 @@ export default async function Shop({ params, searchParams }: ShopPageProps) {
                         )}
                         <h2 className="text-description text-sm font-medium">{productsData?.total} محصول پیدا شد</h2>
                     </div>
-                    <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 lg:gap-6">
-                        {productsData.data.map(product => (
-                            <ProductCard key={product.id} data={product} />
-                        ))}
-                    </div>
+                    {productsData.data.length === 0 ? (
+                        <div className="flex items-center justify-center py-10">
+                            <p className="text-description">محصولی یافت نشد</p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4 lg:gap-6">
+                            {productsData.data.map(product => (
+                                <ProductCard key={product.id} data={product} />
+                            ))}
+                        </div>
+                    )}
                     {productsData.data && productsData.total > 12 && (
                         <div className="mt-10">
                             <Pagination
