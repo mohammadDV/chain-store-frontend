@@ -7,6 +7,7 @@ import { Button } from "@/ui/button";
 import { Icon } from "@/ui/icon";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { SizeGuide } from "./SizeGuide";
 
 type Props = {
   productId: number;
@@ -103,7 +104,10 @@ export const AddToCart = ({ productId, sizes, amount, discount, image, title }: 
   return (
     <>
       {!isEmpty(sizes) && <div className="mt-6 lg:mt-8">
-        <p className="text-title text-sm font-medium mb-2">انتخاب سایز</p>
+        <div className="flex items-center mb-2.5 gap-2.5">
+          <p className="text-title text-sm font-medium">انتخاب سایز</p>
+          <SizeGuide />
+        </div>
         <div className="flex flex-wrap gap-2">
           {sizes.map((item) => {
             const isSelected = String(item.id) === selectedSizeId;

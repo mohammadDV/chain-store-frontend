@@ -39,6 +39,11 @@ const menuData = [
         title: "درباره ما",
         link: '/about'
     },
+    {
+        id: 6,
+        title: "ثبت شکایت",
+        link: '/complaint'
+    },
 ];
 
 export const Header = ({ userData }: HeaderProps) => {

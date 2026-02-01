@@ -1,32 +1,30 @@
-import Link from "next/link"
-import enamad from "@/assets/images/enamad.png";
-import Image from "next/image";
+import Link from "next/link";
 
 const fastAccess = [
     {
         id: 1,
-        title: "صفحه اصلی",
-        link: "/"
+        title: "فروشگاه",
+        link: "/shop"
     },
     {
         id: 2,
-        title: "پرفروش ترین ها",
-        link: "/"
+        title: "وبلاگ",
+        link: "/blog"
     },
     {
         id: 3,
-        title: "درباره ما",
-        link: "/"
+        title: "تماس با ما",
+        link: "/contact"
     },
     {
         id: 4,
-        title: "تماس با ما",
-        link: "/"
+        title: "درباره ما",
+        link: "/about"
     },
     {
         id: 5,
-        title: "سوالات متداول",
-        link: "/"
+        title: "ثبت شکایت",
+        link: "/complaint"
     },
 ]
 
