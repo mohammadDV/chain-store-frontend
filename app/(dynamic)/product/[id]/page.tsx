@@ -31,6 +31,7 @@ import { Pagination } from "@/app/_components/pagination";
 import { ReviewsSort } from "../_components/ReviewsSort";
 import { ShareButton } from "../_components/ShareButton";
 import { CopyButton } from "../_components/CopyButton";
+import { SizeGuide } from "../_components/SizeGuide";
 
 interface ProductPageProps {
   params: Promise<{
@@ -179,7 +180,9 @@ export default async function Product({ params, searchParams }: ProductPageProps
               </p>
             </div>
             {!isEmpty(productData.product.attributes) && <div className="mt-6 lg:mt-8">
-              <p className="text-title font-medium mb-3">ویژگی های این محصول</p>
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-title font-medium">ویژگی های این محصول</p>
+              </div>
               <div className="flex gap-3 overflow-x-auto px-1 sm:grid sm:grid-cols-4 sm:overflow-visible">
                 {productData.product.attributes?.map(item => (
                   <div
