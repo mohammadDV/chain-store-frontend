@@ -32,6 +32,7 @@ import { ReviewsSort } from "../_components/ReviewsSort";
 import { ShareButton } from "../_components/ShareButton";
 import { CopyButton } from "../_components/CopyButton";
 import { SizeGuide } from "../_components/SizeGuide";
+import { notFound } from "next/navigation";
 
 interface ProductPageProps {
   params: Promise<{
@@ -48,6 +49,11 @@ export default async function Product({ params, searchParams }: ProductPageProps
   const userData = await getUserData();
 
   const productData = await getProduct(resolvedParams.id);
+
+  if (!productData?.product) {
+    notFound();
+  }
+
   const reviewsData = await getReviews(resolvedParams.id, {
     page: Array.isArray(resolvedSearchParams.page) ? resolvedSearchParams.page[0] : resolvedSearchParams.page,
     query: Array.isArray(resolvedSearchParams.query) ? resolvedSearchParams.query[0] : resolvedSearchParams.query,
