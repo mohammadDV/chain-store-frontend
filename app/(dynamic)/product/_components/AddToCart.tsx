@@ -5,6 +5,7 @@ import { useCartStore } from "@/stores/cart";
 import { Size } from "@/types/product";
 import { Button } from "@/ui/button";
 import { Icon } from "@/ui/icon";
+import { postFetch } from "@/core/publicService";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { SizeGuide } from "./SizeGuide";
@@ -98,6 +99,7 @@ export const AddToCart = ({ productId, sizes, amount, discount, image, title }: 
       title,
     });
     toast.success("به سبد خرید اضافه شد");
+    void postFetch(`/products/${productId}/refresh-on-cart`, {}).catch(() => {});
     setIsAdding(false);
   };
 
