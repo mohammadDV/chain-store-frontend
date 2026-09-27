@@ -1,6 +1,6 @@
 "use server";
 
-import { API_URL } from "@/configs/global";
+import { getApiUrl } from "@/configs/global";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -39,7 +39,7 @@ const baseFetchPrivate = async <T>(
 
     const requestBody = body && !isFormData ? JSON.stringify(body) : body;
 
-    const res = await fetch(`${API_URL}${url}`, {
+    const res = await fetch(`${getApiUrl()}${url}`, {
         cache: "no-store",
         method,
         headers: baseHeaders,

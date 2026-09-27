@@ -31,10 +31,22 @@ export const convertPersianToEnglish = (str: string): string => {
 };
 
 export const createFileUrl = (url: string) => {
-  if (!regex.website.test(url)) {
-    return `${FILE_URL}/${url}`
+  if (!url || !FILE_URL) {
+    return url || "";
   }
-  return url
+
+  const trimmed = url.trim();
+  if (!trimmed) {
+    return "";
+  }
+
+  if (regex.website.test(trimmed)) {
+    return trimmed;
+  }
+
+  const base = FILE_URL.replace(/\/+$/, "");
+  const path = trimmed.replace(/^\/+/, "");
+  return `${base}/${path}`;
 };
 
 export const formatWebsiteUrl = (url: string) => {

@@ -1,4 +1,4 @@
-import { API_URL } from '@/configs/global';
+import { getApiUrl } from '@/configs/global';
 
 interface FetchOptions {
     method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -29,7 +29,7 @@ const baseFetchPublic = async <T>(
 
     const requestBody = body && !isFormData ? JSON.stringify(body) : body;
 
-    const res = await fetch(`${API_URL}${url}`, {
+    const res = await fetch(`${getApiUrl()}${url}`, {
         cache: 'no-store',
         method,
         headers: baseHeaders,
