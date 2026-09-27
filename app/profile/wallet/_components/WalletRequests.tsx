@@ -1,4 +1,5 @@
 import { cn, putCommas } from "@/lib/utils";
+import { formatToShamsiDateTime } from "@/lib/dateUtils";
 import { Badge } from "@/ui/badge";
 import type { WithdrawRequest, WithdrawStatus } from "@/types/wallet.type";
 import type { ComponentProps } from "react";
@@ -58,7 +59,7 @@ export function WalletRequests({ requests, pagination }: WalletRequestsProps) {
                                         )}
                                     >
                                         <div className="text-title font-semibold">#{r.id}</div>
-                                        <div className="text-sm text-title">{r.created_at}</div>
+                                        <div className="text-sm text-title">{formatToShamsiDateTime(r.created_at)}</div>
                                         <div className="text-sm font-bold text-title">
                                             {putCommas(Number(r.amount))} تومان
                                         </div>

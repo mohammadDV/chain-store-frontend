@@ -36,3 +36,23 @@ export const formatToShamsiWithYear = (date: Date): string => {
         return date.toLocaleDateString("fa-IR");
     }
 };
+
+export const formatToShamsiDateTime = (value?: string | null): string => {
+    if (!value) return "-";
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+
+    try {
+        const datePart = formatToShamsiWithYear(date);
+        const timePart = new Intl.DateTimeFormat("fa-IR", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+        }).format(date);
+
+        return `${datePart}، ${timePart}`;
+    } catch {
+        return date.toLocaleString("fa-IR");
+    }
+};
