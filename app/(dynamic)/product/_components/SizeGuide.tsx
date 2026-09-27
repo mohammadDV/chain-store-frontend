@@ -3,56 +3,47 @@
 import { Modal } from "@/app/_components/modal";
 import { Icon } from "@/ui/icon";
 import { useState } from "react";
+import { getSizeGuideContent } from "./sizeGuide/data";
+import { SizeGuideContentView } from "./sizeGuide/SizeGuideContentView";
+import {
+    getCategoriesForGender,
+    type SizeGuideCategory,
+    type SizeGuideGender,
+} from "./sizeGuide/types";
 
 type Step = 1 | 2 | 3;
-type Gender = "مرد" | "زن" | "کودک";
-type Category =
-    | "لباس بالا تنه"
-    | "لباس پایین تنه"
-    | "اکسسوری"
-    | "کفش"
-    | "دوچرخه"
-    | "اسکیت"
-    | "غواصی"
-    | "ورزش های هدف"
-    | "ورزش های رزمی"
-    | "ورزش های تیمی"
-    | "سوارکاری";
 
-const genders: Gender[] = ["مرد", "زن", "کودک"];
-const categories: Category[] = [
-    "لباس بالا تنه",
-    "لباس پایین تنه",
-    "اکسسوری",
-    "کفش",
-    "دوچرخه",
-    "اسکیت",
-    "غواصی",
-    "ورزش های هدف",
-    "ورزش های رزمی",
-    "ورزش های تیمی",
-    "سوارکاری",
-];
+const genders: SizeGuideGender[] = ["مرد", "زن", "کودک"];
 
 export const SizeGuide = () => {
     const [open, setOpen] = useState(false);
     const [step, setStep] = useState<Step>(1);
-    const [selectedGender, setSelectedGender] = useState<Gender | null>(null);
-    const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+    const [selectedGender, setSelectedGender] = useState<SizeGuideGender | null>(null);
+    const [selectedCategory, setSelectedCategory] = useState<SizeGuideCategory | null>(null);
 
-    const handleGenderSelect = (gender: Gender) => {
+    const content = getSizeGuideContent(selectedGender, selectedCategory);
+    const categories = getCategoriesForGender(selectedGender);
+
+    const handleGenderSelect = (gender: SizeGuideGender) => {
         setSelectedGender(gender);
+        setSelectedCategory(null);
         setStep(2);
     };
 
-    const handleCategorySelect = (category: Category) => {
+    const handleCategorySelect = (category: SizeGuideCategory) => {
         setSelectedCategory(category);
         setStep(3);
     };
 
     const handleBack = () => {
-        if (step === 3) setStep(2);
-        else if (step === 2) setStep(1);
+        if (step === 3) {
+            setSelectedCategory(null);
+            setStep(2);
+        } else if (step === 2) {
+            setSelectedGender(null);
+            setSelectedCategory(null);
+            setStep(1);
+        }
     };
 
     const resetModal = () => {
@@ -78,21 +69,23 @@ export const SizeGuide = () => {
                     else setOpen(val);
                 }}
                 title="راهنمای سایز"
+                size={step === 3 ? "large" : "medium"}
                 showConfirm={false}
                 showCancel={false}
+                className="min-w-0"
             >
-                <div className="flex flex-col h-full">
+                <div className="flex h-full min-w-0 max-w-full flex-col overflow-hidden">
                     {step > 1 && (
                         <button
                             onClick={handleBack}
-                            className="flex items-center gap-1 text-sm text-description hover:text-title transition-colors mb-4 w-fit"
+                            className="mb-4 flex w-fit items-center gap-1 text-sm text-description transition-colors hover:text-title"
                         >
                             <Icon icon="solar--alt-arrow-right-outline" sizeClass="size-4" />
                             بازگشت
                         </button>
                     )}
 
-                    <div className="flex-1 overflow-y-auto">
+                    <div className="min-w-0 max-w-full flex-1 overflow-x-hidden overflow-y-auto">
                         {step === 1 && (
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                 {genders.map((gender) => (
@@ -135,10 +128,18 @@ export const SizeGuide = () => {
                         )}
 
                         {step === 3 && (
-                            <div
-                                className="prose prose-sm max-w-none"
-                                dangerouslySetInnerHTML={{ __html: " " }}
-                            />
+                            content ? (
+                                <SizeGuideContentView content={content} />
+                            ) : (
+                                <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
+                                    <p className="text-sm font-medium text-title">
+                                        راهنمای این دسته به‌زودی اضافه می‌شود
+                                    </p>
+                                    <p className="text-xs text-description">
+                                        راهنمای همه دسته‌های زنان، مردان و کودکان آماده است.
+                                    </p>
+                                </div>
+                            )
                         )}
                     </div>
                 </div>

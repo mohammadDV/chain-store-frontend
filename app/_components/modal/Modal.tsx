@@ -98,7 +98,7 @@ const Modal = ({
     };
 
     const content = (
-        <div className="flex flex-col justify-between gap-4">
+        <div className="flex min-w-0 max-w-full flex-col justify-between gap-4 overflow-hidden">
             {(title || description) && (
                 <div className={cn("space-y-2", headerClassName)}>
                     {title && (
@@ -115,7 +115,7 @@ const Modal = ({
             )}
 
             {children && (
-                <div className="py-2 max-h-[70vh] overflow-auto">
+                <div className="min-w-0 max-h-[70vh] overflow-x-hidden overflow-y-auto py-2">
                     {children}
                 </div>
             )}
@@ -154,7 +154,7 @@ const Modal = ({
     if (isMobile) {
         return (
             <Drawer open={open} onOpenChange={onOpenChange}>
-                <DrawerContent className={cn("p-5", className)}>
+                <DrawerContent className={cn("overflow-hidden p-5", className)}>
                     <DrawerHeader className="p-0">
                         {title && <DrawerTitle className="sr-only">{title}</DrawerTitle>}
                         {description && <DrawerDescription className="sr-only">{description}</DrawerDescription>}
@@ -167,7 +167,13 @@ const Modal = ({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className={cn(sizeClasses[size || "medium"], className)}>
+            <DialogContent
+                className={cn(
+                    sizeClasses[size || "medium"],
+                    "overflow-hidden",
+                    className,
+                )}
+            >
                 <DialogHeader className="sr-only">
                     {title && <DialogTitle>{title}</DialogTitle>}
                     {description && <DialogDescription>{description}</DialogDescription>}
