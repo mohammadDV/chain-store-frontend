@@ -1,15 +1,26 @@
 import instagramBanner from "@/assets/images/instagram-banner.png";
 import mobileInstagramBanner from "@/assets/images/mobile-instagram-banner.png";
+import { buildMetadata } from "@/lib/seo/buildMetadata";
+import { JsonLd } from "@/lib/seo/JsonLd";
+import { contactPageJsonLd } from "@/lib/seo/schema";
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
 import { Icon } from "@/ui/icon";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+
+export const metadata: Metadata = buildMetadata({
+    title: "تماس با ما",
+    description: "راه‌های ارتباطی با پشتیبانی بوف استور",
+    path: "/contact",
+});
 
 export default async function Contact() {
     const isMobile = await isMobileDevice();
 
     return (
         <>
+            <JsonLd data={contactPageJsonLd()} />
             <div className="max-w-4xl mx-auto mt-8 lg:mt-20">
                 <h1 className="text-lg lg:text-3xl font-bold text-title text-center">
                     با ما در  ارتباط باشید
@@ -79,8 +90,8 @@ export default async function Contact() {
             </div>
             <div className="container px-4 lg:px-0 mx-auto mt-8 lg:mt-20">
                 {isMobile
-                    ? <Image src={mobileInstagramBanner} alt="" width={390} height={136} quality={100} />
-                    : <Image src={instagramBanner} alt="" width={1600} height={375} quality={100} />}
+                    ? <Image src={mobileInstagramBanner} alt="اینستاگرام بوف استور" width={390} height={136} quality={100} sizes="390px" />
+                    : <Image src={instagramBanner} alt="اینستاگرام بوف استور" width={1600} height={375} quality={100} sizes="1600px" />}
             </div>
         </>
     )

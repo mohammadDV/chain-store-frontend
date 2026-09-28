@@ -18,7 +18,7 @@ export const BrandSlider = ({ brandsData, isMobile }: BrandSliderProps) => {
                     <div className="flex animate-marquee">
                         {[...brandsData, ...brandsData].map((brand, index) => (
                             <Link
-                                href={`/brand/${brand.id}`}
+                                href={`/brand/${brand.slug || brand.id}`}
                                 key={index}
                                 className="mx-1.5 lg:mx-2.5 shrink-0 size-16 lg:size-36 bg-surface flex items-center justify-center rounded-lg lg:rounded-2xl"
                             >
@@ -26,7 +26,7 @@ export const BrandSlider = ({ brandsData, isMobile }: BrandSliderProps) => {
                                     src={createFileUrl(brand.logo || "")}
                                     width={100}
                                     height={100}
-                                    alt="brand"
+                                    alt={brand.title}
                                     className="w-12 lg:w-24" />
                             </Link>
                         ))}
@@ -34,7 +34,7 @@ export const BrandSlider = ({ brandsData, isMobile }: BrandSliderProps) => {
                     <div className="flex absolute top-0 left-full animate-marquee">
                         {[...brandsData, ...brandsData].map((brand, index) => (
                             <Link
-                                href={`/brand/${brand.id}`}
+                                href={`/brand/${brand.slug || brand.id}`}
                                 key={index}
                                 className="mx-1.5 lg:mx-2.5 shrink-0 size-16 lg:size-36 bg-surface flex items-center justify-center rounded-lg lg:rounded-2xl"
                             >
@@ -42,7 +42,7 @@ export const BrandSlider = ({ brandsData, isMobile }: BrandSliderProps) => {
                                     src={createFileUrl(brand.logo || "")}
                                     width={100}
                                     height={100}
-                                    alt="brand"
+                                    alt={brand.title}
                                     className="w-12 lg:w-24" />
                             </Link>
                         ))}
@@ -52,7 +52,7 @@ export const BrandSlider = ({ brandsData, isMobile }: BrandSliderProps) => {
                     <div className="flex items-center justify-center">
                         {brandsData.map((brand) => (
                             <Link
-                                href={`/brand/${brand.id}`}
+                                href={`/brand/${brand.slug || brand.id}`}
                                 key={brand.id}
                                 className="mx-1.5 lg:mx-2.5 shrink-0 size-16 lg:size-36 bg-surface flex items-center justify-center rounded-lg lg:rounded-2xl"
                             >
@@ -60,7 +60,7 @@ export const BrandSlider = ({ brandsData, isMobile }: BrandSliderProps) => {
                                     src={createFileUrl(brand.logo || "")}
                                     width={100}
                                     height={100}
-                                    alt="brand"
+                                    alt={brand.title}
                                     className="w-12 lg:w-24" />
                             </Link>
                         ))}

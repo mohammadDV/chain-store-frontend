@@ -160,7 +160,7 @@ export function MobileHeaderSearch({ onClose }: MobileHeaderSearchProps) {
                                     {categories.map((c) => (
                                         <Link
                                             key={c.id}
-                                            href={`/shop/${c.id}`}
+                                            href={`/shop/${c.slug || c.id}`}
                                             className="flex items-center justify-between gap-2 rounded-lg py-3 border-b border-border/50 last:border-0"
                                             onClick={onClose}
                                         >
@@ -188,7 +188,7 @@ export function MobileHeaderSearch({ onClose }: MobileHeaderSearchProps) {
                                     {products.map((p) => (
                                         <Link
                                             key={p.id}
-                                            href={`/product/${p.id}`}
+                                            href={`/product/${p.slug || p.id}`}
                                             className="flex items-center gap-3 rounded-lg"
                                             onClick={onClose}
                                         >

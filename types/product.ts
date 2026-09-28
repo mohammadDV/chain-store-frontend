@@ -22,6 +22,7 @@ export type Size = {
 export type ProductSummary = {
     id: number;
     title: string;
+    slug?: string | null;
     amount: number;
     discount: number;
     image: string | null;
@@ -33,6 +34,7 @@ export interface Product {
     product: {
         id: number;
         title: string;
+        slug?: string | null;
         color_id: number;
         brand: Brand;
         amount: number;
@@ -40,6 +42,10 @@ export interface Product {
         status: string;
         description: string | null;
         details: string | null;
+        meta_title?: string | null;
+        meta_description?: string | null;
+        meta_keywords?: string | null;
+        og_image?: string | null;
         vip: boolean;
         image: string;
         rate: number;

@@ -10,13 +10,13 @@ interface PostCardProps {
 export const PostCard = ({ data }: PostCardProps) => {
     return (
         <Link
-            href={`/post/${data.id}`}
+            href={`/post/${data.slug || data.id}`}
             className="group relative block overflow-hidden rounded-2xl lg:rounded-3xl cursor-pointer aspect-3/2"
         >
             <div className="w-full h-full">
                 <Image
                     src={createFileUrl(data.image || "")}
-                    alt={""}
+                    alt={data.title}
                     width={400}
                     height={400}
                     className="object-cover w-full h-full"

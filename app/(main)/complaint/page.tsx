@@ -1,3 +1,12 @@
+import { buildMetadata } from "@/lib/seo/buildMetadata";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = buildMetadata({
+    title: "ثبت شکایت",
+    description: "ثبت شکایت و درخواست بررسی از پشتیبانی بوف استور",
+    path: "/complaint",
+});
+
 export default async function Complaint() {
     return (
         <div className="max-w-5xl mx-auto mt-8 lg:mt-16 px-4 lg:px-0">

@@ -1,17 +1,17 @@
 "use client"
 
-import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 export const RemoveFilters = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const params = useParams() as { id?: string | string[] };
-  const pathname = usePathname();
+  const params = useParams() as { slug?: string | string[]; id?: string | string[] };
 
   const handleClearFilters = () => {
     let target = "/shop";
-    if (params?.id) {
-      const seg = Array.isArray(params.id) ? params.id.join("/") : params.id;
+    const slugParam = params?.slug ?? params?.id;
+    if (slugParam) {
+      const seg = Array.isArray(slugParam) ? slugParam.join("/") : slugParam;
       target = `/shop/${seg}`;
     }
     router.push(target, { scroll: false });

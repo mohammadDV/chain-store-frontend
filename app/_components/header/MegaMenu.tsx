@@ -177,7 +177,7 @@ export function MegaMenu() {
                 <div className="flex items-center justify-between">
                   <Link
                     href={
-                      activeRootCategory ? `/shop/${activeRootCategory.id}` : "/shop"
+                      activeRootCategory ? `/shop/${activeRootCategory.slug || activeRootCategory.id}` : "/shop"
                     }
                     className="text-sm font-semibold text-title hover:text-secondary"
                     onClick={() => setOpen(false)}
@@ -190,7 +190,7 @@ export function MegaMenu() {
                   {secondLevel.slice(0, 12).map((sub) => (
                     <div key={sub.id} className="min-w-0">
                       <Link
-                        href={`/shop/${sub.id}`}
+                        href={`/shop/${sub.slug || sub.id}`}
                         className="line-clamp-1 text-sm font-semibold text-title hover:text-secondary"
                         onClick={() => setOpen(false)}
                       >
@@ -201,7 +201,7 @@ export function MegaMenu() {
                           {sub.children.slice(0, 8).map((leaf) => (
                             <Link
                               key={leaf.id}
-                              href={`/shop/${leaf.id}`}
+                              href={`/shop/${leaf.slug || leaf.id}`}
                               className="block line-clamp-1 text-sm text-description hover:text-secondary"
                               onClick={() => setOpen(false)}
                             >

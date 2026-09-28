@@ -1,9 +1,17 @@
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
 import { getUserData } from "@/lib/getUserDataFromHeaders";
+import type { Metadata } from "next";
 import { Footer } from "../_components/footer";
 import { Header } from "../_components/header";
 import { ProfileSidebar } from "./_components/sidebar";
 import { BottomNavigation } from "../_components/bottomNavigation";
+
+export const metadata: Metadata = {
+    robots: {
+        index: false,
+        follow: false,
+    },
+};
 
 export default async function ProfileLayout({
     children,

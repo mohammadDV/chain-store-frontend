@@ -147,7 +147,7 @@ export function HeaderSearch() {
                     {categories.slice(0, 6).map((c) => (
                       <Link
                         key={c.id}
-                        href={`/shop/${c.id}`}
+                        href={`/shop/${c.slug || c.id}`}
                         className="flex items-center justify-between rounded-lg px-2 py-2 text-sm text-title hover:bg-white"
                         onClick={() => setOpen(false)}
                       >
@@ -170,7 +170,7 @@ export function HeaderSearch() {
                     {products.slice(0, 8).map((p) => (
                       <Link
                         key={p.id}
-                        href={`/product/${p.id}`}
+                        href={`/product/${p.slug || p.id}`}
                         className="flex items-center gap-3 rounded-lg px-2 py-2 hover:bg-surface"
                         onClick={() => setOpen(false)}
                       >

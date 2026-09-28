@@ -71,7 +71,7 @@ const ProductCard = ({ data }: ProductCardProps) => {
     const isFree = data.amount === 0;
 
     return (
-        <Link href={`/product/${data.id}`} className="relative">
+        <Link href={`/product/${data.slug || data.id}`} className="relative">
             {data.discount > 0 && (
                 <Badge variant="secondary" className="absolute top-0 right-0 lg:top-4 lg:right-4">{data.discount}%</Badge>
             )}
@@ -88,10 +88,11 @@ const ProductCard = ({ data }: ProductCardProps) => {
                 width={275}
                 height={275}
                 alt={data.title}
+                sizes="(max-width: 1024px) 45vw, 275px"
                 className="rounded-xl lg:rounded-2xl w-full aspect-square" />
-            <h1 className="text-title text-xs lg:text-base font-semibold lg:font-bold line-clamp-1 mt-2 lg:mt-4">
+            <h3 className="text-title text-xs lg:text-base font-semibold lg:font-bold line-clamp-1 mt-2 lg:mt-4">
                 {data.title}
-            </h1>
+            </h3>
             <div className="flex items-center gap-1.5 lg:gap-3 mt-2">
                 {!isFree && data.discount > 0 && (
                     <del className="text-2xs lg:text-sm text-disabled">

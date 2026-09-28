@@ -9,9 +9,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 
 interface ProductGalleryProps {
     images: string[];
+    title?: string;
 }
 
-export const ProductGallery: React.FC<ProductGalleryProps> = ({ images }) => {
+export const ProductGallery: React.FC<ProductGalleryProps> = ({ images, title = "محصول" }) => {
     const slides = images && images.length > 0 ? images : [];
 
     return (
@@ -25,7 +26,14 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({ images }) => {
                     >
                         {slides.map((img, idx) => (
                             <SwiperSlide key={idx} className="flex items-center justify-center">
-                                <Image src={createFileUrl(img)} width={460} height={460} alt="product" className="object-contain mx-auto rounded-xl" />
+                                <Image
+                                    src={createFileUrl(img)}
+                                    width={460}
+                                    height={460}
+                                    alt={`${title} - تصویر ${idx + 1}`}
+                                    sizes="(max-width: 1024px) 100vw, 460px"
+                                    className="object-contain mx-auto rounded-xl"
+                                />
                             </SwiperSlide>
                         ))}
                     </Swiper>
@@ -47,7 +55,7 @@ export const ProductGallery: React.FC<ProductGalleryProps> = ({ images }) => {
             <div className={cn("lg:grid-cols-4 gap-6 mt-6 hidden lg:grid")}>
                 {slides.map((img, idx) => (
                     <div key={idx} className="aspect-square">
-                        <Image src={createFileUrl(img)} width={160} height={160} alt="product" className="rounded-xl w-full" />
+                        <Image src={createFileUrl(img)} width={160} height={160} alt={`${title} - تصویر ${idx + 1}`} sizes="160px" className="rounded-xl w-full" />
                     </div>
                 ))}
             </div>

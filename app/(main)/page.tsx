@@ -2,7 +2,13 @@ import instagramBanner from "@/assets/images/instagram-banner.png";
 import mobileInstagramBanner from "@/assets/images/mobile-instagram-banner.png";
 import { getFetch, postFetch } from "@/core/publicService";
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
+import { DEFAULT_DESCRIPTION, buildMetadata } from "@/lib/seo/buildMetadata";
+import { JsonLd } from "@/lib/seo/JsonLd";
+import { organizationJsonLd, webSiteJsonLd } from "@/lib/seo/schema";
 import { Brand, BrandBanner } from "@/types/brand.type";
+import { FeaturedProducts, ProductColumnType } from "@/types/product";
+import { PostsResponse } from "@/types/post.type";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { PostCard } from "../_components/cards/PostCard";
@@ -11,15 +17,20 @@ import { Carousel } from "../_components/carousel";
 import { BentoCategory, categoriesCards } from "./_components/bentoCategory";
 import { BrandSlider } from "./_components/brandSlider";
 import { Hero } from "./_components/hero";
-import { FeaturedProducts, ProductColumnType } from "@/types/product";
-import { PostsResponse } from "@/types/post.type";
+
+export const metadata: Metadata = buildMetadata({
+  title: "بوف استور | بزرگترین مرجع لوازم ورزشی",
+  description: DEFAULT_DESCRIPTION,
+  path: "/",
+  absoluteTitle: true,
+});
 
 async function getBanners(): Promise<BrandBanner[]> {
   return await postFetch<BrandBanner[]>("/banners", {});
 }
 
 async function getBrands(): Promise<Brand[]> {
-  return await getFetch<Brand[]>("/brands");
+  return await getFetch<Brand[]>("/brands", { revalidate: 3600 });
 }
 
 async function getFeaturedProducts(column: ProductColumnType): Promise<FeaturedProducts> {
@@ -27,7 +38,7 @@ async function getFeaturedProducts(column: ProductColumnType): Promise<FeaturedP
 }
 
 async function getLatestPosts(): Promise<PostsResponse> {
-  return await getFetch<PostsResponse>("/posts/latest");
+  return await getFetch<PostsResponse>("/posts/latest", { revalidate: 3600 });
 }
 
 export default async function Home() {
@@ -51,6 +62,8 @@ export default async function Home() {
 
   return (
     <>
+      <JsonLd data={[organizationJsonLd({ description: DEFAULT_DESCRIPTION }), webSiteJsonLd(DEFAULT_DESCRIPTION)]} />
+      <h1 className="sr-only">بوف استور | بزرگترین مرجع لوازم ورزشی</h1>
       <Hero isMobile={isMobile} bannersData={bannersData} />
       <BrandSlider brandsData={brandsData} isMobile={isMobile} />
       {isMobile ?
@@ -65,6 +78,7 @@ export default async function Home() {
                   src={category.image}
                   alt={category.title}
                   fill
+                  sizes="(max-width: 1024px) 40vw, 25vw"
                   className="object-cover object-center"
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/30 to-transparent opacity-90" />
@@ -102,8 +116,8 @@ export default async function Home() {
       </div>
       <div className="container px-4 lg:px-0 mx-auto mt-6 lg:mt-14">
         {isMobile
-          ? <Image src={mobileInstagramBanner} alt="" width={390} height={136} quality={100} />
-          : <Image src={instagramBanner} alt="" width={1600} height={375} quality={100} />}
+          ? <Image src={mobileInstagramBanner} alt="اینستاگرام بوف استور" width={390} height={136} quality={100} sizes="390px" />
+          : <Image src={instagramBanner} alt="اینستاگرام بوف استور" width={1600} height={375} quality={100} sizes="1600px" />}
       </div>
       <div className="mt-6 lg:mt-14 container mx-auto">
         <Carousel

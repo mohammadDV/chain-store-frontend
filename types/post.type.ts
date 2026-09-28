@@ -7,6 +7,10 @@ export interface Post {
     slug: string;
     summary: string;
     content: string;
+    meta_title?: string | null;
+    meta_description?: string | null;
+    meta_keywords?: string | null;
+    og_image?: string | null;
     type: number;
     image: string | null;
     video: string | null;

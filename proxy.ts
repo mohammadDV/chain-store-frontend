@@ -1,29 +1,72 @@
 import { NextRequest, NextResponse } from "next/server";
 import { regex } from "./constants/regex";
+import { getApiUrl } from "./configs/global";
 
-export function proxy(request: NextRequest) {
+type SeoRedirect = {
+    from_path: string;
+    to_path: string;
+    status_code: number;
+};
+
+let redirectsCache: { expires: number; items: SeoRedirect[] } | null = null;
+
+async function loadSeoRedirects(): Promise<SeoRedirect[]> {
+    const now = Date.now();
+    if (redirectsCache && redirectsCache.expires > now) {
+        return redirectsCache.items;
+    }
+
+    try {
+        const res = await fetch(`${getApiUrl()}/seo/redirects`, {
+            next: { revalidate: 300 },
+        });
+        if (!res.ok) {
+            return redirectsCache?.items || [];
+        }
+        const json = await res.json();
+        const items = (json?.data || []) as SeoRedirect[];
+        redirectsCache = {
+            expires: now + 5 * 60 * 1000,
+            items,
+        };
+        return items;
+    } catch {
+        return redirectsCache?.items || [];
+    }
+}
+
+export async function proxy(request: NextRequest) {
     const userAgent = request.headers.get("user-agent") || "";
     const isMobile = regex.mobileDevice.test(userAgent);
 
     const token = request.cookies.get("token")?.value;
     const userData = request.cookies.get("userData")?.value;
+    const pathname = request.nextUrl.pathname;
+
+    const redirects = await loadSeoRedirects();
+    const matched = redirects.find((item) => item.from_path === pathname);
+    if (matched) {
+        const url = request.nextUrl.clone();
+        url.pathname = matched.to_path;
+        return NextResponse.redirect(url, matched.status_code || 301);
+    }
 
     const isProfilePath =
-        request.nextUrl.pathname === "/profile" ||
-        request.nextUrl.pathname.startsWith("/profile/");
+        pathname === "/profile" ||
+        pathname.startsWith("/profile/");
 
     const isAuthPath =
-        request.nextUrl.pathname === "/auth/login" ||
-        request.nextUrl.pathname === "/auth/register";
+        pathname === "/auth/login" ||
+        pathname === "/auth/register";
 
     const isVerificationPath =
-        request.nextUrl.pathname === "/auth/check-verification";
+        pathname === "/auth/check-verification";
 
     const isCompleteRegisterPath =
-        request.nextUrl.pathname === "/auth/complete-register";
+        pathname === "/auth/complete-register";
 
     const isCheckoutPath =
-        request.nextUrl.pathname.startsWith("/checkout/");
+        pathname.startsWith("/checkout/");
 
     if (isAuthPath && token) {
         return NextResponse.redirect(new URL("/profile", request.url));

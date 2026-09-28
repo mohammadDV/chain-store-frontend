@@ -1,5 +1,14 @@
 import samplePost from "@/assets/images/post-sample.jpg";
+import { buildMetadata } from "@/lib/seo/buildMetadata";
+import type { Metadata } from "next";
 import Image from "next/image";
+
+export const metadata: Metadata = buildMetadata({
+    title: "درباره ما",
+    description:
+        "درباره فروشگاه بوف استور؛ تأمین و فروش کالاهای ورزشی اورجینال با کیفیت و قیمت منصفانه",
+    path: "/about",
+});
 
 export default async function About() {
     return (

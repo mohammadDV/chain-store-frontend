@@ -52,9 +52,9 @@ export const BrandHeroGrid: React.FC<BrandHeroGridProps> = ({ data }) => {
                             <div className="relative z-10 h-full">
                                 <div className={cn("container h-full mx-auto px-4 lg:px-8 flex items-end pb-4 lg:pb-8")}>
                                     <div className={cn("text-white transition-opacity duration-500", isActive ? "opacity-100" : "opacity-0")}>
-                                        <h1 className="text-lg lg:text-3xl leading-8 lg:leading-14 font-semibold lg:font-bold mb-1 lg:mb-4">
+                                        <h2 className="text-lg lg:text-3xl leading-8 lg:leading-14 font-semibold lg:font-bold mb-1 lg:mb-4">
                                             {item.title}
-                                        </h1>
+                                        </h2>
                                         {item.link && <Link href={item.link}>
                                             <Button variant="secondary" size={"medium"}>
                                                 مشاهده بیشتر

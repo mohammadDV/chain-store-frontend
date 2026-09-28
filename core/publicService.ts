@@ -5,6 +5,8 @@ interface FetchOptions {
     body?: any;
     headers?: Record<string, string>;
     isFormData?: boolean;
+    /** Seconds for Next.js fetch cache. Use false/undefined for no-store (default). */
+    revalidate?: number | false;
 }
 
 const baseFetchPublic = async <T>(
@@ -15,7 +17,8 @@ const baseFetchPublic = async <T>(
         method = 'GET',
         body,
         headers: customHeaders = {},
-        isFormData = false
+        isFormData = false,
+        revalidate,
     } = options;
 
     const baseHeaders: Record<string, string> = {
@@ -29,8 +32,13 @@ const baseFetchPublic = async <T>(
 
     const requestBody = body && !isFormData ? JSON.stringify(body) : body;
 
+    const cacheOptions =
+        typeof revalidate === 'number'
+            ? { next: { revalidate } }
+            : { cache: 'no-store' as const };
+
     const res = await fetch(`${getApiUrl()}${url}`, {
-        cache: 'no-store',
+        ...cacheOptions,
         method,
         headers: baseHeaders,
         ...(requestBody && { body: requestBody })
@@ -38,9 +46,13 @@ const baseFetchPublic = async <T>(
     return await res.json();
 };
 
-const getFetch = async <T>(url: string): Promise<T> => {
+const getFetch = async <T>(
+    url: string,
+    options?: { revalidate?: number | false }
+): Promise<T> => {
     const res = await baseFetchPublic<T>(url, {
-        method: 'GET'
+        method: 'GET',
+        revalidate: options?.revalidate,
     });
     if (res) {
         return res;

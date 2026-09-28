@@ -1,6 +1,7 @@
 export type SearchSuggestionProduct = {
   id: number;
   title: string;
+  slug?: string | null;
   amount: number;
   discount: number;
   image: string;
@@ -10,6 +11,7 @@ export type SearchSuggestionProduct = {
 export type SearchSuggestionCategoryParent = {
   id: number;
   title: string;
+  slug?: string | null;
   parent_id: number;
   image: string;
   parent: SearchSuggestionCategoryParent | null;
@@ -18,6 +20,7 @@ export type SearchSuggestionCategoryParent = {
 export type SearchSuggestionCategory = {
   id: number;
   title: string;
+  slug?: string | null;
   parent_id: number;
   image: string;
   parent: SearchSuggestionCategoryParent | null;
@@ -27,4 +30,3 @@ export type SearchSuggestionsResponse = {
   products: SearchSuggestionProduct[];
   categories: SearchSuggestionCategory[];
 };
-

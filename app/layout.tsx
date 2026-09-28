@@ -1,4 +1,6 @@
 import { estedadFont } from "@/constants/localfont";
+import { DEFAULT_DESCRIPTION } from "@/lib/seo/buildMetadata";
+import { getSiteUrl } from "@/lib/seo/absoluteUrl";
 import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
 import "../assets/icons/solar.css";
@@ -7,7 +9,20 @@ import "./globals.css";
 import { Toaster } from "@/ui/sonner";
 
 export const metadata: Metadata = {
-  title: "بوف استور | بزرگترین مرجع لوازم ورزشی",
+  metadataBase: new URL(getSiteUrl()),
+  title: {
+    default: "بوف استور | بزرگترین مرجع لوازم ورزشی",
+    template: "%s | بوف استور",
+  },
+  description: DEFAULT_DESCRIPTION,
+  openGraph: {
+    siteName: "بوف استور",
+    locale: "fa_IR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({

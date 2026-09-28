@@ -6,6 +6,11 @@ import barcodeIcon from "@/assets/images/barcode.svg";
 import boxIcon from "@/assets/images/box.svg";
 import checkIcon from "@/assets/images/check-box.svg";
 import truckIcon from "@/assets/images/truck.svg";
+import { absoluteImageUrl, absoluteUrl, stripHtml } from "@/lib/seo/absoluteUrl";
+import { buildMetadata } from "@/lib/seo/buildMetadata";
+import { Breadcrumbs } from "@/lib/seo/Breadcrumbs";
+import { JsonLd } from "@/lib/seo/JsonLd";
+import { breadcrumbListJsonLd, productJsonLd } from "@/lib/seo/schema";
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
 import { getUserData } from "@/lib/getUserDataFromHeaders";
 import { createFileUrl, isEmpty, putCommas } from "@/lib/utils";
@@ -20,6 +25,8 @@ import { Icon } from "@/ui/icon";
 import { Progress } from "@/ui/progress";
 import Image from "next/image";
 import Link from "next/link";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { TopNavActions } from "../../_components/topNavigation/TopNavActions";
 import { getProduct } from "../_api/getProduct";
 import { getReviews } from "../_api/getReviews";
@@ -32,13 +39,39 @@ import { ReviewsSort } from "../_components/ReviewsSort";
 import { ShareButton } from "../_components/ShareButton";
 import { CopyButton } from "../_components/CopyButton";
 import { SizeGuide } from "../_components/SizeGuide";
-import { notFound } from "next/navigation";
 
 interface ProductPageProps {
   params: Promise<{
-    id: string;
+    slug: string;
   }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export async function generateMetadata({
+  params,
+}: ProductPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const productData = await getProduct(slug);
+    const product = productData.product;
+    const path = `/product/${product.slug || product.id}`;
+    return buildMetadata({
+      title: product.meta_title || product.title,
+      description:
+        product.meta_description ||
+        stripHtml(product.description) ||
+        product.title,
+      path,
+      image: product.og_image || product.image,
+      keywords: product.meta_keywords,
+      type: "product",
+    });
+  } catch {
+    return buildMetadata({
+      title: "محصول",
+      path: `/product/${slug}`,
+    });
+  }
 }
 
 export default async function Product({ params, searchParams }: ProductPageProps) {
@@ -48,75 +81,100 @@ export default async function Product({ params, searchParams }: ProductPageProps
 
   const userData = await getUserData();
 
-  const productData = await getProduct(resolvedParams.id);
+  const productData = await getProduct(resolvedParams.slug);
 
   if (!productData?.product) {
     notFound();
   }
 
-  const reviewsData = await getReviews(resolvedParams.id, {
+  const product = productData.product;
+  const productSlug = product.slug || String(product.id);
+
+  const categorySlug =
+    product.categories?.[0]?.slug || product.categories?.[0]?.id;
+  const brandSlug = product.brand?.slug || product.brand?.id;
+  const productUrl = absoluteUrl(`/product/${productSlug}`);
+  const shareUrl = productUrl;
+
+  const breadcrumbItems = [
+    { label: "بوف استور", href: "/" },
+    { label: "فروشگاه", href: "/shop" },
+    ...(product.categories?.[0]
+      ? [
+          {
+            label: product.categories[0].title,
+            href: `/shop/${categorySlug}`,
+          },
+        ]
+      : []),
+    { label: product.title },
+  ];
+
+  const reviewsData = await getReviews(String(product.id), {
     page: Array.isArray(resolvedSearchParams.page) ? resolvedSearchParams.page[0] : resolvedSearchParams.page,
     query: Array.isArray(resolvedSearchParams.query) ? resolvedSearchParams.query[0] : resolvedSearchParams.query,
     column: Array.isArray(resolvedSearchParams.column) ? resolvedSearchParams.column[0] : resolvedSearchParams.column,
   });
-  const similarProductsData = await getSimilarProducts(resolvedParams.id);
+  const similarProductsData = await getSimilarProducts(String(product.id));
 
   const productImages = [
-    productData?.product.image,
-    ...productData.product.files.map((file) => file.path),
+    product.image,
+    ...product.files.map((file) => file.path),
   ];
 
-  const hasDiscount = (productData.product.discount || 0) > 0;
-  const isFree = productData.product.amount === 0;
+  const hasDiscount = (product.discount || 0) > 0;
+  const isFree = product.amount === 0;
   const originalAmount = Math.round(
-    productData.product.amount /
-    Math.max(1e-9, 1 - (productData.product.discount || 0) / 100)
+    product.amount /
+    Math.max(1e-9, 1 - (product.discount || 0) / 100)
   );
 
   return (
     <>
+      <JsonLd
+        data={[
+          productJsonLd({
+            name: product.title,
+            description:
+              stripHtml(product.meta_description || product.description) ||
+              product.title,
+            image: absoluteImageUrl(product.og_image || product.image),
+            url: productUrl,
+            price: product.amount,
+            brand: product.brand?.title,
+            ratingValue: product.rate || undefined,
+            reviewCount: product.reviews_count || undefined,
+            availability:
+              product.sizes?.some((s) => s.stock > 0) ? "InStock" : "OutOfStock",
+          }),
+          breadcrumbListJsonLd(breadcrumbItems),
+        ]}
+      />
       {isMobile && <TopNavActions title={"محصولات"} />}
       <div className="container mx-auto px-4 lg:px-0 mt-6 lg:mt-8">
-        <p className="text-xs lg:text-sm text-muted">
-          <Link href="/" className="text-secondary mr-1">بوف استور</Link>
-          {" / "}
-          <Link href="/shop" className="text-secondary mr-1">فروشگاه</Link>
-          {productData.product.categories?.[0] && (
-            <>
-              {" / "}
-              <Link
-                href={`/shop/${productData.product.categories[0].id}`}
-                className="text-secondary mr-1"
-              >
-                {productData.product.categories[0].title}
-              </Link>
-            </>
-          )}
-          {" / "}
-          <span className="mr-1">{productData.product.title}</span>
-        </p>
+        <Breadcrumbs items={breadcrumbItems} />
         <div className="mt-4 lg:mt-5 flex flex-col lg:flex-row justify-between gap-4 lg:gap-12">
-          <ProductGallery images={productImages} />
+          <ProductGallery images={productImages} title={product.title} />
           <div className="lg:w-1/2">
             <div className="flex items-center justify-between mt-2.5 lg:mt-4">
               <div className="flex items-center gap-3">
                 <p className="text-description text-sm">
                   دسته بندی:
                   <Link
-                    href={`/shop/${productData.product.categories?.[0]?.id}`}
+                    href={`/shop/${categorySlug}`}
                     className="text-secondary mr-1"
                   >
-                    {productData.product.categories?.[0]?.title}
+                    {product.categories?.[0]?.title}
                   </Link>
                 </p>
                 <div className="w-px h-4 block bg-border"></div>
                 <p className="text-description text-sm">
                   برند:
                   <Link
-                    href={`/brand/${productData.product.brand.id}`}
+                    href={`/brand/${brandSlug}`}
                     className="text-secondary mr-1"
                   >
-                    {productData.product.brand.title}
+                    {product.brand.title}
                   </Link>
                 </p>
               </div>
@@ -126,7 +184,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
                   sizeClass="size-4.5"
                   className="text-description"
                 />
-                <ShareButton title={productData.product.title}>
+                <ShareButton title={product.title} url={shareUrl}>
                   <Icon
                     icon="solar--share-circle-outline"
                     sizeClass="size-4.5"
@@ -144,7 +202,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
             </div>
             <div className="flex justify-between items-start mt-2.5 lg:mt-4 gap-2 lg:gap-4">
               <h1 className="text-lg lg:text-2xl font-bold text-title">
-                {productData.product.title}
+                {product.title}
               </h1>
               <div className="flex items-center justify-center bg-success rounded-full py-1 px-3 text-xs min-w-max text-white">
                 ضمانت اصل بودن کالا
@@ -156,7 +214,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
                   <Icon
                     key={i}
                     icon={
-                      i < productData.product.rate
+                      i < product.rate
                         ? "solar--star-bold"
                         : "solar--star-outline"
                     }
@@ -166,8 +224,8 @@ export default async function Product({ params, searchParams }: ProductPageProps
                 ))}
               </div>
               <p className="text-xs text-description">
-                {productData.product.rate} (از{" "}
-                {productData.product.reviews_count} نظر ثبت شده)
+                {product.rate} (از{" "}
+                {product.reviews_count} نظر ثبت شده)
               </p>
             </div>
             <div className="mt-6 lg:mt-8">
@@ -177,20 +235,20 @@ export default async function Product({ params, searchParams }: ProductPageProps
                     {putCommas(originalAmount)}
                   </del>
                   <div className="bg-secondary py-0.5 px-3 rounded-sm text-white text-sm flex items-center justify-center">
-                    {productData.product.discount} %
+                    {product.discount} %
                   </div>
                 </div>
               )}
               <p className="text-secondary text-xl lg:text-2xl font-bold mt-2">
-                {isFree ? "رایگان" : `${putCommas(productData.product.amount)} تومان`}
+                {isFree ? "رایگان" : `${putCommas(product.amount)} تومان`}
               </p>
             </div>
-            {!isEmpty(productData.product.attributes) && <div className="mt-6 lg:mt-8">
+            {!isEmpty(product.attributes) && <div className="mt-6 lg:mt-8">
               <div className="flex items-center justify-between mb-3">
                 <p className="text-title font-medium">ویژگی های این محصول</p>
               </div>
               <div className="flex gap-3 overflow-x-auto px-1 sm:grid sm:grid-cols-4 sm:overflow-visible">
-                {productData.product.attributes?.map(item => (
+                {product.attributes?.map(item => (
                   <div
                     key={item.id}
                     className="min-w-[140px] p-2.5 rounded-lg bg-surface shrink-0"
@@ -207,28 +265,35 @@ export default async function Product({ params, searchParams }: ProductPageProps
               <p className="text-title text-sm font-medium mb-2.5">محصولات مرتبط</p>
               <div className="flex items-center gap-3 flex-wrap">
                 {productData?.related_products?.map(item => (
-                  <Link key={item.id} href={`/product/${item.id}`} target="_blank">
-                    <img src={createFileUrl(item.image || "")} alt="" width={90} height={90} className="object-cover rounded-lg" />
+                  <Link key={item.id} href={`/product/${item.slug || item.id}`} target="_blank">
+                    <Image
+                      src={createFileUrl(item.image || "")}
+                      alt={item.title}
+                      width={90}
+                      height={90}
+                      sizes="90px"
+                      className="object-cover rounded-lg"
+                    />
                   </Link>
                 ))}
               </div>
             </div>}
             <AddToCart
-              productId={productData.product.id}
-              sizes={productData.product.sizes}
-              amount={productData.product.amount}
-              discount={productData.product.discount}
-              image={productData.product.image}
-              title={productData.product.title}
+              productId={product.id}
+              sizes={product.sizes}
+              amount={product.amount}
+              discount={product.discount}
+              image={product.image}
+              title={product.title}
             />
             <div className="hidden mt-8 lg:flex items-center justify-between">
               <AddToFavorites
-                id={productData.product.id}
+                id={product.id}
                 userData={userData}
-                isFavorite={productData.product.is_favorite}
+                isFavorite={product.is_favorite}
               />
               <div className="w-px h-4 block bg-border"></div>
-              <ShareButton title={productData.product.title} className="flex items-center gap-2">
+              <ShareButton title={product.title} url={shareUrl} className="flex items-center gap-2">
                 <p className="text-sm text-description">اشتراک گذاری</p>
                 <Icon
                   icon="solar--share-circle-outline"
@@ -254,7 +319,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
                   <AccordionContent>
                     <div
                       className="text-sm text-description leading-6"
-                      dangerouslySetInnerHTML={{ __html: productData.product.description || "" }}>
+                      dangerouslySetInnerHTML={{ __html: product.description || "" }}>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -263,7 +328,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
                   <AccordionContent>
                     <div
                       className="text-sm text-description leading-6"
-                      dangerouslySetInnerHTML={{ __html: productData.product.details || "" }}>
+                      dangerouslySetInnerHTML={{ __html: product.details || "" }}>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
@@ -376,7 +441,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
                   lastPage={reviewsData.last_page}
                   links={reviewsData.links}
                   total={reviewsData.total}
-                  routeUrl={`/product/${resolvedParams.id}`}
+                  routeUrl={`/product/${productSlug}`}
                 />
               )}
             </div>
@@ -396,22 +461,22 @@ export default async function Product({ params, searchParams }: ProductPageProps
                     ))}
                   </div>
                   <div className="flex flex-col items-center justify-center gap-2">
-                    <p className="text-3xl text-secondary font-bold">{productData.product.rate}</p>
+                    <p className="text-3xl text-secondary font-bold">{product.rate}</p>
                     <div className="flex items-center gap-0.5">
                       {Array.from({ length: 5 }, (_, index) => (
                         <Icon
                           key={index}
-                          icon={index < productData.product.rate ? "solar--star-bold" : "solar--star-outline"}
+                          icon={index < product.rate ? "solar--star-bold" : "solar--star-outline"}
                           sizeClass="size-5"
                           className="text-warning"
                         />
                       ))}
                     </div>
-                    <p className="text-sm text-description">از {productData.product.reviews_count} نظر</p>
+                    <p className="text-sm text-description">از {product.reviews_count} نظر</p>
                   </div>
                 </div>
                 <AddReviewModal
-                  productId={productData.product.id}
+                  productId={product.id}
                   userData={userData}
                 />
               </div>
@@ -419,7 +484,7 @@ export default async function Product({ params, searchParams }: ProductPageProps
           </div>
           <div className="block lg:hidden">
             <AddReviewModal
-              productId={productData.product.id}
+              productId={product.id}
               userData={userData}
             />
           </div>

@@ -56,7 +56,7 @@ export const CategoryModal = ({ open, onOpenChange }: CategoryModalProps) => {
     };
 
     const getLink = (category: Category) => {
-        return `/shop/${category.id}`;
+        return `/shop/${category.slug || category.id}`;
     };
 
     return (
