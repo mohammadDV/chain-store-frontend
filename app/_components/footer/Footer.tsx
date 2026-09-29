@@ -80,7 +80,7 @@ export const Footer = async () => {
       <div className="container mx-auto">
         <div className="bg-surface px-3 lg:px-6 py-3 lg:py-5 mx-8 lg:mx-12 rounded-b-2xl flex flex-col lg:flex-row items-center justify-between">
           <p className="text-title text-center text-xs lg:text-base">
-            تمامی حقوق این سایت متعلق به اسپورت ساید می‌باشد.
+                        تمامی حقوق این سایت متعلق به بوف استور می‌باشد.
           </p>
           <p className="text-title text-center text-xs lg:text-base mt-2.5 lg:mt-0">
             ساخته شده با  ❤️
