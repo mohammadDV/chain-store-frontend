@@ -12,7 +12,15 @@ import { Button } from "@/ui/button";
 import { Icon } from "@/ui/icon";
 import { topUpAction } from "../_api/topUpAction";
 
-export const TopUpModal = () => {
+type TopUpModalProps = {
+    paymentGatewayEnabled?: boolean;
+    paymentGatewayDisabledMessage?: string | null;
+};
+
+export const TopUpModal = ({
+    paymentGatewayEnabled = true,
+    paymentGatewayDisabledMessage = null,
+}: TopUpModalProps) => {
     const [open, setOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -31,7 +39,16 @@ export const TopUpModal = () => {
         },
     });
 
+    const disabledMessage =
+        paymentGatewayDisabledMessage ||
+        "فعلا درگاه پرداخت قابل استفاده نیست لطفا ۳۰ دقیقه دیگر مجدد امتحان کنید.";
+
     const onSubmit = async (data: FormData) => {
+        if (!paymentGatewayEnabled) {
+            toast.error(disabledMessage);
+            return;
+        }
+
         setIsSubmitting(true);
         const formData = new FormData();
         formData.append("amount", data.amount);
@@ -65,10 +82,16 @@ export const TopUpModal = () => {
 
     return (
         <>
-            <Button 
-                variant="primary" 
+            <Button
+                variant="primary"
                 className="flex-1 md:flex-none"
-                onClick={() => setOpen(true)}
+                onClick={() => {
+                    if (!paymentGatewayEnabled) {
+                        toast.error(disabledMessage);
+                        return;
+                    }
+                    setOpen(true);
+                }}
             >
                 <Icon icon="solar--alt-arrow-down-outline" sizeClass="size-5" />
                 افزایش موجودی
@@ -84,16 +107,16 @@ export const TopUpModal = () => {
                 confirmText="پرداخت"
                 cancelText="انصراف"
                 loading={isSubmitting}
-                disabled={isSubmitting}
+                disabled={isSubmitting || !paymentGatewayEnabled}
                 onConfirm={() => form.handleSubmit(onSubmit)()}
                 onCancel={() => setOpen(false)}
             >
                 <FormProvider {...form}>
                     <form className="flex flex-col gap-5">
-                        <RHFInput 
-                            name="amount" 
-                            label="مبلغ (تومان)" 
-                            convertPersianNumbers 
+                        <RHFInput
+                            name="amount"
+                            label="مبلغ (تومان)"
+                            convertPersianNumbers
                             placeholder="مثال: ۱۰۰,۰۰۰"
                             trailingLabel="تومان"
                         />

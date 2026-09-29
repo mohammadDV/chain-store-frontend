@@ -1,4 +1,5 @@
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
+import { getPublicFeatures } from "@/lib/settings/getPublicFeatures";
 import { OrderHeader } from "../../_components/orderHeader";
 import { OrderNavigation } from "../../_components/orderNavigation";
 import { getOrder } from "../_api/getOrder";
@@ -13,7 +14,10 @@ interface ProductPageProps {
 export default async function Checkout({ params }: ProductPageProps) {
     const isMobile = await isMobileDevice();
     const resolvedParams = await params;
-    const order = await getOrder(resolvedParams.id);
+    const [order, features] = await Promise.all([
+        getOrder(resolvedParams.id),
+        getPublicFeatures(),
+    ]);
 
     return (
         <>
@@ -25,7 +29,11 @@ export default async function Checkout({ params }: ProductPageProps) {
                     </h1>
                     <OrderHeader step="checkout" />
                 </div>}
-            <CheckoutClient order={order} />
+            <CheckoutClient
+                order={order}
+                paymentGatewayEnabled={features.payment_gateway_enabled}
+                paymentGatewayDisabledMessage={features.payment_gateway_disabled_message}
+            />
         </>
     )
 }

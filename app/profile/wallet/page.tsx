@@ -1,4 +1,5 @@
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
+import { getPublicFeatures } from "@/lib/settings/getPublicFeatures";
 import { TopNavProfile } from "../_components/topNavigation/TopNavProfile";
 import { WalletHeader } from "./_components/WalletHeader";
 import { WalletTabs } from "./_components/WalletTabs";
@@ -20,7 +21,10 @@ export default async function WalletPage({ searchParams }: WalletPageProps) {
     const isMobile = await isMobileDevice();
     const resolvedSearchParams = await searchParams;
 
-    const walletsData = await getWallets();
+    const [walletsData, features] = await Promise.all([
+        getWallets(),
+        getPublicFeatures(),
+    ]);
     const balance = walletsData?.data?.[0]?.balance ? Number(walletsData.data[0].balance) : 0;
 
     const page = parseInt(resolvedSearchParams?.page || "1");
@@ -55,7 +59,11 @@ export default async function WalletPage({ searchParams }: WalletPageProps) {
             {isMobile && <TopNavProfile title="کیف پول من" />}
 
             <div className="flex flex-col gap-6 p-4 lg:p-0 mt-4 lg:mt-0">
-                <WalletHeader balance={balance} />
+                <WalletHeader
+                    balance={balance}
+                    paymentGatewayEnabled={features.payment_gateway_enabled}
+                    paymentGatewayDisabledMessage={features.payment_gateway_disabled_message}
+                />
                 <WalletTabs 
                     transactionsData={transactionsData} 
                     requestsData={withdrawRequestsData}

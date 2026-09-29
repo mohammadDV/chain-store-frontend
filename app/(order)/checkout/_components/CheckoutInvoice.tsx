@@ -18,6 +18,8 @@ type Props = {
   onSubmit: () => void;
   isLoading?: boolean;
   appliedDiscountCode?: string | null;
+  paymentGatewayEnabled?: boolean;
+  paymentGatewayDisabledMessage?: string | null;
   onDiscountApplied: (payload: {
     discount_code: string;
     amount: string;
@@ -34,6 +36,8 @@ export const CheckoutInvoice = ({
   onSubmit,
   isLoading,
   appliedDiscountCode,
+  paymentGatewayEnabled = true,
+  paymentGatewayDisabledMessage = null,
   onDiscountApplied,
 }: Props) => {
   const totalAmount = Number(order.total_amount || 0);
@@ -126,14 +130,34 @@ export const CheckoutInvoice = ({
       </div>
       <div className="mt-5">
         <p className="text-muted mb-2">روش پرداخت</p>
+        {!paymentGatewayEnabled && paymentGatewayDisabledMessage ? (
+          <p className="mb-3 text-sm text-secondary leading-6">
+            {paymentGatewayDisabledMessage}
+          </p>
+        ) : null}
         <RadioGroup
           value={paymentMethod}
           onValueChange={(v) => setPaymentMethod(v as PaymentMethod)}
           className="grid grid-cols-2 gap-3"
         >
-          <div className="group cursor-pointer border border-border rounded-2xl p-3 flex items-center gap-3 hover:border-secondary/50 transition-colors">
-            <RadioGroupItem value="bank" id="payment-bank" />
-            <Label htmlFor="payment-bank" className="cursor-pointer text-sm text-title group-data-[state=checked]:text-secondary">
+          <div
+            className={`group border border-border rounded-2xl p-3 flex items-center gap-3 transition-colors ${
+              paymentGatewayEnabled
+                ? "cursor-pointer hover:border-secondary/50"
+                : "opacity-50 cursor-not-allowed"
+            }`}
+          >
+            <RadioGroupItem
+              value="bank"
+              id="payment-bank"
+              disabled={!paymentGatewayEnabled}
+            />
+            <Label
+              htmlFor="payment-bank"
+              className={`text-sm text-title group-data-[state=checked]:text-secondary ${
+                paymentGatewayEnabled ? "cursor-pointer" : "cursor-not-allowed"
+              }`}
+            >
               درگاه بانکی
             </Label>
           </div>

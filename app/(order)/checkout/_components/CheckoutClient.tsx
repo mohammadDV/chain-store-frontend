@@ -10,7 +10,11 @@ import { payOrderAction, PaymentMethod } from "../_api/payOrderAction";
 import { StatusCode } from "@/constants/enums";
 import { useCartStore } from "@/stores/cart";
 
-type Props = { order: Order };
+type Props = {
+  order: Order;
+  paymentGatewayEnabled?: boolean;
+  paymentGatewayDisabledMessage?: string | null;
+};
 
 type FormValues = {
   fullname: string;
@@ -19,7 +23,11 @@ type FormValues = {
   description?: string;
 };
 
-export const CheckoutClient = ({ order }: Props) => {
+export const CheckoutClient = ({
+  order,
+  paymentGatewayEnabled = true,
+  paymentGatewayDisabledMessage = null,
+}: Props) => {
   const router = useRouter();
   const clearCart = useCartStore((s) => s.clear);
 
@@ -31,12 +39,21 @@ export const CheckoutClient = ({ order }: Props) => {
     address: "",
     description: "",
   });
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("bank");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
+    paymentGatewayEnabled ? "bank" : "wallet"
+  );
   const [appliedDiscountCode, setAppliedDiscountCode] = useState<string | null>(null);
 
   const onSubmit = () => {
     if (!formValues.fullname || !formValues.postal_code || !formValues.address) {
       toast.error("اطلاعات صورتحساب را کامل کنید");
+      return;
+    }
+    if (paymentMethod === "bank" && !paymentGatewayEnabled) {
+      toast.error(
+        paymentGatewayDisabledMessage ||
+          "فعلا درگاه پرداخت قابل استفاده نیست لطفا ۳۰ دقیقه دیگر مجدد امتحان کنید."
+      );
       return;
     }
     startTransition(async () => {
@@ -79,6 +96,8 @@ export const CheckoutClient = ({ order }: Props) => {
           onSubmit={onSubmit}
           isLoading={isPending}
           appliedDiscountCode={appliedDiscountCode}
+          paymentGatewayEnabled={paymentGatewayEnabled}
+          paymentGatewayDisabledMessage={paymentGatewayDisabledMessage}
           onDiscountApplied={(payload) => {
             setAppliedDiscountCode(payload.discount_code);
             setCurrentOrder((prev) => ({
