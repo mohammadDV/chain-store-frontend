@@ -11,7 +11,6 @@ export interface CompleteRegisterService {
     last_name: string;
     nickname: string;
     mobile: string;
-    privacy_policy: boolean;
 }
 
 export interface CompleteRegisterResponse {
@@ -30,7 +29,6 @@ export const completeRegisterAction = async (_state: any, formData: FormData): P
     const last_name = formData.get("last_name");
     const nickname = formData.get("nickname");
     const mobile = formData.get("mobile");
-    const privacy_policy = formData.get("privacy_policy");
 
     try {
         const res = await postFetchAuth<CompleteRegisterResponse>("/complete-register", {
@@ -39,7 +37,6 @@ export const completeRegisterAction = async (_state: any, formData: FormData): P
             last_name,
             nickname,
             mobile,
-            privacy_policy: privacy_policy === "true",
         });
         if (res?.status === StatusCode.Success) {
             const cookieStore = await cookies();

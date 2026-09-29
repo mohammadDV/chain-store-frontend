@@ -6,6 +6,7 @@ import { Header } from "../_components/header";
 import { MobileHeader } from "../_components/header/MobileHeader";
 import { getUserData } from "@/lib/getUserDataFromHeaders";
 import { BottomNavigation } from "../_components/bottomNavigation";
+import { getPagesNav } from "@/lib/pages/getPage";
 
 export default async function MainLayout({
     children,
@@ -14,10 +15,11 @@ export default async function MainLayout({
 }) {
     const isMobile = await isMobileDevice();
     const userData = await getUserData();
+    const menuPages = await getPagesNav();
 
     return (
         <>
-            {isMobile ? <MobileHeader /> : <Header userData={userData} />}
+            {isMobile ? <MobileHeader /> : <Header userData={userData} menuPages={menuPages} />}
             {children}
             <Footer />
             {isMobile && <BottomNavigation />}

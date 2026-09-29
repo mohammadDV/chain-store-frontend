@@ -8,7 +8,7 @@ import { useFormContext } from "react-hook-form";
 interface RHFCheckboxProps {
     id?: string;
     name: string;
-    label?: string;
+    label?: React.ReactNode;
     className?: string;
     disabled?: boolean;
 }
@@ -19,9 +19,9 @@ export const RHFCheckbox: React.FC<RHFCheckboxProps> = ({
     label,
     className,
     disabled,
-    ...props
 }) => {
     const { control } = useFormContext();
+    const inputId = id ?? name;
 
     return (
         <FormField
@@ -29,21 +29,23 @@ export const RHFCheckbox: React.FC<RHFCheckboxProps> = ({
             name={name}
             render={({ field }) => (
                 <FormItem className={className}>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-start gap-2">
                         <FormControl>
                             <Checkbox
-                                id={id}
-                                checked={field.value}
-                                onCheckedChange={field.onChange}
+                                id={inputId}
+                                checked={field.value === true}
+                                onCheckedChange={(checked) => {
+                                    field.onChange(checked === true);
+                                }}
                                 disabled={disabled}
-                                {...props}
+                                className="mt-0.5"
                             />
                         </FormControl>
-                        {label && (
-                            <FormLabel htmlFor="id" className="text-xs text-description">
+                        {label ? (
+                            <FormLabel htmlFor={inputId} className="text-xs text-description cursor-pointer leading-5">
                                 {label}
                             </FormLabel>
-                        )}
+                        ) : null}
                     </div>
                     <FormMessage className="text-xs" />
                 </FormItem>

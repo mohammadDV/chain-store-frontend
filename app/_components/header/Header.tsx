@@ -1,6 +1,8 @@
 "use client"
 
 import { isEmpty } from "@/lib/utils";
+import type { PageNavItem } from "@/lib/pages/getPage";
+import { pageHref } from "@/lib/pages/getPage";
 import { useCartStore } from "@/stores/cart";
 import { UserData } from "@/types/user.type";
 import { Button } from "@/ui/button"
@@ -11,43 +13,26 @@ import { HeaderSearch } from "./HeaderSearch";
 
 export interface HeaderProps {
     userData?: UserData | null;
+    menuPages?: PageNavItem[];
 }
 
-const menuData = [
-    {
-        id: 1,
-        title: "صفحه اصلی",
-        link: '/'
-    },
-    {
-        id: 2,
-        title: "فروشگاه",
-        link: '/shop'
-    },
-    {
-        id: 3,
-        title: "وبلاگ",
-        link: '/blog'
-    },
-    {
-        id: 4,
-        title: "تماس با ما",
-        link: '/contact'
-    },
-    {
-        id: 5,
-        title: "درباره ما",
-        link: '/about'
-    },
-    {
-        id: 6,
-        title: "ثبت شکایت",
-        link: '/complaint'
-    },
+const fixedMenu = [
+    { id: "home", title: "صفحه اصلی", link: "/" },
+    { id: "shop", title: "فروشگاه", link: "/shop" },
+    { id: "blog", title: "وبلاگ", link: "/blog" },
+    { id: "contact", title: "تماس با ما", link: "/contact" },
 ];
 
-export const Header = ({ userData }: HeaderProps) => {
+export const Header = ({ userData, menuPages = [] }: HeaderProps) => {
     const cart = useCartStore(state => state.items)
+    const dynamicMenu = menuPages
+        .filter((page) => page.show_in_menu)
+        .map((page) => ({
+            id: page.slug,
+            title: page.title,
+            link: pageHref(page.slug),
+        }));
+    const menuData = [...fixedMenu, ...dynamicMenu];
 
     return (
         <header className="container mx-auto mt-7">
@@ -83,7 +68,7 @@ export const Header = ({ userData }: HeaderProps) => {
             <div className="flex items-center justify-between">
                 <MegaMenu />
                 <div className="flex items-center justify-center gap-8">
-                    {menuData?.map(item => (
+                    {menuData.map(item => (
                         <Link
                             key={item.id}
                             href={item.link}

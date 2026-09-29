@@ -1,5 +1,6 @@
 import instagramBanner from "@/assets/images/instagram-banner.png";
 import mobileInstagramBanner from "@/assets/images/mobile-instagram-banner.png";
+import { getContactSettings } from "@/lib/pages/getContactSettings";
 import { buildMetadata } from "@/lib/seo/buildMetadata";
 import { JsonLd } from "@/lib/seo/JsonLd";
 import { contactPageJsonLd } from "@/lib/seo/schema";
@@ -17,17 +18,26 @@ export const metadata: Metadata = buildMetadata({
 
 export default async function Contact() {
     const isMobile = await isMobileDevice();
+    const contact = await getContactSettings();
+
+    const phoneHref = contact.phone
+        ? `tel:${contact.phone.replace(/\s+/g, "")}`
+        : "/";
+    const emailHref = contact.email ? `mailto:${contact.email}` : "/";
+    const mapHref = contact.map_url || "/";
 
     return (
         <>
             <JsonLd data={contactPageJsonLd()} />
             <div className="max-w-4xl mx-auto mt-8 lg:mt-20">
                 <h1 className="text-lg lg:text-3xl font-bold text-title text-center">
-                    با ما در  ارتباط باشید
+                    {contact.title}
                 </h1>
-                <p className="mt-2 lg:mt-3 text-sm lg:text-base text-description text-center">
-                    ما میتوانیم به شما کمک کنیم!
-                </p>
+                {contact.subtitle ? (
+                    <p className="mt-2 lg:mt-3 text-sm lg:text-base text-description text-center">
+                        {contact.subtitle}
+                    </p>
+                ) : null}
                 <div className="grid lg:grid-cols-3 gap-6 mt-6 lg:mt-8 px-8 lg:px-0">
                     <div className="border border-border rounded-2xl p-5">
                         <div className="size-10 flex items-center justify-center bg-surface rounded-lg">
@@ -40,12 +50,16 @@ export default async function Contact() {
                             <h3 className="text-title font-medium">
                                 اطلاعات تماس
                             </h3>
-                            <p className="text-sm text-muted mt-1.5">
-                                شنبه الی چهارشنبه از ساعت 8 الی 20
-                            </p>
-                            <Link href={"/"} className="text-secondary underline mt-4 text-sm inline-block">
-                                021-234-5660
-                            </Link>
+                            {contact.phone_hours ? (
+                                <p className="text-sm text-muted mt-1.5">
+                                    {contact.phone_hours}
+                                </p>
+                            ) : null}
+                            {contact.phone ? (
+                                <Link href={phoneHref} className="text-secondary underline mt-4 text-sm inline-block">
+                                    {contact.phone}
+                                </Link>
+                            ) : null}
                         </div>
                     </div>
                     <div className="border border-border rounded-2xl p-5">
@@ -59,10 +73,12 @@ export default async function Contact() {
                             <h3 className="text-title font-medium">
                                 دفتر مرکزی
                             </h3>
-                            <p className="text-sm text-muted mt-1.5">
-                                تهران، میدان ولیعصر، نبش خیابان اول
-                            </p>
-                            <Link href={"/"} className="text-secondary underline mt-4 text-sm inline-block">
+                            {contact.address ? (
+                                <p className="text-sm text-muted mt-1.5">
+                                    {contact.address}
+                                </p>
+                            ) : null}
+                            <Link href={mapHref} className="text-secondary underline mt-4 text-sm inline-block">
                                 مشاهده در نقشه
                             </Link>
                         </div>
@@ -78,12 +94,16 @@ export default async function Contact() {
                             <h3 className="text-title font-medium">
                                 پست الکترونیکی
                             </h3>
-                            <p className="text-sm text-muted mt-1.5">
-                                پیغام خود را به ما ارسال کنید
-                            </p>
-                            <Link href={"/"} className="text-secondary underline mt-4 text-sm inline-block">
-                                Info@sportside.com
-                            </Link>
+                            {contact.email_hint ? (
+                                <p className="text-sm text-muted mt-1.5">
+                                    {contact.email_hint}
+                                </p>
+                            ) : null}
+                            {contact.email ? (
+                                <Link href={emailHref} className="text-secondary underline mt-4 text-sm inline-block">
+                                    {contact.email}
+                                </Link>
+                            ) : null}
                         </div>
                     </div>
                 </div>

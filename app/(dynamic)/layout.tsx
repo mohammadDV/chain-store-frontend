@@ -5,6 +5,7 @@ import "swiper/css/pagination";
 import { Footer } from "../_components/footer";
 import { Header } from "../_components/header";
 import { getUserData } from "@/lib/getUserDataFromHeaders";
+import { getPagesNav } from "@/lib/pages/getPage";
 
 export default async function DynamicLayout({
     children,
@@ -13,10 +14,11 @@ export default async function DynamicLayout({
 }) {
     const isMobile = await isMobileDevice();
     const userData = await getUserData();
+    const menuPages = await getPagesNav();
 
     return (
         <>
-            {!isMobile && <Header userData={userData} />}
+            {!isMobile && <Header userData={userData} menuPages={menuPages} />}
             {children}
             <Footer />
         </>

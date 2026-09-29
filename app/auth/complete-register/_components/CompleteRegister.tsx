@@ -14,7 +14,6 @@ import { checkVerificationAction } from "../../check-verification/_api/verificat
 import { completeRegisterAction, CompleteRegisterResponse } from "../_api/completeRegisterAction";
 import { Loading } from "@/ui/loading";
 import { RHFAvatar } from "@/app/_components/hookForm/RHFAvatar";
-import { RHFCheckbox } from "@/app/_components/hookForm/RHFCheckbox";
 
 export const CompleteRegister = () => {
     const router = useRouter();
@@ -37,8 +36,6 @@ export const CompleteRegister = () => {
         mobile: z.string()
             .min(1, "شماره تماس الزامی است")
             .regex(regex.phone, "شماره تماس نامعتبر است"),
-        privacy_policy: z.boolean()
-            .refine(val => val === true, "موافقت با قوانین و مقررات الزامی است"),
     });
 
     type CompleteRegisterFormData = z.infer<typeof completeRegisterSchema>;
@@ -51,7 +48,6 @@ export const CompleteRegister = () => {
                 last_name: "",
                 nickname: "",
                 mobile: "",
-                privacy_policy: false,
             },
         }
     );
@@ -104,7 +100,6 @@ export const CompleteRegister = () => {
         formData.append("last_name", data.last_name);
         formData.append("nickname", data.nickname);
         formData.append("mobile", data.mobile);
-        formData.append("privacy_policy", data.privacy_policy.toString());
 
         startTransition(async () => {
             await formAction(formData);
@@ -155,11 +150,6 @@ export const CompleteRegister = () => {
                     label={"شماره موبایل *"}
                     type="tel"
                     convertPersianNumbers
-                />
-
-                <RHFCheckbox
-                    name="privacy_policy"
-                    label={"موافقت با قوانین و مقررات"}
                 />
 
                 <Button

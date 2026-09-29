@@ -2,6 +2,7 @@
 
 import { RHFInput } from "@/app/_components/hookForm/RHFInput";
 import { RHFPasswordInput } from "@/app/_components/hookForm/RHFPasswordInput";
+import { RHFCheckbox } from "@/app/_components/hookForm/RHFCheckbox";
 import { StatusCode } from "@/constants/enums";
 import { regex } from "@/constants/regex";
 import { useZodForm } from "@/hooks/useZodForm";
@@ -30,6 +31,8 @@ export const RegisterForm = () => {
             .regex(regex.password, { message: "رمز عبور باید حداقل ۸ کاراکتر و شامل حروف کوچک، بزرگ و عدد باشد" }),
         password_confirmation: z.string()
             .min(1, { message: "تکرار رمز عبور الزامی است" }),
+        privacy_policy: z.boolean()
+            .refine(val => val === true, "موافقت با قوانین و مقررات الزامی است"),
     }).refine((data) => data.password === data.password_confirmation, {
         message: "رمز عبور و تکرار آن مطابقت ندارند",
         path: ["password_confirmation"],
@@ -42,6 +45,7 @@ export const RegisterForm = () => {
             email: '',
             password: '',
             password_confirmation: '',
+            privacy_policy: false,
         }
     });
 
@@ -73,6 +77,7 @@ export const RegisterForm = () => {
         formData.append("email", data.email);
         formData.append("password", data.password);
         formData.append("password_confirmation", data.password_confirmation);
+        formData.append("privacy_policy", data.privacy_policy.toString());
 
         startTransition(async () => {
             await formAction(formData);
@@ -94,6 +99,24 @@ export const RegisterForm = () => {
                 <RHFPasswordInput
                     name="password_confirmation"
                     label={"تکرار رمز عبور *"}
+                />
+                <RHFCheckbox
+                    name="privacy_policy"
+                    label={
+                        <span>
+                            قوانین سایت را مطالعه کرده‌ام و با{" "}
+                            <a
+                                href="/pages/rules"
+                                className="text-secondary underline"
+                                target="_blank"
+                                rel="noreferrer"
+                                onClick={(event) => event.stopPropagation()}
+                            >
+                                قوانین و مقررات
+                            </a>
+                            {" "}موافقت می‌کنم *
+                        </span>
+                    }
                 />
                 <Button
                     size={"medium"}

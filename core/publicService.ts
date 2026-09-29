@@ -7,6 +7,8 @@ interface FetchOptions {
     isFormData?: boolean;
     /** Seconds for Next.js fetch cache. Use false/undefined for no-store (default). */
     revalidate?: number | false;
+    /** Next.js cache tags for on-demand revalidation. */
+    tags?: string[];
 }
 
 const baseFetchPublic = async <T>(
@@ -19,6 +21,7 @@ const baseFetchPublic = async <T>(
         headers: customHeaders = {},
         isFormData = false,
         revalidate,
+        tags,
     } = options;
 
     const baseHeaders: Record<string, string> = {
@@ -32,9 +35,17 @@ const baseFetchPublic = async <T>(
 
     const requestBody = body && !isFormData ? JSON.stringify(body) : body;
 
+    const nextOptions: { revalidate?: number | false; tags?: string[] } = {};
+    if (typeof revalidate === 'number' || revalidate === false) {
+        nextOptions.revalidate = revalidate;
+    }
+    if (tags?.length) {
+        nextOptions.tags = tags;
+    }
+
     const cacheOptions =
-        typeof revalidate === 'number'
-            ? { next: { revalidate } }
+        tags?.length || typeof revalidate === 'number' || revalidate === false
+            ? { next: nextOptions }
             : { cache: 'no-store' as const };
 
     const res = await fetch(`${getApiUrl()}${url}`, {
@@ -48,11 +59,12 @@ const baseFetchPublic = async <T>(
 
 const getFetch = async <T>(
     url: string,
-    options?: { revalidate?: number | false }
+    options?: { revalidate?: number | false; tags?: string[] }
 ): Promise<T> => {
     const res = await baseFetchPublic<T>(url, {
         method: 'GET',
         revalidate: options?.revalidate,
+        tags: options?.tags,
     });
     if (res) {
         return res;
