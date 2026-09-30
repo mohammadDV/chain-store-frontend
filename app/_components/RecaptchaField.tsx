@@ -6,10 +6,8 @@ import { forwardRef, useImperativeHandle } from "react";
 declare global {
     interface Window {
         grecaptcha?: {
-            enterprise: {
-                ready: (callback: () => void) => void;
-                execute: (siteKey: string, options: { action: string }) => Promise<string>;
-            };
+            ready: (callback: () => void) => void;
+            execute: (siteKey: string, options: { action: string }) => Promise<string>;
         };
     }
 }
@@ -20,21 +18,21 @@ export type RecaptchaFieldHandle = {
 };
 
 type RecaptchaFieldProps = {
-    /** Default Enterprise action name for this form */
+    /** Default reCAPTCHA v3 action name for this form */
     action?: string;
     className?: string;
 };
 
-async function executeEnterprise(siteKey: string, action: string): Promise<string | null> {
-    if (!siteKey || typeof window === "undefined" || !window.grecaptcha?.enterprise) {
+async function executeRecaptcha(siteKey: string, action: string): Promise<string | null> {
+    if (!siteKey || typeof window === "undefined" || !window.grecaptcha?.execute) {
         return null;
     }
 
     await new Promise<void>((resolve) => {
-        window.grecaptcha!.enterprise.ready(() => resolve());
+        window.grecaptcha!.ready(() => resolve());
     });
 
-    return window.grecaptcha.enterprise.execute(siteKey, { action });
+    return window.grecaptcha.execute(siteKey, { action });
 }
 
 export const RecaptchaField = forwardRef<RecaptchaFieldHandle, RecaptchaFieldProps>(
@@ -43,9 +41,9 @@ export const RecaptchaField = forwardRef<RecaptchaFieldHandle, RecaptchaFieldPro
 
         useImperativeHandle(ref, () => ({
             getToken: (overrideAction?: string) =>
-                executeEnterprise(siteKey, overrideAction ?? action),
+                executeRecaptcha(siteKey, overrideAction ?? action),
             reset: () => {
-                // Score-based Enterprise tokens are one-shot; next getToken() fetches a new one.
+                // Score-based v3 tokens are one-shot; next getToken() fetches a new one.
             },
         }), [siteKey, action]);
 
@@ -60,7 +58,7 @@ export const RecaptchaField = forwardRef<RecaptchaFieldHandle, RecaptchaFieldPro
         return (
             <div className={className}>
                 <Script
-                    src={`https://www.google.com/recaptcha/enterprise.js?render=${encodeURIComponent(siteKey)}`}
+                    src={`https://www.google.com/recaptcha/api.js?render=${encodeURIComponent(siteKey)}`}
                     strategy="afterInteractive"
                 />
             </div>
