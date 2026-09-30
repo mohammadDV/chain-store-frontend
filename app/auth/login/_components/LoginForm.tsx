@@ -68,9 +68,9 @@ const LoginForm = () => {
     const onSubmit = async (data: LoginFormData) => {
         form.clearErrors();
 
-        const token = recaptchaRef.current?.getToken();
+        const token = await recaptchaRef.current?.getToken("LOGIN");
         if (!token) {
-            toast.error("لطفاً کپچا را تکمیل کنید");
+            toast.error("تأیید امنیتی انجام نشد. لطفاً دوباره تلاش کنید.");
             return;
         }
 
@@ -107,7 +107,7 @@ const LoginForm = () => {
                         فراموشی رمز عبور
                     </Link>
                 </div>
-                <RecaptchaField ref={recaptchaRef} className="flex justify-center" />
+                <RecaptchaField ref={recaptchaRef} action="LOGIN" />
                 <Button
                     size={"medium"}
                     variant={"primary"}

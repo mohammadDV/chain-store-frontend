@@ -76,9 +76,9 @@ export const RegisterForm = () => {
     const onSubmit = async (data: RegisterFormData) => {
         form.clearErrors();
 
-        const token = recaptchaRef.current?.getToken();
+        const token = await recaptchaRef.current?.getToken("REGISTER");
         if (!token) {
-            toast.error("لطفاً کپچا را تکمیل کنید");
+            toast.error("تأیید امنیتی انجام نشد. لطفاً دوباره تلاش کنید.");
             return;
         }
 
@@ -128,7 +128,7 @@ export const RegisterForm = () => {
                         </span>
                     }
                 />
-                <RecaptchaField ref={recaptchaRef} className="flex justify-center" />
+                <RecaptchaField ref={recaptchaRef} action="REGISTER" />
                 <Button
                     size={"medium"}
                     variant={"primary"}
