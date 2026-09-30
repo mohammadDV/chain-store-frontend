@@ -64,7 +64,7 @@ export default async function Home() {
     <>
       <JsonLd data={[organizationJsonLd({ description: DEFAULT_DESCRIPTION }), webSiteJsonLd(DEFAULT_DESCRIPTION)]} />
       <h1 className="sr-only">بوف استور | بزرگترین مرجع لوازم ورزشی</h1>
-      <Hero isMobile={isMobile} bannersData={bannersData} />
+      <Hero bannersData={bannersData} />
       <BrandSlider brandsData={brandsData} isMobile={isMobile} />
       {isMobile ?
         <div className="mt-6">

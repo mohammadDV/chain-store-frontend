@@ -1,6 +1,8 @@
 import { FILE_URL } from "@/configs/global";
 import { regex } from "@/constants/regex";
+import categoryDefault from "@/assets/images/category-default.jpeg";
 import { clsx, type ClassValue } from "clsx"
+import type { StaticImageData } from "next/image";
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
@@ -47,6 +49,14 @@ export const createFileUrl = (url: string) => {
   const base = FILE_URL.replace(/\/+$/, "");
   const path = trimmed.replace(/^\/+/, "");
   return `${base}/${path}`;
+};
+
+export const getCategoryImageSrc = (image?: string | null): string | StaticImageData => {
+  if (image?.trim()) {
+    return createFileUrl(image);
+  }
+
+  return categoryDefault;
 };
 
 export const formatWebsiteUrl = (url: string) => {

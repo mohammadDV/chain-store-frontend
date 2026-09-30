@@ -7,12 +7,11 @@ import { Breadcrumbs } from "@/lib/seo/Breadcrumbs";
 import { JsonLd } from "@/lib/seo/JsonLd";
 import { breadcrumbListJsonLd, itemListJsonLd } from "@/lib/seo/schema";
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
-import { createFileUrl } from "@/lib/utils";
 import { Category } from "@/types/category.type";
 import { ProductColumnType } from "@/types/product";
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
+import { CategoryImage } from "@/app/_components/CategoryImage";
 import { TopNavActions } from "../../_components/topNavigation/TopNavActions";
 import { getCategory, getCategoryChildren, getParentCategories } from "../_api/categoriesServices";
 import { getProducts, SortType } from "../_api/getProducts";
@@ -188,8 +187,8 @@ export default async function Shop({ params, searchParams }: ShopPageProps) {
                                             href={`/shop/${cat.slug || cat.id}`}
                                             className="flex flex-col gap-2 items-center w-20"
                                         >
-                                            <Image
-                                                src={createFileUrl(cat.image || "")}
+                                            <CategoryImage
+                                                image={cat.image}
                                                 alt={cat.title}
                                                 width={84}
                                                 height={84}
@@ -212,8 +211,8 @@ export default async function Shop({ params, searchParams }: ShopPageProps) {
                                             href={`/shop/${cat.slug || cat.id}`}
                                             className="flex flex-col gap-2 items-center max-w-24"
                                         >
-                                            <Image
-                                                src={createFileUrl(cat.image || "")}
+                                            <CategoryImage
+                                                image={cat.image}
                                                 alt={cat.title}
                                                 width={84}
                                                 height={84}

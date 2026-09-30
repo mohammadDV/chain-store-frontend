@@ -4,13 +4,12 @@ import { getFetch, postFetch } from "@/core/publicService";
 import { stripHtml } from "@/lib/seo/absoluteUrl";
 import { buildMetadata } from "@/lib/seo/buildMetadata";
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
-import { createFileUrl } from "@/lib/utils";
 import { Brand, BrandBanner } from "@/types/brand.type";
 import { Category } from "@/types/category.type";
 import { FeaturedProducts, ProductColumnType } from "@/types/product";
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
+import { CategoryImage } from "@/app/_components/CategoryImage";
 import { BrandHeroGrid } from "../../_components/brandHeroGrid";
 
 interface BrandPageParams {
@@ -102,8 +101,8 @@ export default async function BrandPage({ params }: BrandPageParams) {
                                 href={`/shop/${category.slug || category.id}?brands=${brandId}`}
                                 className="flex flex-col gap-2 items-center w-20"
                             >
-                                <Image
-                                    src={createFileUrl(category.image || "")}
+                                <CategoryImage
+                                    image={category.image}
                                     alt={category.title}
                                     width={84}
                                     height={84}
@@ -126,8 +125,8 @@ export default async function BrandPage({ params }: BrandPageParams) {
                                 href={`/shop/${category.slug || category.id}?brands=${brandId}`}
                                 className="flex flex-col gap-2 items-center max-w-24"
                             >
-                                <Image
-                                    src={createFileUrl(category.image || "")}
+                                <CategoryImage
+                                    image={category.image}
                                     alt={category.title}
                                     width={84}
                                     height={84}

@@ -1,13 +1,12 @@
 "use client";
 
 import { Modal } from "@/app/_components/modal/Modal";
+import { CategoryImage } from "@/app/_components/CategoryImage";
 import { Category } from "@/types/category.type";
 import { Icon } from "@/ui/icon";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getCategories } from "./_api/getCategories";
-import { cn, createFileUrl } from "@/lib/utils";
-import Image from "next/image";
 import { Loading } from "@/ui/loading";
 
 interface CategoryModalProps {
@@ -101,15 +100,13 @@ export const CategoryModal = ({ open, onOpenChange }: CategoryModalProps) => {
                                         className="flex items-center justify-between p-3 bg-surface rounded-xl cursor-pointer hover:bg-surface/80 transition-colors"
                                     >
                                         <div className="flex items-center gap-3">
-                                            {category.image && (
-                                                <Image
-                                                    src={createFileUrl(category.image)}
-                                                    alt={category.title}
-                                                    width={40}
-                                                    height={40}
-                                                    className="rounded-lg object-cover size-10"
-                                                />
-                                            )}
+                                            <CategoryImage
+                                                image={category.image}
+                                                alt={category.title}
+                                                width={40}
+                                                height={40}
+                                                className="rounded-lg object-cover size-10"
+                                            />
                                             <span className="text-title font-medium text-sm">{category.title}</span>
                                         </div>
                                         <Icon icon="solar--alt-arrow-left-outline" sizeClass="size-5" className="text-description" />
@@ -125,15 +122,13 @@ export const CategoryModal = ({ open, onOpenChange }: CategoryModalProps) => {
                                     className="flex items-center justify-between p-3 bg-surface rounded-xl hover:bg-surface/80 transition-colors"
                                 >
                                     <div className="flex items-center gap-3">
-                                        {category.image && (
-                                            <Image
-                                                src={createFileUrl(category.image)}
-                                                alt={category.title}
-                                                width={40}
-                                                height={40}
-                                                className="rounded-lg object-cover size-10"
-                                            />
-                                        )}
+                                        <CategoryImage
+                                            image={category.image}
+                                            alt={category.title}
+                                            width={40}
+                                            height={40}
+                                            className="rounded-lg object-cover size-10"
+                                        />
                                         <span className="text-title font-medium text-sm">{category.title}</span>
                                     </div>
                                 </Link>
