@@ -113,6 +113,16 @@ export const CheckVerification = () => {
                             ارسال مجدد لینک تایید
                         </Button>
                     </form>}
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="medium"
+                    className="w-full mt-8"
+                    onClick={() => router.push("/auth/logout")}
+                >
+                    <Icon icon="solar--logout-outline" sizeClass="size-5" />
+                    خروج از حساب کاربری
+                </Button>
             </div>
         </div>
     );

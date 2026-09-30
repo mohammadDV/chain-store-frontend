@@ -1,4 +1,4 @@
-import authImg from "@/assets/images/auth.jpg";
+import authImg from "@/assets/images/login-register-photo.png";
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
 import { Button } from "@/ui/button";
 import { Icon } from "@/ui/icon";
@@ -36,15 +36,12 @@ export default async function AuthLayout({
                     <div className="w-full h-full relative rounded-4xl overflow-hidden">
                         <Image
                             src={authImg}
-                            alt={""}
+                            alt="بوف استور | فروشگاه لباس و لوازم ورزشی"
                             width={1080}
                             height={1080}
                             className="object-cover w-full h-full"
+                            priority
                         />
-                        <div className="absolute bottom-0 left-0 w-full h-full bg-primary/20"></div>
-                        <h2 className="absolute w-full text-center bottom-16 left-1/2 -translate-x-1/2 text-3xl text-white font-bold z-10">
-                            احساس قدرت، لمس کیفیت...
-                        </h2>
                         <Link href={"/"} className="absolute right-6 top-6">
                             <Button variant={"outline"} size={"small"}>
                                 <Icon icon="solar--alt-arrow-right-outline" sizeClass="size-4" />
