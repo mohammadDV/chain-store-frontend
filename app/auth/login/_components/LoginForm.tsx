@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState, useEffect, useTransition } from "react";
+import { useActionState, useEffect, useRef, useTransition } from "react";
 import { loginAction, LoginService } from "../_api/loginAction";
 import z from "zod";
 import { useZodForm } from "@/hooks/useZodForm";
@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { FormProvider } from "react-hook-form";
 import { RHFInput } from "@/app/_components/hookForm/RHFInput";
 import { RHFPasswordInput } from "@/app/_components/hookForm/RHFPasswordInput";
+import { RecaptchaField, type RecaptchaFieldHandle } from "@/app/_components/RecaptchaField";
 import { Button } from "@/ui/button";
 import { Checkbox } from "@/ui/checkbox";
 import Link from "next/link";
@@ -21,6 +22,7 @@ const LoginForm = () => {
         loginAction,
         null
     );
+    const recaptchaRef = useRef<RecaptchaFieldHandle>(null);
 
     const loginSchema = z.object({
         email: z.string()
@@ -42,6 +44,7 @@ const LoginForm = () => {
     useEffect(() => {
         if (!!formState && formState.status === StatusCode.Failed) {
             toast.error(formState?.message || "مشکل در ورود به حساب کاربری");
+            recaptchaRef.current?.reset();
 
             if (formState.errors) {
                 Object.entries(formState.errors).forEach(([fieldName, fieldErrors]) => {
@@ -65,9 +68,16 @@ const LoginForm = () => {
     const onSubmit = async (data: LoginFormData) => {
         form.clearErrors();
 
+        const token = recaptchaRef.current?.getToken();
+        if (!token) {
+            toast.error("لطفاً کپچا را تکمیل کنید");
+            return;
+        }
+
         const formData = new FormData();
         formData.append("email", data.email);
         formData.append("password", data.password);
+        formData.append("token", token);
 
         startTransition(async () => {
             await formAction(formData);
@@ -97,6 +107,7 @@ const LoginForm = () => {
                         فراموشی رمز عبور
                     </Link>
                 </div>
+                <RecaptchaField ref={recaptchaRef} className="flex justify-center" />
                 <Button
                     size={"medium"}
                     variant={"primary"}

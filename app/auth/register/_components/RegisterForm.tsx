@@ -3,13 +3,14 @@
 import { RHFInput } from "@/app/_components/hookForm/RHFInput";
 import { RHFPasswordInput } from "@/app/_components/hookForm/RHFPasswordInput";
 import { RHFCheckbox } from "@/app/_components/hookForm/RHFCheckbox";
+import { RecaptchaField, type RecaptchaFieldHandle } from "@/app/_components/RecaptchaField";
 import { StatusCode } from "@/constants/enums";
 import { regex } from "@/constants/regex";
 import { useZodForm } from "@/hooks/useZodForm";
 import { Button } from "@/ui/button";
 import { Icon } from "@/ui/icon";
 import Link from "next/link";
-import { useActionState, useEffect, useTransition } from "react";
+import { useActionState, useEffect, useRef, useTransition } from "react";
 import { FormProvider } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
@@ -21,6 +22,7 @@ export const RegisterForm = () => {
         registerAction,
         null
     );
+    const recaptchaRef = useRef<RecaptchaFieldHandle>(null);
 
     const registerSchema = z.object({
         email: z.string()
@@ -54,6 +56,7 @@ export const RegisterForm = () => {
             toast.error(!!formState?.errors
                 ? "اطلاعات واردشده معتبر نیست! لطفاً دوباره بررسی کنید."
                 : "ثبت نام انجام نشد! لطفاً دوباره تلاش کنید.")
+            recaptchaRef.current?.reset();
 
             if (formState.errors) {
                 Object.entries(formState.errors).forEach(([fieldName, fieldErrors]) => {
@@ -73,11 +76,18 @@ export const RegisterForm = () => {
     const onSubmit = async (data: RegisterFormData) => {
         form.clearErrors();
 
+        const token = recaptchaRef.current?.getToken();
+        if (!token) {
+            toast.error("لطفاً کپچا را تکمیل کنید");
+            return;
+        }
+
         const formData = new FormData();
         formData.append("email", data.email);
         formData.append("password", data.password);
         formData.append("password_confirmation", data.password_confirmation);
         formData.append("privacy_policy", data.privacy_policy.toString());
+        formData.append("token", token);
 
         startTransition(async () => {
             await formAction(formData);
@@ -118,6 +128,7 @@ export const RegisterForm = () => {
                         </span>
                     }
                 />
+                <RecaptchaField ref={recaptchaRef} className="flex justify-center" />
                 <Button
                     size={"medium"}
                     variant={"primary"}

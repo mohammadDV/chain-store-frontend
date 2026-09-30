@@ -19,12 +19,14 @@ export const registerAction = async (_state: any, formData: FormData): Promise<a
     const password = formData.get("password");
     const password_confirmation = formData.get("password_confirmation");
     const privacy_policy = formData.get("privacy_policy");
+    const token = formData.get("token");
     try {
         const res = await postFetch<RegisterService>("/register", {
             email,
             password,
             password_confirmation,
             privacy_policy: privacy_policy === "true",
+            token,
         });
         if (res.status === StatusCode.Success) {
             const cookieStore = await cookies();

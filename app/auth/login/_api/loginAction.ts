@@ -23,10 +23,12 @@ export const loginAction = async (
 ): Promise<any> => {
     const email = formData.get("email");
     const password = formData.get("password");
+    const token = formData.get("token");
     try {
         const res = await postFetch<LoginService>("/login", {
             email,
             password,
+            token,
         });
         if (res.status === StatusCode.Success) {
             const cookieStore = await cookies();
