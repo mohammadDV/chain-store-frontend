@@ -33,6 +33,8 @@ export default async function Checkout({ params }: ProductPageProps) {
                 order={order}
                 paymentGatewayEnabled={features.payment_gateway_enabled}
                 paymentGatewayDisabledMessage={features.payment_gateway_disabled_message}
+                deliveryFee={features.delivery_amount}
+                freeShippingThreshold={features.limit_delivery_amount}
             />
         </>
     )

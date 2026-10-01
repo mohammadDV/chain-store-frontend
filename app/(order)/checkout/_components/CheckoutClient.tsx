@@ -14,6 +14,8 @@ type Props = {
   order: Order;
   paymentGatewayEnabled?: boolean;
   paymentGatewayDisabledMessage?: string | null;
+  deliveryFee?: number;
+  freeShippingThreshold?: number;
 };
 
 type FormValues = {
@@ -27,6 +29,8 @@ export const CheckoutClient = ({
   order,
   paymentGatewayEnabled = true,
   paymentGatewayDisabledMessage = null,
+  deliveryFee = 0,
+  freeShippingThreshold = 0,
 }: Props) => {
   const router = useRouter();
   const clearCart = useCartStore((s) => s.clear);
@@ -98,6 +102,8 @@ export const CheckoutClient = ({
           appliedDiscountCode={appliedDiscountCode}
           paymentGatewayEnabled={paymentGatewayEnabled}
           paymentGatewayDisabledMessage={paymentGatewayDisabledMessage}
+          deliveryFee={deliveryFee}
+          freeShippingThreshold={freeShippingThreshold}
           onDiscountApplied={(payload) => {
             setAppliedDiscountCode(payload.discount_code);
             setCurrentOrder((prev) => ({

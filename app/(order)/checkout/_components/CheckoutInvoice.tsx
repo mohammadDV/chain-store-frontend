@@ -20,6 +20,8 @@ type Props = {
   appliedDiscountCode?: string | null;
   paymentGatewayEnabled?: boolean;
   paymentGatewayDisabledMessage?: string | null;
+  deliveryFee?: number;
+  freeShippingThreshold?: number;
   onDiscountApplied: (payload: {
     discount_code: string;
     amount: string;
@@ -38,12 +40,17 @@ export const CheckoutInvoice = ({
   appliedDiscountCode,
   paymentGatewayEnabled = true,
   paymentGatewayDisabledMessage = null,
+  deliveryFee = 0,
+  freeShippingThreshold = 0,
   onDiscountApplied,
 }: Props) => {
-  const totalAmount = Number(order.total_amount || 0);
   const discountAmount = Number(order.discount_amount || 0);
-  const deliveryAmount = Number(order.delivery_amount || 0);
   const productsAmount = Number(order.amount || 0);
+  // Prefer current shipping settings over a stale delivery_amount saved on the order.
+  const isFreeShipping = productsAmount >= freeShippingThreshold;
+  const deliveryAmount = isFreeShipping ? 0 : deliveryFee;
+  const payableAmount = productsAmount - discountAmount + deliveryAmount;
+  const remainingForFree = Math.max(0, freeShippingThreshold - productsAmount);
 
   const [discountCode, setDiscountCode] = useState(appliedDiscountCode ?? "");
   const [isCheckingDiscount, startCheckingDiscount] = useTransition();
@@ -94,16 +101,51 @@ export const CheckoutInvoice = ({
         </div>
         <div className="flex items-center justify-between">
           <p className="text-muted">هزینه ارسال</p>
-          <p className="text-title font-medium">
-            {putCommas(deliveryAmount)} تومان
+          <p
+            className={`font-medium ${
+              isFreeShipping ? "text-success" : "text-title"
+            }`}
+          >
+            {isFreeShipping ? "رایگان" : `${putCommas(deliveryAmount)} تومان`}
           </p>
         </div>
       </div>
+
+      <div
+        className={`mt-4 rounded-2xl border px-3.5 py-3 text-sm leading-6 ${
+          isFreeShipping
+            ? "border-success/30 bg-success/5 text-title"
+            : "border-border bg-white text-title"
+        }`}
+      >
+        {isFreeShipping ? (
+          <p>
+            ارسال این سفارش <span className="font-semibold text-success">رایگان</span> است،
+            چون مبلغ کالاها به حد ارسال رایگان (
+            {putCommas(freeShippingThreshold)} تومان) رسیده است.
+          </p>
+        ) : (
+          <div className="space-y-1.5">
+            <p>
+              هزینه ارسال این سفارش{" "}
+              <span className="font-semibold">{putCommas(deliveryFee)} تومان</span> است.
+            </p>
+            <p className="text-muted">
+              با افزایش سبد به {putCommas(freeShippingThreshold)} تومان، ارسال رایگان
+              می‌شود
+              {remainingForFree > 0
+                ? ` (حدود ${putCommas(remainingForFree)} تومان دیگر).`
+                : "."}
+            </p>
+          </div>
+        )}
+      </div>
+
       <hr className="border-t border-border my-5" />
       <div className="flex items-center justify-between">
         <p className="text-title font-medium">مبلغ قابل پرداخت</p>
         <p className="text-title font-bold">
-          {putCommas(totalAmount)} تومان
+          {putCommas(payableAmount)} تومان
         </p>
       </div>
       <div className="flex items-center justify-between gap-3 mt-6">
