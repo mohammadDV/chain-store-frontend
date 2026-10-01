@@ -7,6 +7,7 @@ import "../assets/icons/solar.css";
 import "../assets/icons/others.css";
 import "./globals.css";
 import { Toaster } from "@/ui/sonner";
+import GoogleAnalytics from "@/app/_components/GoogleAnalytics";
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
@@ -33,6 +34,7 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl">
       <body className={estedadFont.className}>
+        <GoogleAnalytics />
         <NextTopLoader color="#FF385C" />
         {children}
         <Toaster position="top-center" />
