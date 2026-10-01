@@ -9,6 +9,8 @@ import { CheckoutInvoice } from "./CheckoutInvoice";
 import { payOrderAction, PaymentMethod } from "../_api/payOrderAction";
 import { StatusCode } from "@/constants/enums";
 import { useCartStore } from "@/stores/cart";
+import { getWalletPaymentStatus } from "../_lib/walletPayment";
+import { putCommas } from "@/lib/utils";
 
 type Props = {
   order: Order;
@@ -16,6 +18,7 @@ type Props = {
   paymentGatewayDisabledMessage?: string | null;
   deliveryFee?: number;
   freeShippingThreshold?: number;
+  walletBalance?: number;
 };
 
 type FormValues = {
@@ -31,6 +34,7 @@ export const CheckoutClient = ({
   paymentGatewayDisabledMessage = null,
   deliveryFee = 0,
   freeShippingThreshold = 0,
+  walletBalance = 0,
 }: Props) => {
   const router = useRouter();
   const clearCart = useCartStore((s) => s.clear);
@@ -60,6 +64,23 @@ export const CheckoutClient = ({
       );
       return;
     }
+
+    const productsAmount = Number(currentOrder.amount || 0);
+    const discountAmount = Number(currentOrder.discount_amount || 0);
+    const isFreeShipping = productsAmount >= freeShippingThreshold;
+    const deliveryAmount = isFreeShipping ? 0 : deliveryFee;
+    const payableAmount = productsAmount - discountAmount + deliveryAmount;
+
+    if (paymentMethod === "wallet") {
+      const walletStatus = getWalletPaymentStatus(walletBalance, payableAmount);
+      if (!walletStatus.sufficient) {
+        toast.error(
+          `موجودی کیف پول کافی نیست. ${putCommas(walletStatus.shortfall)} تومان کسری دارید.`
+        );
+        return;
+      }
+    }
+
     startTransition(async () => {
       try {
         const res = await payOrderAction(order.id, {
@@ -104,6 +125,7 @@ export const CheckoutClient = ({
           paymentGatewayDisabledMessage={paymentGatewayDisabledMessage}
           deliveryFee={deliveryFee}
           freeShippingThreshold={freeShippingThreshold}
+          walletBalance={walletBalance}
           onDiscountApplied={(payload) => {
             setAppliedDiscountCode(payload.discount_code);
             setCurrentOrder((prev) => ({

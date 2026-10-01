@@ -5,11 +5,13 @@ import { Order } from "@/types/Order.type";
 import { Button } from "@/ui/button";
 import { Label } from "@/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/ui/radio-group";
+import Link from "next/link";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { StatusCode } from "@/constants/enums";
 import { checkDiscountAction } from "../_api/checkDiscountAction";
 import { PaymentMethod } from "../_api/payOrderAction";
+import { getWalletPaymentStatus } from "../_lib/walletPayment";
 
 type Props = {
   order: Order;
@@ -22,6 +24,7 @@ type Props = {
   paymentGatewayDisabledMessage?: string | null;
   deliveryFee?: number;
   freeShippingThreshold?: number;
+  walletBalance?: number;
   onDiscountApplied: (payload: {
     discount_code: string;
     amount: string;
@@ -42,15 +45,18 @@ export const CheckoutInvoice = ({
   paymentGatewayDisabledMessage = null,
   deliveryFee = 0,
   freeShippingThreshold = 0,
+  walletBalance = 0,
   onDiscountApplied,
 }: Props) => {
   const discountAmount = Number(order.discount_amount || 0);
   const productsAmount = Number(order.amount || 0);
-  // Prefer current shipping settings over a stale delivery_amount saved on the order.
   const isFreeShipping = productsAmount >= freeShippingThreshold;
   const deliveryAmount = isFreeShipping ? 0 : deliveryFee;
   const payableAmount = productsAmount - discountAmount + deliveryAmount;
   const remainingForFree = Math.max(0, freeShippingThreshold - productsAmount);
+  const walletStatus = getWalletPaymentStatus(walletBalance, payableAmount);
+  const walletSelected = paymentMethod === "wallet";
+  const walletInsufficient = walletSelected && !walletStatus.sufficient;
 
   const [discountCode, setDiscountCode] = useState(appliedDiscountCode ?? "");
   const [isCheckingDiscount, startCheckingDiscount] = useTransition();
@@ -210,6 +216,36 @@ export const CheckoutInvoice = ({
             </Label>
           </div>
         </RadioGroup>
+
+        {walletSelected ? (
+          <div
+            className={`mt-3 rounded-2xl border px-3.5 py-3 text-sm leading-6 ${
+              walletStatus.sufficient
+                ? "border-success/30 bg-success/5 text-title"
+                : "border-error/30 bg-error/5 text-title"
+            }`}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-muted">موجودی کیف پول</p>
+              <p className="font-semibold">{putCommas(walletStatus.balance)} تومان</p>
+            </div>
+            {walletStatus.sufficient ? (
+              <p className="mt-2 text-success">
+                موجودی برای پرداخت این سفارش کافی است.
+              </p>
+            ) : (
+              <p className="mt-2 text-error">
+                موجودی کافی نیست؛ {putCommas(walletStatus.shortfall)} تومان کسری دارید.
+              </p>
+            )}
+            <Link
+              href="/profile/wallet"
+              className="mt-3 inline-flex text-sm font-medium text-secondary underline-offset-4 hover:underline"
+            >
+              شارژ کیف پول
+            </Link>
+          </div>
+        ) : null}
       </div>
       <Button
         variant={"primary"}
@@ -217,6 +253,7 @@ export const CheckoutInvoice = ({
         className="lg:w-full mt-6 fixed bottom-4 lg:static left-4 right-4 z-20"
         onClick={onSubmit}
         isLoading={isLoading}
+        disabled={walletInsufficient}
       >
         تایید و تکمیل سفارش
       </Button>
