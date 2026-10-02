@@ -1,5 +1,6 @@
 "use client";
 
+import { resolveSiteLink } from "@/lib/resolveSiteLink";
 import { cn, createFileUrl } from "@/lib/utils";
 import { BrandBanner } from "@/types/brand.type";
 import { Button } from "@/ui/button";
@@ -19,6 +20,8 @@ export const BrandHeroGrid: React.FC<BrandHeroGridProps> = ({ data }) => {
             <div className={cn("flex h-full gap-2 lg:gap-3 overflow-x-auto md:overflow-visible snap-x snap-mandatory")}>
                 {data.map((item, idx) => {
                     const isActive = idx === activeIndex;
+                    const resolvedLink = resolveSiteLink(item.link);
+
                     return (
                         <article
                             key={item.id}
@@ -55,11 +58,22 @@ export const BrandHeroGrid: React.FC<BrandHeroGridProps> = ({ data }) => {
                                         <h2 className="text-lg lg:text-3xl leading-8 lg:leading-14 font-semibold lg:font-bold mb-1 lg:mb-4">
                                             {item.title}
                                         </h2>
-                                        {item.link && <Link href={item.link}>
-                                            <Button variant="secondary" size={"medium"}>
-                                                مشاهده بیشتر
-                                            </Button>
-                                        </Link>}
+                                        {resolvedLink && (
+                                            <Link
+                                                href={resolvedLink.href}
+                                                {...(resolvedLink.isExternal
+                                                    ? {
+                                                        target: "_blank",
+                                                        rel: "noopener noreferrer",
+                                                    }
+                                                    : {})}
+                                                onClick={(event) => event.stopPropagation()}
+                                            >
+                                                <Button variant="secondary" size={"medium"}>
+                                                    مشاهده بیشتر
+                                                </Button>
+                                            </Link>
+                                        )}
                                     </div>
                                 </div>
                             </div>

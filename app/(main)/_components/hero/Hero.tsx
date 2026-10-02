@@ -1,5 +1,6 @@
 "use client";
 
+import { resolveSiteLink } from "@/lib/resolveSiteLink";
 import { createFileUrl } from "@/lib/utils";
 import { BrandBanner } from "@/types/brand.type";
 import Image from "next/image";
@@ -44,13 +45,20 @@ export const Hero = ({ bannersData }: HeroProps) => {
                         />
                     );
 
+                    const resolvedLink = resolveSiteLink(slide.link);
+
                     return (
                         <SwiperSlide key={slide.id}>
                             <div className="relative w-full h-full">
-                                {slide.link ? (
+                                {resolvedLink ? (
                                     <Link
-                                        href={slide.link}
-                                        target="_blank"
+                                        href={resolvedLink.href}
+                                        {...(resolvedLink.isExternal
+                                            ? {
+                                                target: "_blank",
+                                                rel: "noopener noreferrer",
+                                            }
+                                            : {})}
                                         className="absolute inset-0 block"
                                         aria-label={slide.title || "بنر بوف استور"}
                                     >
