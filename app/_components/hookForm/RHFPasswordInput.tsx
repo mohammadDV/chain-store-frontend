@@ -10,12 +10,14 @@ import { useFormContext } from "react-hook-form";
 interface RHFPasswordInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
     name: string;
     label?: string;
+    hint?: string;
     className?: string;
 }
 
 export const RHFPasswordInput: React.FC<RHFPasswordInputProps> = ({
     name,
     label,
+    hint,
     className,
     ...props
 }) => {
@@ -52,6 +54,9 @@ export const RHFPasswordInput: React.FC<RHFPasswordInputProps> = ({
                                 sizeClass="size-5" />
                         </button>
                     </div>
+                    {hint && (
+                        <p className="text-[11px] leading-5 text-description">{hint}</p>
+                    )}
                     <FormMessage className="text-xs" />
                 </FormItem>
             )}

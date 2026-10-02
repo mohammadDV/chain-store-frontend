@@ -2,7 +2,7 @@
 
 import { RHFPasswordInput } from "@/app/_components/hookForm/RHFPasswordInput";
 import { StatusCode } from "@/constants/enums";
-import { regex } from "@/constants/regex";
+import { PASSWORD_HELP, strongPasswordField } from "@/constants/password";
 import { useZodForm } from "@/hooks/useZodForm";
 import { Button } from "@/ui/button";
 import { useActionState, useEffect, useTransition } from "react";
@@ -28,9 +28,7 @@ export const ResetPasswordForm = ({ email, token }: ResetPasswordFormProps) => {
     );
 
     const resetPasswordSchema = z.object({
-        password: z.string()
-            .min(1, { message: "رمز عبور الزامی است" })
-            .regex(regex.password, { message: "رمز عبور باید حداقل ۸ کاراکتر و شامل حروف کوچک، بزرگ و عدد باشد" }),
+        password: strongPasswordField,
         password_confirmation: z.string()
             .min(1, { message: "تکرار رمز عبور الزامی است" }),
     }).refine((data) => data.password === data.password_confirmation, {
@@ -87,8 +85,9 @@ export const ResetPasswordForm = ({ email, token }: ResetPasswordFormProps) => {
                 <RHFPasswordInput
                     name="password"
                     label={"رمز عبور *"}
+                    hint={PASSWORD_HELP}
                 />
-                  <RHFPasswordInput
+                <RHFPasswordInput
                     name="password_confirmation"
                     label={"تکرار رمز عبور *"}
                 />

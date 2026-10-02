@@ -5,7 +5,7 @@ import { RHFPasswordInput } from "@/app/_components/hookForm/RHFPasswordInput";
 import { RHFCheckbox } from "@/app/_components/hookForm/RHFCheckbox";
 import { RecaptchaField, type RecaptchaFieldHandle } from "@/app/_components/RecaptchaField";
 import { StatusCode } from "@/constants/enums";
-import { regex } from "@/constants/regex";
+import { PASSWORD_HELP, strongPasswordField } from "@/constants/password";
 import { useZodForm } from "@/hooks/useZodForm";
 import { Button } from "@/ui/button";
 import { Icon } from "@/ui/icon";
@@ -28,9 +28,7 @@ export const RegisterForm = () => {
         email: z.string()
             .min(1, { message: "ایمیل الزامی است" })
             .email({ message: "فرمت ایمیل نامعتبر است" }),
-        password: z.string()
-            .min(1, { message: "رمز عبور الزامی است" })
-            .regex(regex.password, { message: "رمز عبور باید حداقل ۸ کاراکتر و شامل حروف کوچک، بزرگ و عدد باشد" }),
+        password: strongPasswordField,
         password_confirmation: z.string()
             .min(1, { message: "تکرار رمز عبور الزامی است" }),
         privacy_policy: z.boolean()
@@ -105,6 +103,7 @@ export const RegisterForm = () => {
                 <RHFPasswordInput
                     name="password"
                     label={"رمز عبور *"}
+                    hint={PASSWORD_HELP}
                 />
                 <RHFPasswordInput
                     name="password_confirmation"
