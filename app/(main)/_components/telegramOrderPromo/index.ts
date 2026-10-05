@@ -1,0 +1,1 @@
+export { TelegramOrderPromo } from "./TelegramOrderPromo";

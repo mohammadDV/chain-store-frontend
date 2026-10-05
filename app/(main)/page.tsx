@@ -2,6 +2,7 @@ import instagramBanner from "@/assets/images/instagram-banner.png";
 import mobileInstagramBanner from "@/assets/images/mobile-instagram-banner.png";
 import { getFetch, postFetch } from "@/core/publicService";
 import { isMobileDevice } from "@/lib/getDeviceFromHeaders";
+import { getContactSettings } from "@/lib/pages/getContactSettings";
 import { DEFAULT_DESCRIPTION, buildMetadata } from "@/lib/seo/buildMetadata";
 import { JsonLd } from "@/lib/seo/JsonLd";
 import { organizationJsonLd, webSiteJsonLd } from "@/lib/seo/schema";
@@ -17,6 +18,7 @@ import { Carousel } from "../_components/carousel";
 import { BentoCategory, categoriesCards } from "./_components/bentoCategory";
 import { BrandSlider } from "./_components/brandSlider";
 import { Hero } from "./_components/hero";
+import { TelegramOrderPromo } from "./_components/telegramOrderPromo";
 
 export const metadata: Metadata = buildMetadata({
   title: "بوف استور | بزرگترین مرجع لوازم ورزشی",
@@ -50,14 +52,16 @@ export default async function Home() {
     orderProductsData,
     discountProductsData,
     viewProductsData,
-    latestPostsData
+    latestPostsData,
+    contactSettings,
   ] = await Promise.all([
     getBanners(),
     getBrands(),
     getFeaturedProducts("order"),
     getFeaturedProducts("discount"),
     getFeaturedProducts("view"),
-    getLatestPosts()
+    getLatestPosts(),
+    getContactSettings(),
   ])
 
   return (
@@ -65,7 +69,16 @@ export default async function Home() {
       <JsonLd data={[organizationJsonLd({ description: DEFAULT_DESCRIPTION }), webSiteJsonLd(DEFAULT_DESCRIPTION)]} />
       <h1 className="sr-only">بوف استور | بزرگترین مرجع لوازم ورزشی</h1>
       <Hero bannersData={bannersData} />
-      <BrandSlider brandsData={brandsData} isMobile={isMobile} />
+      <section className="container mx-auto mt-6 lg:mt-14 px-4 lg:px-0">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch lg:gap-6">
+          <div className="min-w-0 flex-1">
+            <BrandSlider brandsData={brandsData} isMobile={isMobile} />
+          </div>
+          <div className="w-full shrink-0 lg:w-[420px] xl:w-[480px]">
+            <TelegramOrderPromo telegramUsername={contactSettings.telegram_username} />
+          </div>
+        </div>
+      </section>
       {isMobile ?
         <div className="mt-6">
           <Carousel
