@@ -23,7 +23,11 @@ async function getBrand(slug: string): Promise<Brand> {
 }
 
 async function getBrandBanners(brandId: number): Promise<BrandBanner[]> {
-    return await postFetch<BrandBanner[]>("/banners", { brand: brandId });
+    return await postFetch<BrandBanner[]>(
+        "/banners",
+        { brand: brandId },
+        { revalidate: 300, tags: ["banners", `banners-brand-${brandId}`] }
+    );
 }
 
 async function getBrandCategories(id: number): Promise<Category[]> {
@@ -36,10 +40,14 @@ async function getFeaturedProducts(
     column: ProductColumnType,
     id: number
 ): Promise<FeaturedProducts> {
-    return await postFetch<FeaturedProducts>("/products/featured", {
-        column,
-        brand: id,
-    });
+    return await postFetch<FeaturedProducts>(
+        "/products/featured",
+        {
+            column,
+            brand: id,
+        },
+        { revalidate: 300, tags: ["featured-products", `featured-${column}`, `featured-brand-${id}`] }
+    );
 }
 
 export async function generateMetadata({

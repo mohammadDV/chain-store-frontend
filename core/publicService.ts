@@ -73,10 +73,16 @@ const getFetch = async <T>(
     }
 };
 
-const postFetch = async <T>(url: string, body: any): Promise<T> => {
+const postFetch = async <T>(
+    url: string,
+    body: any,
+    options?: { revalidate?: number | false; tags?: string[] }
+): Promise<T> => {
     return baseFetchPublic<T>(url, {
         method: 'POST',
-        body
+        body,
+        revalidate: options?.revalidate,
+        tags: options?.tags,
     });
 };
 

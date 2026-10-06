@@ -28,7 +28,7 @@ export const metadata: Metadata = buildMetadata({
 });
 
 async function getBanners(): Promise<BrandBanner[]> {
-  return await postFetch<BrandBanner[]>("/banners", {});
+  return await postFetch<BrandBanner[]>("/banners", {}, { revalidate: 300, tags: ["banners"] });
 }
 
 async function getBrands(): Promise<Brand[]> {
@@ -36,7 +36,11 @@ async function getBrands(): Promise<Brand[]> {
 }
 
 async function getFeaturedProducts(column: ProductColumnType): Promise<FeaturedProducts> {
-  return await postFetch<FeaturedProducts>("/products/featured", { column });
+  return await postFetch<FeaturedProducts>(
+    "/products/featured",
+    { column },
+    { revalidate: 300, tags: ["featured-products", `featured-${column}`] }
+  );
 }
 
 async function getLatestPosts(): Promise<PostsResponse> {
