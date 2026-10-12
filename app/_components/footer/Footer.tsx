@@ -83,7 +83,15 @@ export const Footer = async () => {
                         تمامی حقوق این سایت متعلق به بوف استور می‌باشد.
           </p>
           <p className="text-title text-center text-xs lg:text-base mt-2.5 lg:mt-0">
-            ساخته شده با  ❤️
+            طراحی و پیاده‌سازی:{" "}
+            <a
+              href="https://mohammaddv.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2 hover:opacity-80"
+            >
+              mohammaddv.com
+            </a>
           </p>
         </div>
       </div>
