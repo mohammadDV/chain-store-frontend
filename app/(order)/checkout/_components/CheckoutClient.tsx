@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { unstable_rethrow, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Order } from "@/types/Order.type";
 import { CheckoutForm } from "./CheckoutForm";
@@ -102,7 +102,8 @@ export const CheckoutClient = ({
         } else {
           toast.error(res?.message || "خطای ناشناخته رخ داده است");
         }
-      } catch {
+      } catch (error) {
+        unstable_rethrow(error);
         toast.error("مشکل در پرداخت سفارش");
       }
     });

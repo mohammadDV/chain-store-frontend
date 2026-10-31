@@ -6,6 +6,7 @@ import { Button } from "@/ui/button";
 import { Label } from "@/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/ui/radio-group";
 import Link from "next/link";
+import { unstable_rethrow } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { StatusCode } from "@/constants/enums";
@@ -83,7 +84,8 @@ export const CheckoutInvoice = ({
         } else {
           toast.error(res.message || "کد تخفیف معتبر نیست");
         }
-      } catch {
+      } catch (error) {
+        unstable_rethrow(error);
         toast.error("مشکل در بررسی کد تخفیف");
       }
     });

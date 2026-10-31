@@ -2,6 +2,7 @@
 
 import { StatusCode } from "@/constants/enums";
 import { postFetchAuth } from "@/core/privateService";
+import { unstable_rethrow } from "next/navigation";
 
 export interface CheckDiscountPayload {
   discount_code: string;
@@ -26,7 +27,8 @@ export const checkDiscountAction = async (
       `/profile/orders/${orderId}/check-discount`,
       payload
     );
-  } catch {
+  } catch (error) {
+    unstable_rethrow(error);
     throw new Error("مشکل در دریافت اطلاعات");
   }
 };

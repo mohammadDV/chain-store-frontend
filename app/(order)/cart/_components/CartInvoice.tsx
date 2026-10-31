@@ -4,7 +4,7 @@ import { StatusCode } from "@/constants/enums";
 import { putCommas } from "@/lib/utils";
 import { useCartStore } from "@/stores/cart";
 import { Button } from "@/ui/button";
-import { useRouter } from "next/navigation";
+import { unstable_rethrow, useRouter } from "next/navigation";
 import { useMemo, useTransition } from "react";
 import { toast } from "sonner";
 import { createOrderAction } from "../_api/createOrderAction";
@@ -57,7 +57,8 @@ export const CartInvoice = () => {
         } else {
           toast.error(res?.message || "خطای ناشناخته رخ داده است");
         }
-      } catch {
+      } catch (error) {
+        unstable_rethrow(error);
         toast.error("مشکل در ثبت سفارش");
       }
     });

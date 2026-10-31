@@ -2,6 +2,7 @@
 
 import { StatusCode } from "@/constants/enums";
 import { postFetchAuth } from "@/core/privateService";
+import { unstable_rethrow } from "next/navigation";
 
 export type PaymentMethod = "bank" | "wallet";
 
@@ -27,6 +28,7 @@ export const payOrderAction = async (
   try {
     return await postFetchAuth<PayOrderResponse>(`/profile/orders/${orderId}/pay`, payload);
   } catch (error) {
+    unstable_rethrow(error);
     throw new Error("مشکل در دریافت اطلاعات");
   }
 };
